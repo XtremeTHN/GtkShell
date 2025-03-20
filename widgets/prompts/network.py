@@ -1,4 +1,4 @@
-from gi.repository import Gtk, Adw, Astal, GObject
+from gi.repository import Gtk, Adw, Astal, GObject, GLib
 from lib.network import NWrapper
 from lib.utils import Box
 
@@ -22,33 +22,55 @@ class Spinner(Box):
 class PasswordPage(Box):
     __gsignals__ = {
         "next-page": (GObject.SIGNAL_RUN_FIRST, None, (str,)),
+        "cancel": (GObject.SIGNAL_RUN_FIRST, None, tuple())
     }
     def __init__(self, ap: AccessPoint):
         super().__init__(vertical=True, spacing=10)
 
         desc = Gtk.Label.new("Provide a password for %s" % ap.get_ssid())
+
+        entry_box = Box(vertical=True, spacing=1)
+
+        self.error_msg = Gtk.Label(xalign=0)
+        self.revealer = Gtk.Revealer(child=self.error_msg, transition_duration=400, transition_type=Gtk.RevealerTransitionType.SLIDE_UP)
+
         self.password = Gtk.PasswordEntry.new()
         self.password.connect('activate', self.__next_page)
 
-        self.append_all([desc, self.password])
+        entry_box.append_all([self.revealer, self.password])
+
+        cancel_btt = Gtk.Button(label="Cancel", valign=Gtk.Align.CENTER)
+        cancel_btt.connect("clicked", self.__send_close)
+
+        self.append_all([desc, entry_box, cancel_btt])
     
+    def reveal_error(self, msg):
+        self.error_msg.set_label(msg)
+        self.revealer.set_reveal_child(True)
+    
+    def __send_close(self, _):
+        self.emit("cancel")
+
     def __next_page(self, _):
         self.emit("next-page", self.password.get_text())
 
 class NetworkPromptNavigator(Gtk.Stack):
     def __init__(self, access_point: AccessPoint):
-        super().__init__()
+        super().__init__(transition_type=Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
 
-        _pass = PasswordPage(access_point)
-        _pass.connect("next-page", self.__on_next_page)
+        self._pass = PasswordPage(access_point)
+        self._pass.connect("next-page", self.__on_next_page)
 
-        loading = Spinner(size=24,description="Connecting to %s" % access_point.get_ssid())
+        loading = Spinner(size=24, description="Connecting to %s" % access_point.get_ssid())
 
-        self.add_child(_pass)
+        self.add_named(self._pass, "password")
         self.add_named(loading, "loading")
     
+    def __on_error(self, msg):
+        self.set_visible_child_name("password")
+        self._pass.reveal_error(msg)
+
     def __on_next_page(self, _, password):
-        print(password)
         self.set_visible_child_name("loading")
 
 class NetworkPrompt(Astal.Window):
@@ -63,10 +85,9 @@ class NetworkPrompt(Astal.Window):
 
         title = Gtk.Label(label="Network", css_classes=["title-1"])
         nav = NetworkPromptNavigator(access_point)
-        cancel_btt = Gtk.Button(label="Cancel", valign=Gtk.Align.CENTER)
-        cancel_btt.connect("clicked", lambda *_: self.close())
+        nav._pass.connect("cancel", lambda _: self.close())
 
-        content.append_all([title, nav, cancel_btt])
+        content.append_all([title, nav])
 
         self.set_child(content)
         self.present()
