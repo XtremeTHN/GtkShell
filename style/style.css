@@ -1,0 +1,93 @@
+.bar {
+  padding: 5px 10px;
+  background-color: #101417;
+}
+
+.bar-window {
+  background-color: transparent;
+}
+
+.bar-container {
+  background-color: #1c2024;
+  padding: 3px 5px;
+  border-radius: 3px;
+}
+
+.quicksettings-window {
+  min-width: 400px;
+  border-radius: 8px;
+}
+
+.quick-name {
+  font-size: larger;
+  font-weight: 800;
+}
+
+.uptime {
+  font-size: small;
+  font-weight: 300;
+}
+
+.quickframe {
+  border-radius: 8px;
+  border: 0px;
+}
+
+.quickbutton-right {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-left: 1px solid #101417;
+}
+.quickbutton-right.menu {
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.quickbutton {
+  transition: all 0.6s;
+  padding: 9px;
+  padding-left: 15px;
+}
+.quickbutton.active {
+  background-color: #004c6c;
+  color: #c7e7ff;
+}
+.quickbutton.menu {
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.quickbutton-heading {
+  font-size: larger;
+  font-weight: 700;
+}
+
+.quickbutton-subtitle {
+  font-size: smaller;
+  font-weight: 400;
+}
+
+.quick-network-menu {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  padding: 10px;
+}
+
+.quicksettings-content {
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #101417;
+}
+
+.corner {
+  background-color: transparent;
+}
+
+* {
+  font-family: "JetBrains Mono Nerd Font";
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: #dfe3e7;
+}
+
+/*# sourceMappingURL=style.css.map */
