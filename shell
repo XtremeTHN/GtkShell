@@ -12,4 +12,6 @@ sys.path.append(SHELL_CODE_PATH)
 from main import run
 
 if __name__ == "__main__":
-    run(sys.argv)
+    argv = sys.argv
+    argv.pop(0)
+    run(argv)
