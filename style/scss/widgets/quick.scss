@@ -66,3 +66,8 @@
     border-radius: 8px;
     background-color: $background;
 }
+
+.active-wifi {
+    background-color: $primary_container;
+    color: $on_primary;
+}

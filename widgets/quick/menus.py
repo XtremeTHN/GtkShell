@@ -25,12 +25,16 @@ class WifiButton(Gtk.Button):
         super().__init__()
         ssid = access_point.get_ssid() or "Unknown"
         self.content = Box(spacing=10, hexpand=True)
-        self.icon = Gtk.Image(pixel_size=8,icon_name=access_point.get_icon_name())
-        self.name = Gtk.Label(label=ssid)
-        self._connected = Gtk.Image(icon_name="emblem-ok-symbolic", pixel_size=8, \
-                                    halign=Gtk.Align.END, visible=active_ssid == access_point.get_ssid())
+        self.icon = Gtk.Image(pixel_size=16,icon_name=access_point.get_icon_name())
+        self.name = Gtk.Label(label=ssid, hexpand=True, xalign=0)
 
-        self.content.append_all([self.icon, self.name, self._connected])
+        self.content.append_all([self.icon, self.name])
+
+        if active_ssid == access_point.get_ssid():
+            self._connected = Gtk.Image(icon_name="emblem-ok-symbolic", pixel_size=16, \
+                                        halign=Gtk.Align.END, visible=active_ssid == access_point.get_ssid())
+            self.content.append(self._connected)
+            self.add_css_class("active-wifi")
 
         self.set_child(self.content)
         self.connect("clicked", self.__on_clicked)

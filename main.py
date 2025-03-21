@@ -9,13 +9,10 @@ from lib.logger import getLogger
 from lib.constants import CONFIG_DIR
 from lib.task import Task
 
-# from widgets.quick.settings import QuickSettings
-# from widgets.bar import Bar
-
-from widgets.prompts.network import NetworkPrompt
+from widgets.quick.settings import QuickSettings
+from widgets.bar import Bar
 
 Adw.init()
-
 
 class Dummy:
     def get_ssid(self): ...
@@ -50,12 +47,9 @@ class ShellApp(Astal.Application):
         self.reload()
 
         Style.watcher(self.reload)
-        p = NetworkPrompt(Dummy())
-        self.add_window(p)
-        p.present()
-        # for m in self.get_monitors():
-        #     self.add_window(Bar(m))
-        #     self.add_window(QuickSettings(m))
+        for m in self.get_monitors():
+            self.add_window(Bar(m))
+            self.add_window(QuickSettings(m))
 
 def run(args):
     parser = argparse.ArgumentParser(prog="gtk-shell",description="Astal Gtk Shell")

@@ -57,6 +57,8 @@ class PasswordPage(Box):
 class NetworkPromptNavigator(Gtk.Stack):
     def __init__(self, access_point: AccessPoint):
         super().__init__(transition_type=Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+        self.ap = access_point
+        self.net = NWrapper.get_default()
 
         self._pass = PasswordPage(access_point)
         self._pass.connect("next-page", self.__on_next_page)
@@ -70,8 +72,16 @@ class NetworkPromptNavigator(Gtk.Stack):
         self.set_visible_child_name("password")
         self._pass.reveal_error(msg)
 
+    def __on_connection_finish(self, client, res, _):
+        try:
+            client.add_and_activate_connection_finish(res)
+            self._pass.emit("cancel")
+        except Exception as e:
+            self.__on_error(" ".join(e.args))
+
     def __on_next_page(self, _, password):
         self.set_visible_child_name("loading")
+        self.net.connect_to_ssid(self.ap.get_ssid(), password, self.__on_connection_finish)
 
 class NetworkPrompt(Astal.Window):
     def __init__(self, access_point: AccessPoint):

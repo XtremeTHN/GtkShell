@@ -173,3 +173,6 @@ cython_debug/
 .pypirc
 
 config.json
+colors.scss
+style.class
+style.css.map
