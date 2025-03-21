@@ -89,6 +89,11 @@
   background-color: #101417;
 }
 
+.active-wifi {
+  background-color: #004c6c;
+  color: #00344c;
+}
+
 .corner {
   background-color: transparent;
 }
