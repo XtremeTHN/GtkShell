@@ -6,7 +6,7 @@ import sys
 import os
 
 # Change this variable to the shell location
-SHELL_CODE_PATH = os.path.expanduser("~/Git/GtkShell")
+SHELL_CODE_PATH = os.path.expanduser("~/.local/share/GtkShell")
 sys.path.append(SHELL_CODE_PATH)
 
 from main import run
