@@ -174,5 +174,5 @@ cython_debug/
 
 config.json
 colors.scss
-style.class
+style.css
 style.css.map
