@@ -1,5 +1,5 @@
-from gi.repository import Gtk, GObject, AstalNetwork, NM
-from lib.utils import Box
+from gi.repository import Gtk, AstalNetwork, Adw
+from lib.utils import Box, Timeout
 from widgets.quick.icons import NetworkIndicator
 from widgets.quick.menus import QuickNetworkMenu
 
@@ -31,17 +31,32 @@ class QuickButton(Box):
         self.append_all([self.overlay, self.revealer])
     
     def toggle_menu(self, *_):
+        def remove():
+            self.right_button.remove_css_class("menu")
+            self.button.remove_css_class("menu")
+        def add():
+            self.button.add_css_class("menu")
+            self.right_button.add_css_class("menu")
+
         condition = not self.revealer.get_reveal_child()
         self.revealer.set_reveal_child(condition)
         if condition is True:
-            self.button.add_css_class("menu")
-            self.right_button.add_css_class("menu")
+            add()
         else:
-            self.right_button.remove_css_class("menu")
-            self.button.remove_css_class("menu")
+            # for smooth transition
+            Timeout(remove, 430)
     
-    def set_menu(self, menu):
-        self.revealer.set_child(menu)
+    def set_menu(self, menu, max_size=100):
+        """
+        Sets the Gtk.Revealer widget (menu). It will reveal when you click the button with an arrow
+
+        Args:
+            menu (Gtk.Widget): The menu widget
+            max_size (int, optional): The maximun size of the menu. Defaults to 100.
+        """
+        m = Adw.Clamp(maximum_size=max_size, orientation=Gtk.Orientation.VERTICAL)
+        m.set_child(Gtk.ScrolledWindow(child=menu, hscrollbar_policy=Gtk.PolicyType.NEVER, max_content_height=max_size, css_classes=["n-card"]))
+        self.revealer.set_child(m)
         self.menu = menu
 
 class QuickNetwork(QuickButton):
@@ -54,7 +69,7 @@ class QuickNetwork(QuickButton):
 
         self.button.connect("clicked", self.toggle)
 
-        self.set_menu(QuickNetworkMenu())
+        self.set_menu(QuickNetworkMenu(), max_size=150)
 
         self.active = False
     
@@ -74,7 +89,7 @@ class QuickNetwork(QuickButton):
         self.set_active(not self.active)
     
     def __change_title(self, *_, force=False):
-        if force is True or self.wrapper.is_wired():
+        if force is True or self.wrapper.is_wired() or self.wrapper.ssid is None:
             self.heading.set_label("Internet")
         else:
             self.heading.set_label(self.wrapper.ssid)

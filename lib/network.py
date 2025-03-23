@@ -84,18 +84,20 @@ class NWrapper(Object):
         self.__bind_device_props(self.wired)
         self.emit("changed")
     
-    def __get_connection(self, ssid, password):
+    def __get_connection(self, ap, password):
         # from https://fedoramagazine.org/using-python-and-networkmanager-to-control-the-network/
         con = NM.SimpleConnection.new()
-        ssid = GLib.Bytes.new(ssid.encode())
+        e_ssid = GLib.Bytes.new(ap.get_ssid().encode())
 
         con_conf = NM.SettingConnection.new()
-        con_conf.set_property(NM.SETTING_CONNECTION_ID, "astal-connection")
+        con_conf.set_property(NM.SETTING_CONNECTION_ID, ap.get_ssid())
         con_conf.set_property(NM.SETTING_CONNECTION_TYPE, "802-11-wireless")
 
         wifi_conf = NM.SettingWireless.new()
-        wifi_conf.set_property(NM.SETTING_WIRELESS_SSID, ssid)
-        wifi_conf.set_property(NM.SETTING_WIRELESS_MODE, "infraestructure")
+        wifi_conf.set_property(NM.SETTING_WIRELESS_SSID, e_ssid)
+        # i might want to change this to the mode from AccessPoint
+        # but it works like this, so...
+        wifi_conf.set_property(NM.SETTING_WIRELESS_MODE, "infrastructure")
 
         wsec_conf = NM.SettingWirelessSecurity.new()
         wsec_conf.set_property(NM.SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-psk")
@@ -121,11 +123,11 @@ class NWrapper(Object):
     #     except Exception as e:
     #         on_error(e)
 
-    def connect_to_ssid(self, ssid, password, callback):
+    def connect_to_ssid(self, access_point, password, callback):
         if self.is_wifi() is False:
             raise NotWifi("Not using wifi")
         
         wifi = self.wifi.get_device()
-        con = self.__get_connection(ssid, password)
+        con = self.__get_connection(access_point, password)
 
-        self.client.add_and_activate_connection_async(con, wifi, None, None, self.__on_connection_finish, callback)
+        self.client.add_and_activate_connection_async(con, wifi, None, None, callback)

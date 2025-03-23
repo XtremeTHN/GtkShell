@@ -1,6 +1,7 @@
 from gi.repository import Gtk, Adw, Astal, GObject, GLib
 from lib.network import NWrapper
 from lib.utils import Box
+from lib.logger import getLogger
 
 from gi.repository.AstalNetwork import AccessPoint
 
@@ -34,7 +35,7 @@ class PasswordPage(Box):
         self.error_msg = Gtk.Label(xalign=0)
         self.revealer = Gtk.Revealer(child=self.error_msg, transition_duration=400, transition_type=Gtk.RevealerTransitionType.SLIDE_UP)
 
-        self.password = Gtk.PasswordEntry.new()
+        self.password = Gtk.PasswordEntry(show_peek_icon=True)
         self.password.connect('activate', self.__next_page)
 
         entry_box.append_all([self.revealer, self.password])
@@ -58,6 +59,7 @@ class NetworkPromptNavigator(Gtk.Stack):
     def __init__(self, access_point: AccessPoint):
         super().__init__(transition_type=Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
         self.ap = access_point
+        self.logger = getLogger("NetPromptNav")
         self.net = NWrapper.get_default()
 
         self._pass = PasswordPage(access_point)
@@ -72,16 +74,17 @@ class NetworkPromptNavigator(Gtk.Stack):
         self.set_visible_child_name("password")
         self._pass.reveal_error(msg)
 
-    def __on_connection_finish(self, client, res, _):
+    def __on_connection_finish(self, client, res):
         try:
             client.add_and_activate_connection_finish(res)
             self._pass.emit("cancel")
         except Exception as e:
+            self.logger.exception("Error")
             self.__on_error(" ".join(e.args))
 
     def __on_next_page(self, _, password):
         self.set_visible_child_name("loading")
-        self.net.connect_to_ssid(self.ap.get_ssid(), password, self.__on_connection_finish)
+        self.net.connect_to_ssid(self.ap, password, self.__on_connection_finish)
 
 class NetworkPrompt(Astal.Window):
     def __init__(self, access_point: AccessPoint):

@@ -1,4 +1,4 @@
-from gi.repository import Gtk, GObject, Gio
+from gi.repository import Gtk, GObject, Gio, GLib
 from inotify.constants import IN_MODIFY
 from inotify.adapters import Inotify
 from lib.logger import getLogger
@@ -97,3 +97,15 @@ class Object(GObject.Object):
         if cls._instance is None:
             cls._instance = cls()
         return cls._instance
+
+class Timeout:
+    def __init__(self, func, delay, *args, **kwargs):
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs
+        GLib.timeout_add(delay, self.__run)
+    
+    def __run(self):
+        if (n:=self.func(*self.args, **self.kwargs)) is not None:
+            return n
+        return GLib.SOURCE_REMOVE

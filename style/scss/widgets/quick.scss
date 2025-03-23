@@ -39,7 +39,8 @@
         border-bottom-right-radius: 0px;
         border-bottom-left-radius: 0px;
     }
-    transition: all 0.6s;
+    transition: all 0.2s;
+    border-radius: 8px;
     padding: 9px;
     padding-left: 15px;
 }
@@ -70,4 +71,10 @@
 .active-wifi {
     background-color: $primary_container;
     color: $on_primary;
+}
+
+.n-card {
+    background-color: $surface_container;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
 }
