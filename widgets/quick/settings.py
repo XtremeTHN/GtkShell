@@ -3,7 +3,7 @@ from lib.logger import getLogger
 from lib.config import Config
 from lib.utils import Box
 
-from widgets.quick.buttons import QuickNetwork
+from widgets.quick.buttons import QuickNetwork, QuickSysTray, QuickMixer
 
 def get_pretty_seconds(seconds):
     dias = int(seconds // 86400)
@@ -67,8 +67,8 @@ class QuickSettingsContent(Box):
         self.top.append_all([self.pfp, self.label_box])
 
         # Center box
-        self.center = Box(spacing=10, homogeneous=True)
-        self.center.append(QuickNetwork())
+        self.center = Box(spacing=10, homogeneous=True, vertical=True)
+        self.center.append_all([QuickNetwork(), QuickSysTray(), QuickMixer()])
 
         # Connections
         self.config.quick_username.on_change(self._update_name, once=True)

@@ -1,11 +1,28 @@
-from gi.repository import Gtk, AstalNetwork, Adw
+from gi.repository import Gtk, AstalNetwork, Adw, GObject
 from lib.utils import Box, Timeout
 from widgets.quick.icons import NetworkIndicator
 from widgets.quick.menus import QuickNetworkMenu
 
 class QuickButton(Box):
+    __gsignals__ = {
+        "activated": (GObject.SIGNAL_RUN_FIRST, None, tuple()),
+        "deactivated": (GObject.SIGNAL_RUN_FIRST, None, tuple()),
+    }
     def __init__(self, icon, header, default_subtitle):
+        """
+        Creates a QuickButton widget.
+
+        :param icon: A Gtk.Image widget to be used as the icon on the QuickButton.
+        :type icon: Gtk.Image
+        :param header: A string to be used as the header of the QuickButton.
+        :type header: str
+        :param default_subtitle: A string to be used as the default subtitle of the QuickButton.
+        :type default_subtitle: str
+        """
         super().__init__(vertical=True)
+
+        self.active = False
+
         self.overlay = Gtk.Overlay.new()
         self.button = Gtk.Button(css_classes=["quickbutton"])
         self.right_button = Gtk.Button(css_classes=["quickbutton-right"], halign=Gtk.Align.END, icon_name="go-next-symbolic")
@@ -30,7 +47,21 @@ class QuickButton(Box):
         
         self.append_all([self.overlay, self.revealer])
     
+    def set_active(self, active):
+        if active is True:
+            self.active = True
+            self.emit("activated")
+            self.button.add_css_class("active")
+        else:
+            self.active = False
+            self.emit("deactivated")
+            if self.wrapper.is_wifi() is True:
+                self.wrapper.wifi.set_enabled(False)
+            self.button.remove_css_class("active")
+    
     def toggle_menu(self, *_):
+        """Toggles the visibility of the Revealer child. It will remove or add the class menu.
+        """
         def remove():
             self.right_button.remove_css_class("menu")
             self.button.remove_css_class("menu")
@@ -54,9 +85,9 @@ class QuickButton(Box):
             menu (Gtk.Widget): The menu widget
             max_size (int, optional): The maximun size of the menu. Defaults to 100.
         """
-        m = Adw.Clamp(maximum_size=max_size, orientation=Gtk.Orientation.VERTICAL)
-        m.set_child(Gtk.ScrolledWindow(child=menu, hscrollbar_policy=Gtk.PolicyType.NEVER, max_content_height=max_size, css_classes=["n-card"]))
-        self.revealer.set_child(m)
+        # m = Adw.Clamp(maximum_size=max_size, orientation=Gtk.Orientation.VERTICAL)
+        # m.set_child(Gtk.ScrolledWindow(child=menu, hscrollbar_policy=Gtk.PolicyType.NEVER, max_content_height=max_size, css_classes=["n-card"]))
+        self.revealer.set_child(menu)
         self.menu = menu
 
 class QuickNetwork(QuickButton):
@@ -71,20 +102,17 @@ class QuickNetwork(QuickButton):
 
         self.set_menu(QuickNetworkMenu(), max_size=150)
 
-        self.active = False
-    
-    def set_active(self, active):
-        if active is True:
-            self.active = True
-            if self.wrapper.is_wifi() is True:
-                self.wrapper.wifi.set_enabled(True)
-            self.button.add_css_class("active")
-        else:
-            self.active = False
-            if self.wrapper.is_wifi() is True:
-                self.wrapper.wifi.set_enabled(False)
-            self.button.remove_css_class("active")
-    
+        self.connect("activated", self.on_activate)
+        self.connect("deactivated", self.on_deactivate)    
+        
+    def on_activate(self, _):
+        if self.wrapper.is_wifi() is True:
+            self.wrapper.wifi.set_enabled(True)
+            
+    def on_deactivate(self, _):
+        if self.wrapper.is_wifi() is True:
+            self.wrapper.wifi.set_enabled(False)
+
     def toggle(self, *_):
         self.set_active(not self.active)
     
@@ -110,3 +138,13 @@ class QuickNetwork(QuickButton):
                 self.subtitle.set_label("Connecting...")
             case _:
                 self.subtitle.set_label(f"Unknown state")
+
+class QuickSysTray(QuickButton):
+    def __init__(self):
+        self.icon = Gtk.Image(icon_name="system-run-symbolic", pixel_size=24)
+        super().__init__(icon=self.icon, header="System tray", default_subtitle="No applications")
+
+class QuickMixer(QuickButton):
+    def __init__(self):
+        self.icon = Gtk.Image(icon_name="audio-volume-medium-symbolic", pixel_size=24)
+        super().__init__(icon=self.icon, header="Mixer", default_subtitle="No applications")
