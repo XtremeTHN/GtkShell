@@ -7,11 +7,6 @@
     padding: 10px;
 }
 
-.corner {
-    // color: $background;
-    background-color: transparent;
-}
-
 .title-1 {
     font-size: 1.5rem;
     font-weight: 800;
@@ -20,6 +15,20 @@
 .title-3 {
     font-size: 1.2rem;
     font-weight: 400;
+}
+
+.false-button {
+    &:hover {
+        background-color: color-mix(in srgb, currentColor 15%, transparent);
+    }
+    &:active {
+        background-color: color-mix(in srgb, currentColor 30%, transparent);
+    }
+    margin: 3px;
+    background-color: color-mix(in srgb, currentColor 10%, transparent);
+    padding: 5px;
+    border-radius: 6px;
+    transition: all 0.2s;
 }
 
 * {

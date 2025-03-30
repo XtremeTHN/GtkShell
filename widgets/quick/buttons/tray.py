@@ -1,3 +1,4 @@
+from widgets.quick.menus.tray import QuickSysTrayMenu
 from widgets.custom.buttons import QuickButton
 from gi.repository import Gtk, AstalTray
 
@@ -7,6 +8,7 @@ class QuickSysTray(QuickButton):
         super().__init__(icon=self.icon, header="System tray", default_subtitle="No applications")
 
         self.tray = AstalTray.get_default()
+        self.set_menu(QuickSysTrayMenu(), "tray", "System tray")
 
         self.tray.connect("notify::items", self.__on_tray_change)
 
