@@ -34,13 +34,15 @@ class Box(Gtk.Box):
         while (w:=self.get_last_child()) is not None:
             self.remove(w)
 
-    def append_all(self, children):
+    def append_all(self, children, map_func=None):
         """
         Appends all elements of `children` to the box.
 
         :param children: An iterable of :class:`Gtk.Widget` to append to the box
         """
         for c in children:
+            if map_func is not None:
+                map_func(c)
             self.append(c)
     
     def append(self, child):

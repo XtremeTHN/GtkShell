@@ -3,6 +3,10 @@
 @import "widgets/prompts.scss";
 @import "widgets/quick.scss";
 
+.box-10 {
+    padding: 10px;
+}
+
 .corner {
     // color: $background;
     background-color: transparent;
@@ -11,6 +15,11 @@
 .title-1 {
     font-size: 1.5rem;
     font-weight: 800;
+}
+
+.title-3 {
+    font-size: 1.2rem;
+    font-weight: 400;
 }
 
 * {

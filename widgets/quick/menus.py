@@ -1,7 +1,23 @@
-from gi.repository import Gtk, Adw, AstalNetwork
-from lib.network import NWrapper
+from gi.repository import Gtk, Adw, AstalNetwork, GObject
 from widgets.prompts.network import NetworkPrompt
-from lib.utils import Box
+from lib.utils import Box, getLogger
+from lib.network import NWrapper
+
+class QuickPage(Box):
+    stack: Gtk.Stack = None
+    def __init__(self, title: str, max_height=250):
+        super().__init__(spacing=10, vertical=True)
+        self.max_height = max_height
+        self.top = Box(spacing=10)
+
+        self.back_btt = Gtk.Button(icon_name="go-previous-symbolic", css_classes=["circular"])
+        self.__title = Gtk.Label(label=title, css_classes=["title-3"])
+
+        self.top.append_all([self.back_btt, self.__title])
+        self.append(self.top)
+
+    def set_child(self, child):
+        self.append(Gtk.ScrolledWindow(css_classes=["box-10", "card"], child=child, vexpand=True, max_content_height=self.max_height))
 
 class StatusPage(Box):
     def __init__(self, title=None, description=None, icon=None):
@@ -44,11 +60,10 @@ class WifiButton(Gtk.Button):
         p = NetworkPrompt(self.ap)
         p.present()
 
-# TODO: Refactor this class to use Gtk.ListView for using Adw.ClampScrollable
-# See: https://discourse.gnome.org/t/gtk4-gtk-listview-python-example/12323/5
 class QuickNetworkMenu(Box):
     def __init__(self):
-        super().__init__(css_classes=["quick-network-menu"], vertical=True, spacing=4)
+        super().__init__(vertical=True, spacing=4)
+        self.logger = getLogger("QuickNetworkMenu")
         self.wrapper = NWrapper.get_default()
 
         self.placeholder = StatusPage()
@@ -60,15 +75,16 @@ class QuickNetworkMenu(Box):
 
     def __on_children_change(self, *_):
         if len(self.children) == 1:
-            print("showing place")
             self.show_zero_wifi_placeholder()
         else:
             self.placeholder.set_visible(False)
 
     def __on_wrapper_change(self, _):
         if self.wrapper.is_wired():
+            self.logger.info("No wifi device")
             self.show_no_wifi_device_placeholder()
         else:
+            self.logger.info("Detected wifi device")
             self.wrapper.wifi.scan()
             self.wrapper.wifi.connect("notify::access-points", self.__on_access_points_changed); self.__on_access_points_changed()
             self.placeholder.set_visible(False)

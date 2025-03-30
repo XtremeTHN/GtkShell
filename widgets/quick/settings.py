@@ -3,7 +3,7 @@ from lib.logger import getLogger
 from lib.config import Config
 from lib.utils import Box
 
-from widgets.quick.buttons import QuickNetwork, QuickSysTray, QuickMixer
+from widgets.quick.buttons import QuickNetwork, QuickSysTray, QuickMixer, QuickButton
 
 def get_pretty_seconds(seconds):
     dias = int(seconds // 86400)
@@ -49,11 +49,12 @@ class Uptime(Gtk.Label):
             string += " less than a minute"
         self.set_label(string.strip(","))
 
-class QuickSettingsContent(Box):
-    def __init__(self, w):
-        super().__init__(vertical=True, spacing=10, css_classes=["quicksettings-content"])
+class MainPage(Box):
+    def __init__(self, stack):
+        super().__init__(vertical=True, spacing=10)
         self.config = Config.get_default()
         self.logger = getLogger("QuickSettings")
+        self.stack: Gtk.Stack = stack
 
         # Top part of the window
         self.top = Box(spacing=10)
@@ -68,7 +69,7 @@ class QuickSettingsContent(Box):
 
         # Center box
         self.center = Box(spacing=10, homogeneous=True, vertical=True)
-        self.center.append_all([QuickNetwork(), QuickSysTray(), QuickMixer()])
+        self.center.append_all([QuickNetwork(), QuickSysTray(), QuickMixer()], map_func=lambda w: w.set_stack(self.stack))
 
         # Connections
         self.config.quick_username.on_change(self._update_name, once=True)
@@ -99,6 +100,14 @@ class QuickSettingsContent(Box):
                 return
         else:
             self.pfp.set_icon_name("avatar-default-symbolic")
+    
+class QuickSettingsContent(Gtk.Stack):
+    def __init__(self):
+        super().__init__(css_classes=["quicksettings-content"], transition_type=Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+        self.main_page = MainPage(self)
+
+        self.add_named(self.main_page, "main")
+        self.set_visible_child_name("main")
 
 class QuickSettings(Astal.Window):
     def __init__(self, monitor):
@@ -109,10 +118,10 @@ class QuickSettings(Astal.Window):
                          exclusivity=Astal.Exclusivity.NORMAL, css_classes=["quicksettings-window"],\
                          resizable=False)
 
-        self.content = QuickSettingsContent(self)
+        self.content = QuickSettingsContent()
         self.set_child(self.content)
 
-        self.connect("notify::visible", self.content._update_uptime)
+        self.connect("notify::visible", self.content.main_page._update_uptime)
 
         self.set_margin_top(10)
         self.set_margin_right(10)
