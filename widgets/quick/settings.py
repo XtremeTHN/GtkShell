@@ -46,7 +46,7 @@ class Uptime(Gtk.Label):
             string += f"{time[2]} minutes"
         
         if time[0] == 0 and time[1] == 0 and time[2] == 0:
-            string += " less than a minute"
+            string += "less than a minute"
         self.set_label(string.strip(","))
 
 class MainPage(Box):
