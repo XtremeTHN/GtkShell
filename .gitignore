@@ -172,6 +172,10 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+.stignore
+.stfolder
+
+# Some files that need to be generated
 config.json
 colors.scss
 style.css

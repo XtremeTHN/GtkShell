@@ -24,7 +24,7 @@ class StatusPage(Box):
         super().__init__(vertical=True, vexpand=True, valign=Gtk.Align.CENTER)
         self.__title = Gtk.Label(label=title, css_classes=["title-3"])
         self.__description = Gtk.Label(label=description, css_classes=["dimmed"])
-        self.__icon = Gtk.Image(icon_name=icon, pixel_size=28)
+        self.__icon = Gtk.Image(icon_name=icon, pixel_size=28, margin_bottom=10)
 
         self.append_all([self.__icon, self.__title, self.__description])
     
@@ -48,7 +48,7 @@ class WifiButton(Gtk.Button):
         self.content.append_all([self.icon, self.name])
 
         if active_ssid == access_point.get_ssid():
-            self._connected = Gtk.Image(icon_name="emblem-ok-symbolic", pixel_size=16, \
+            self._connected = Gtk.Image(icon_name="emblem-ok", pixel_size=16, \
                                         halign=Gtk.Align.END, visible=active_ssid == access_point.get_ssid())
             self.content.append(self._connected)
             self.add_css_class("active-wifi")
@@ -67,11 +67,10 @@ class QuickNetworkMenu(Box):
         self.wrapper = NWrapper.get_default()
 
         self.placeholder = StatusPage()
+        self.append(self.placeholder)
         
         self.wrapper.connect("changed", self.__on_wrapper_change); self.__on_wrapper_change(None)
-        self.connect("notify::children", self.__on_children_change); self.__on_children_change(None)
-
-        self.append(self.placeholder)
+        self.connect("notify::children", self.__on_children_change)
 
     def __on_children_change(self, *_):
         if len(self.children) == 1:
@@ -81,7 +80,10 @@ class QuickNetworkMenu(Box):
 
     def __on_wrapper_change(self, _):
         if self.wrapper.is_wired():
-            self.logger.info("No wifi device")
+            self.logger.info("Detected wired connection")
+            self.show_wired_placeholder()
+        elif self.wrapper.is_wifi() is False:
+            self.logger.info("Detected no wifi device")
             self.show_no_wifi_device_placeholder()
         else:
             self.logger.info("Detected wifi device")
@@ -100,8 +102,15 @@ class QuickNetworkMenu(Box):
         self.placeholder.set_icon_name("network-wireless-no-route-symbolic")
         self.placeholder.set_visible(True)
     
+    def show_wired_placeholder(self):
+        self.placeholder.set_title("Wired connection")
+        self.placeholder.set_description("The pc is connected to a wired network")
+        self.placeholder.set_icon_name("network-wired-symbolic")
+        self.placeholder.set_visible(True)
+    
     def show_no_wifi_device_placeholder(self):
+        self.logger.info("Showing no wifi device placeholder")
         self.placeholder.set_title("No wifi device")
-        self.placeholder.set_description("No wifi devices available. Connect a wifi dongle")
+        self.placeholder.set_description("Connect a wifi dongle")
         self.placeholder.set_icon_name("network-wireless-disabled-symbolic")
         self.placeholder.set_visible(True)
