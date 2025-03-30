@@ -1,5 +1,0 @@
-# This directory is a Syncthing folder marker.
-# Do not delete.
-
-folderID: fzzzi-exlgm
-created: 2025-03-29T21:54:15-06:00
