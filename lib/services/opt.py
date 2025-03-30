@@ -106,11 +106,22 @@ class Json(Watcher):
         self.emit("changed")
 
     def stop(self):
+        """
+        Stops watching the file for changes and cancels any outstanding IO operations.
+        """
         self.logger.info("Stopping...")
         self.watcher.remove_watch(str(self.file_obj))
         self.cancellable.cancel()
     
     def get_opt(self, key, default=None):
+        """
+        Retrieves an option from the JSON configuration.
+
+        :param key: The dot-separated key to look up within the JSON content.
+        :param default: The default value to return if the key is not found.
+        :return: An instance of the `opt` class for the specified key.
+        """
+
         return opt(key.split("."), self, default)
     
     def save(self):
