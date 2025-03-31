@@ -4,7 +4,6 @@ from widgets.quick.menus.network import QuickNetworkMenu
 from widgets.quick.icons import NetworkIndicator
 from widgets.custom.buttons import QuickButton
 
-
 class QuickNetwork(QuickButton):
     def __init__(self):
         self.net_icon = NetworkIndicator(size=24, bind_ssid=False)
@@ -53,8 +52,4 @@ class QuickNetwork(QuickButton):
                 self.subtitle.set_label("Connecting...")
             case _:
                 self.subtitle.set_label(f"Unknown state")
-
-class QuickMixer(QuickButton):
-    def __init__(self):
-        self.icon = Gtk.Image(icon_name="audio-volume-medium-symbolic", pixel_size=24)
-        super().__init__(icon=self.icon, header="Mixer", default_subtitle="No applications")
+                
