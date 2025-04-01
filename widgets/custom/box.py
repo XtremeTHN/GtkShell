@@ -1,7 +1,5 @@
 from gi.repository import Gtk, GObject
-
 from lib.utils import getLogger
-
 
 class Box(Gtk.Box):
     def __init__(self, vertical=False, spacing=0, children=[], css_classes=[], **kwargs):
@@ -52,13 +50,23 @@ class Box(Gtk.Box):
         super().append(child)
         self.__children.append(child)
         self.notify("children")
+    
+    def remove(self, widget):
+        """
+        Removes a specified :class:`Gtk.Widget` from the box.
+
+        :param widget: The :class:`Gtk.Widget` to remove from the box
+        """
+        super().remove(widget)
+        self.__children.pop(self.__children.index(widget))
+        self.notify("children")
 
 class StatusPage(Box):
     def __init__(self, title=None, description=None, icon=None):
         super().__init__(vertical=True, vexpand=True, valign=Gtk.Align.CENTER)
         self.__title = Gtk.Label(label=title, css_classes=["title-3"])
         self.__description = Gtk.Label(label=description, css_classes=["dimmed"])
-        self.__icon = Gtk.Image(icon_name=icon, pixel_size=28, margin_bottom=10)
+        self.__icon = Gtk.Image(icon_name=icon, pixel_size=28, margin_bottom=10, css_classes=["dimmed"])
 
         self.append_all([self.__icon, self.__title, self.__description])
     
@@ -70,7 +78,6 @@ class StatusPage(Box):
     
     def set_icon_name(self, icon_name):
         self.__icon.set_from_icon_name(icon_name)
-
     
 class QuickMenu(Box):
     def __init__(self, logger_name="QuickMenu"):
@@ -78,14 +85,14 @@ class QuickMenu(Box):
         self.logger = getLogger(logger_name)
 
         self.__placeholder = StatusPage()
-        self.connect("notify::children", self.on_children_change)
+        self.connect("notify::children", self.on_children_change); self.on_children_change()
         self.append(self.__placeholder)
 
     def on_children_change(self, *_):
         if len(self.children) == 1:
-            self.placeholder.set_visible(True)
+            self.__placeholder.set_visible(True)
         else:
-            self.placeholder.set_visible(False)
+            self.__placeholder.set_visible(False)
 
     def set_placeholder_attrs(self, title, description, icon_name, visible=True):
         self.__placeholder.set_title(title)

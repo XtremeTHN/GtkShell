@@ -1,6 +1,6 @@
 from widgets.custom.buttons import QuickButton
+from widgets.custom.box import Box, QuickMenu
 from gi.repository import Gtk, AstalTray
-from widgets.custom.box import Box
 from lib.logger import getLogger
 
 class QuickAppTray(Box):
@@ -43,14 +43,14 @@ class QuickAppTray(Box):
         self.menu.set_menu_model(self.item.props.menu_model)
         self.menu.insert_action_group("dbusmenu", self.item.props.action_group)
 
-class QuickSysTrayMenu(Box):
+class QuickSysTrayMenu(QuickMenu):
     def __init__(self):
-        super().__init__(vertical=True, spacing=0)
+        super().__init__()
         self.logger = getLogger("QuickSysTrayMenu")
         self.tray = AstalTray.get_default()
-
         self.items = {}
 
+        self.set_placeholder_attrs("No applications", "Open an application to use the tray", "system-run-symbolic")
         self.tray.connect("item-added", self.__on_item_added)
         self.tray.connect("item-removed", self.__on_item_removed)
     

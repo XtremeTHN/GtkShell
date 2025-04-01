@@ -1,5 +1,5 @@
 from widgets.custom.buttons import QuickButton
-from widgets.custom.box import Box
+from widgets.custom.box import QuickMenu, Box
 from lib.logger import getLogger
 
 from gi.repository import AstalWp, Gtk
@@ -28,13 +28,15 @@ class AppMixer(Box):
     def __on_volume_change(self, _, __):
         self.slider.set_value(self.stream.get_volume())
     
-class QuickMixerMenu(Box):
+class QuickMixerMenu(QuickMenu):
     def __init__(self):
-        super().__init__(vertical=True, css_classes=["card"])
+        # super().__init__(vertical=True, css_classes=["card"])
+        super().__init__("QuickMixerMenu")
         self.audio = AstalWp.get_default().get_audio()
         self.logger = getLogger("QuickMixerMenu")
-        
         self.__streams = {}
+
+        self.set_placeholder_attrs("No applications", "Open an application to use the mixer", "audio-volume-medium-symbolic")
 
         self.audio.connect("stream-added", self.__on_stream_added)
         self.audio.connect("stream-removed", self.__on_stream_removed)
