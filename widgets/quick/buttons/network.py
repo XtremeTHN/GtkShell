@@ -1,8 +1,8 @@
 from widgets.prompts.network import NetworkPrompt
 from widgets.quick.icons import NetworkIndicator
 from widgets.custom.buttons import QuickButton
-from widgets.custom.pages import StatusPage
-from lib.utils import Box, getLogger
+from widgets.custom.box import QuickMenu, Box
+
 from lib.network import NWrapper
 
 from gi.repository import Gtk, AstalNetwork
@@ -30,23 +30,17 @@ class WifiButton(Gtk.Button):
         p = NetworkPrompt(self.ap)
         p.present()
 
-class QuickNetworkMenu(Box):
+class QuickNetworkMenu(QuickMenu):
     def __init__(self):
-        super().__init__(vertical=True, spacing=4)
-        self.logger = getLogger("QuickNetworkMenu")
-        self.wrapper = NWrapper.get_default()
-
-        self.placeholder = StatusPage()
-        self.append(self.placeholder)
-        
+        super().__init__("QuickNetworkMenu")
+        self.wrapper = NWrapper.get_default()        
         self.wrapper.connect("changed", self.__on_wrapper_change); self.__on_wrapper_change(None)
-        self.connect("notify::children", self.__on_children_change)
-
-    def __on_children_change(self, *_):
-        if len(self.children) == 1:
+    
+    def on_children_change(self, *_):
+        if len(self.children) == 0:
             self.show_zero_wifi_placeholder()
         else:
-            self.placeholder.set_visible(False)
+            self.set_placeholder_visibility(False)
 
     def __on_wrapper_change(self, _):
         if self.wrapper.is_wired():
@@ -59,7 +53,7 @@ class QuickNetworkMenu(Box):
             self.logger.info("Detected wifi device")
             self.wrapper.wifi.scan()
             self.wrapper.wifi.connect("notify::access-points", self.__on_access_points_changed); self.__on_access_points_changed()
-            self.placeholder.set_visible(False)
+            self.set_placeholder_visibility(True)
         
     def __on_access_points_changed(self, *_):
         w = [WifiButton(a, self.wrapper.ssid) for a in self.wrapper.wifi.get_access_points() if a.get_ssid() is not None]
@@ -67,23 +61,13 @@ class QuickNetworkMenu(Box):
         self.append_all(w)
 
     def show_zero_wifi_placeholder(self):
-        self.placeholder.set_title("No wifi nearby")
-        self.placeholder.set_description("No wifi devices to connect")
-        self.placeholder.set_icon_name("network-wireless-no-route-symbolic")
-        self.placeholder.set_visible(True)
+        self.set_placeholder_attrs("No wifi nearby", "No wifi devices to connect", "network-wireless-no-route-symbolic")
     
     def show_wired_placeholder(self):
-        self.placeholder.set_title("Wired connection")
-        self.placeholder.set_description("The pc is connected to a wired network")
-        self.placeholder.set_icon_name("network-wired-symbolic")
-        self.placeholder.set_visible(True)
+        self.set_placeholder_attrs("Wired connection", "The pc is connected to a wired network", "network-wired-symbolic")
     
     def show_no_wifi_device_placeholder(self):
-        self.logger.info("Showing no wifi device placeholder")
-        self.placeholder.set_title("No wifi device")
-        self.placeholder.set_description("Connect a wifi dongle")
-        self.placeholder.set_icon_name("network-wireless-disabled-symbolic")
-        self.placeholder.set_visible(True)
+        self.set_placeholder_attrs("No wifi device", "Connect a wifi dongle", "network-wireless-disabled-symbolic")
 
 class QuickNetwork(QuickButton):
     def __init__(self):
@@ -92,7 +76,6 @@ class QuickNetwork(QuickButton):
         super().__init__(icon=self.net_icon, header="Internet", default_subtitle="Connected")
         self.wrapper.net.connect("notify::state", self.__change_subtitle); self.__change_subtitle()
         self.wrapper.connect("notify::ssid", self.__change_title); self.__change_title()
-
         self.button.connect("clicked", self.toggle)
 
         self.set_menu(QuickNetworkMenu(), "network", "Network", max_size=150)

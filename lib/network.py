@@ -1,4 +1,4 @@
-from gi.repository import AstalNetwork, GObject, NM, GLib, GObject
+from gi.repository import AstalNetwork, GObject, GLib, GObject
 from lib.logger import getLogger
 from lib.utils import Object
 

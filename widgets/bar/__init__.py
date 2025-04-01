@@ -1,8 +1,7 @@
 from widgets.quick.icons import NetworkIndicator, VolumeIndicator, BatteryIndicator
 from widgets.bar.hypr import Workspace, ActiveWindow
 from widgets.bar.music import Music
-from lib.task import LoopTask
-from lib.utils import Box
+from widgets.custom.box import Box
 
 from gi.repository import Gtk, Astal, GLib
 

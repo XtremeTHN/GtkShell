@@ -1,6 +1,6 @@
 from widgets.custom.pages import QuickPage
 from gi.repository import Gtk, GObject
-from lib.utils import Box
+from widgets.custom.box import Box
 
 class QuickButton(Box):
     __gsignals__ = {
@@ -77,6 +77,4 @@ class QuickButton(Box):
         else:
             self.active = False
             self.emit("deactivated")
-            if self.wrapper.is_wifi() is True:
-                self.wrapper.wifi.set_enabled(False)
             self.button.remove_css_class("active")

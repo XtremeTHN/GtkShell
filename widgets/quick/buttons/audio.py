@@ -1,6 +1,8 @@
-from gi.repository import AstalWp, Gtk
 from widgets.custom.buttons import QuickButton
-from lib.utils import Box, getLogger
+from widgets.custom.box import Box
+from lib.logger import getLogger
+
+from gi.repository import AstalWp, Gtk
 
 class AppMixer(Box):
     def __init__(self, stream: AstalWp.Endpoint):

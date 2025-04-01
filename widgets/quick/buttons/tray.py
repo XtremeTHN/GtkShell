@@ -1,6 +1,7 @@
 from widgets.custom.buttons import QuickButton
 from gi.repository import Gtk, AstalTray
-from lib.utils import getLogger, Box
+from widgets.custom.box import Box
+from lib.logger import getLogger
 
 class QuickAppTray(Box):
     def __init__(self, item):

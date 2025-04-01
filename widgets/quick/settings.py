@@ -1,11 +1,11 @@
 from gi.repository import Gtk, Astal, Gdk, GLib, Adw
 from lib.logger import getLogger
 from lib.config import Config
-from lib.utils import Box
 
 from widgets.quick.buttons.network import QuickNetwork
 from widgets.quick.buttons.audio import QuickMixer
 from widgets.quick.buttons.tray import QuickSysTray
+from widgets.custom.box import Box
 
 def get_pretty_seconds(seconds):
     dias = int(seconds // 86400)

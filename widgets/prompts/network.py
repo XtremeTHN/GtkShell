@@ -1,9 +1,9 @@
-from gi.repository import Gtk, Adw, Astal, GObject, GLib
-from lib.network import NWrapper
-from lib.utils import Box
-from lib.logger import getLogger
-
+from gi.repository import Gtk, Adw, Astal, GObject
 from gi.repository.AstalNetwork import AccessPoint
+
+from widgets.custom.box import Box
+from lib.network import NWrapper
+from lib.logger import getLogger
 
 class Background(Astal.Window):
     def __init__(self):
