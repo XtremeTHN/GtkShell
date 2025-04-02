@@ -1,4 +1,3 @@
-from widgets.custom.pages import QuickPage
 from gi.repository import Gtk, GObject
 from widgets.custom.box import Box
 
@@ -46,6 +45,7 @@ class QuickButton(Box):
         self.overlay.add_overlay(self.right_button)
         self.overlay.set_measure_overlay(self.right_button, True)
 
+        self.button.connect("clicked", self.__on_click)
         self.right_button.connect("clicked", self.toggle_menu)
         
         self.append(self.overlay)
@@ -55,10 +55,9 @@ class QuickButton(Box):
         if self.menu is not None:
             self.stack.add_named(self.menu, self.menu_id)
     
-    def set_menu(self, menu, menu_id, title, max_size=100):
-        self.menu = QuickPage(title, max_height=max_size)
-        self.menu.back_btt.connect("clicked", self.toggle_menu)
-        self.menu.set_child(menu)
+    def set_menu(self, menu, menu_id):
+        self.menu = menu
+        menu.back_btt.connect("clicked", self.toggle_menu)
         self.menu_id = menu_id
 
     def toggle_menu(self, *_):
@@ -68,6 +67,9 @@ class QuickButton(Box):
             self.stack.set_visible_child_name("main")
         else:
             self.stack.set_visible_child_name(self.menu_id)
+    
+    def __on_click(self, _):
+        self.set_active(not self.active)
     
     def set_active(self, active):
         if active is True:

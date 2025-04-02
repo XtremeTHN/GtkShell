@@ -1,4 +1,4 @@
-from gi.repository import Gtk, GObject, AstalWp, AstalBattery
+from gi.repository import Gtk, GObject, AstalWp, AstalBattery, AstalBluetooth
 from lib.logger import getLogger
 from lib.network import NWrapper
 
@@ -13,7 +13,29 @@ class NetworkIndicator(Gtk.Image):
 
         self.net.bind_property("icon-name", self, "icon-name", GObject.BindingFlags.SYNC_CREATE)
         if self.bind_ssid is True:
-            self.net.bind_property("ssid", self, "tooltip-text", GObject.BindingFlags.SYNC_CREATE)    
+            self.net.bind_property("ssid", self, "tooltip-text", GObject.BindingFlags.SYNC_CREATE)
+
+class BluetoothIndicator(Gtk.Image):
+    def __init__(self, size=14, _class=[]):
+        super().__init__(pixel_size=size, css_classes=_class)
+        self.logger = getLogger("BluetoothIndicator")
+        self.blue = AstalBluetooth.get_default()
+        self.blue.connect("notify::adapter", self.__on_adapter_change); self.__on_adapter_change(None, None)
+
+    def __change_powered(self, _, __):
+        if self.blue.get_is_powered() is False:
+            self.set_from_icon_name("bluetooth-disabled-symbolic")
+        else:
+            self.set_from_icon_name("bluetooth-symbolic")
+    
+    def __on_adapter_change(self, _, __):
+        if self.blue.get_adapter() is None:
+            self.logger.info("No bluetooth adapter found. Hidding...")
+            self.set_visible(False)
+        else:
+            self.logger.info("Bluetooth adapter found. Showing...")
+            self.set_visible(True)
+            self.blue.connect("notify::is-powered", self.__change_powered); self.__change_powered(None, None)
         
 class VolumeIndicator(Gtk.Image):
     def __init__(self, size=14, _class=[], bind_volume=True):

@@ -2,9 +2,10 @@ from gi.repository import Gtk, Astal, Gdk, GLib, Adw
 from lib.logger import getLogger
 from lib.config import Config
 
+from widgets.quick.buttons.bluetooth import QuickBluetooth
 from widgets.quick.buttons.network import QuickNetwork
-from widgets.quick.buttons.audio import QuickMixer
 from widgets.quick.buttons.tray import QuickSysTray
+from widgets.quick.buttons.audio import QuickMixer
 from widgets.custom.box import Box
 
 def get_pretty_seconds(seconds):
@@ -71,7 +72,7 @@ class MainPage(Box):
 
         # Center box
         self.center = Box(spacing=10, homogeneous=True, vertical=True)
-        self.center.append_all([QuickNetwork(), QuickSysTray(), QuickMixer()], map_func=lambda w: w.set_stack(self.stack))
+        self.center.append_all([QuickNetwork(), QuickBluetooth(), QuickSysTray(), QuickMixer()], map_func=lambda w: w.set_stack(self.stack))
 
         # Connections
         self.config.quick_username.on_change(self._update_name, once=True)

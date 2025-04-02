@@ -2,7 +2,7 @@ from widgets.custom.buttons import QuickButton
 from widgets.custom.box import QuickMenu, Box
 from lib.logger import getLogger
 
-from gi.repository import AstalWp, Gtk
+from gi.repository import AstalWp, Gtk, Pango
 
 class AppMixer(Box):
     def __init__(self, stream: AstalWp.Endpoint):
@@ -11,7 +11,7 @@ class AppMixer(Box):
         
         app_box = Box(spacing=10, halign=Gtk.Align.CENTER)
         icon = Gtk.Image(icon_name=stream.get_icon(), pixel_size=24)
-        label = Gtk.Label(label=stream.get_name())
+        label = Gtk.Label(label=stream.get_name(), wrap=True, ellipsize=Pango.EllipsizeMode.MIDDLE)
         
         app_box.append_all([icon, label])
 
@@ -30,10 +30,8 @@ class AppMixer(Box):
     
 class QuickMixerMenu(QuickMenu):
     def __init__(self):
-        # super().__init__(vertical=True, css_classes=["card"])
-        super().__init__("QuickMixerMenu")
+        super().__init__("Mixer", 250, logger_name="QuickMixerMenu")
         self.audio = AstalWp.get_default().get_audio()
-        self.logger = getLogger("QuickMixerMenu")
         self.__streams = {}
 
         self.set_placeholder_attrs("No applications", "Open an application to use the mixer", "audio-volume-medium-symbolic")
@@ -58,15 +56,12 @@ class QuickMixer(QuickButton):
         super().__init__(icon=self.icon, header="Mixer", default_subtitle="No applications")
 
         self.wp = AstalWp.get_default().get_audio()
-        self.set_menu(QuickMixerMenu(), "mixer", "Mixer")
+        self.set_menu(QuickMixerMenu(), "mixer")
 
         self.wp.connect("notify::streams", self.__on_streams_change)
 
     def __on_streams_change(self, *_):
         if len(self.wp.props.streams) == 0:
             self.subtitle.set_text("No applications")
-            self.set_active(False)
-            return
         else:
             self.subtitle.set_text(f"{len(self.wp.props.streams)} applications")
-            self.set_active(True)

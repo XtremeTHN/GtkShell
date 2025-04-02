@@ -15,4 +15,4 @@ class Config(Object):
         self.profile_picture = self.conf.get_opt("quicksettings.profile-picture")
         self.quick_username = self.conf.get_opt("quicksettings.username")
 
-
+        self.quick_blue_show_no_name = self.conf.get_opt("quicksettings.bluetooth.show-no-name", default=True)

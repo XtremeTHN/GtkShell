@@ -1,5 +1,5 @@
 from widgets.prompts.network import NetworkPrompt
-from widgets.quick.icons import NetworkIndicator
+from widgets.custom.icons import NetworkIndicator
 from widgets.custom.buttons import QuickButton
 from widgets.custom.box import QuickMenu, Box
 
@@ -32,8 +32,9 @@ class WifiButton(Gtk.Button):
 
 class QuickNetworkMenu(QuickMenu):
     def __init__(self):
-        super().__init__("QuickNetworkMenu")
-        self.wrapper = NWrapper.get_default()        
+        super().__init__("Network", logger_name="QuickNetworkMenu")
+
+        self.wrapper = NWrapper.get_default()
         self.wrapper.connect("changed", self.__on_wrapper_change); self.__on_wrapper_change(None)
     
     def on_children_change(self, *_):
@@ -76,9 +77,8 @@ class QuickNetwork(QuickButton):
         super().__init__(icon=self.net_icon, header="Internet", default_subtitle="Connected")
         self.wrapper.net.connect("notify::state", self.__change_subtitle); self.__change_subtitle()
         self.wrapper.connect("notify::ssid", self.__change_title); self.__change_title()
-        self.button.connect("clicked", self.toggle)
 
-        self.set_menu(QuickNetworkMenu(), "network", "Network", max_size=150)
+        self.set_menu(QuickNetworkMenu(), "network")
 
         self.connect("activated", self.on_activate)
         self.connect("deactivated", self.on_deactivate)
@@ -90,9 +90,6 @@ class QuickNetwork(QuickButton):
     def on_deactivate(self, _):
         if self.wrapper.is_wifi() is True:
             self.wrapper.wifi.set_enabled(False)
-
-    def toggle(self, *_):
-        self.set_active(not self.active)
     
     def __change_title(self, *_, force=False):
         if force is True or self.wrapper.is_wired() or self.wrapper.ssid is None:

@@ -78,22 +78,61 @@ class StatusPage(Box):
     
     def set_icon_name(self, icon_name):
         self.__icon.set_from_icon_name(icon_name)
-    
+
+class QuickPage(Box):
+    stack: Gtk.Stack = None
+    def __init__(self, title: str, max_height=250):
+        super().__init__(spacing=10, vertical=True)
+        self.max_height = max_height
+        self.__top = Box(spacing=10)
+
+        self.back_btt = Gtk.Button(icon_name="go-previous-symbolic", css_classes=["circular"])
+        self.__title = Gtk.Label(label=title, css_classes=["title-3"])
+
+        self.__top.append_all([self.back_btt, self.__title])
+        self.append(self.__top)
+
+    def set_child(self, child):
+        self.append(Gtk.ScrolledWindow(css_classes=["box-10", "card"], child=child, vexpand=True, max_content_height=self.max_height))
+
+    def pack_end(self, child):
+        child.set_halign(Gtk.Align.END)
+        self.__top.append(child)
+
 class QuickMenu(Box):
-    def __init__(self, logger_name="QuickMenu"):
-        super().__init__(vertical=True, spacing=4)
+    def __init__(self, title: str, max_height=150, logger_name="QuickMenu"):
+        super().__init__(vertical=True, spacing=10)
         self.logger = getLogger(logger_name)
+        self.max_height = max_height
 
+        self.__top = Box(spacing=10, hexpand=True)
+        self.back_btt = Gtk.Button(icon_name="go-previous-symbolic", css_classes=["circular"])
+        self.__title = Gtk.Label(label=title, css_classes=["title-3"])
+        self.__top_end = Box(spacing=10, hexpand=True, halign=Gtk.Align.END)
+
+        self.__scroll = Gtk.ScrolledWindow(css_classes=["box-10", "card"], vexpand=True, max_content_height=max_height)
+        self.content = Box(spacing=4, vertical=True, vexpand=True)
         self.__placeholder = StatusPage()
-        self.connect("notify::children", self.on_children_change); self.on_children_change()
-        self.append(self.__placeholder)
 
+        self.__scroll.set_child(self.content)
+
+        self.content.append(self.__placeholder)
+        self.__top.append_all([self.back_btt, self.__title, self.__top_end])
+        self.append_all([self.__top, self.__scroll])
+
+        self.content.connect("notify::children", self.on_children_change); self.on_children_change()
+
+        self.append_all = self.content.append_all
+        self.append = self.content.append
+        self.remove = self.content.remove
+        self.clear = self.content.clear
+    
     def on_children_change(self, *_):
-        if len(self.children) == 1:
+        if len(self.content.children) == 1:
             self.__placeholder.set_visible(True)
         else:
             self.__placeholder.set_visible(False)
-
+    
     def set_placeholder_attrs(self, title, description, icon_name, visible=True):
         self.__placeholder.set_title(title)
         self.__placeholder.set_description(description)
@@ -112,3 +151,7 @@ class QuickMenu(Box):
     
     def set_placeholder_icon_name(self, icon_name):
         self.__placeholder.set_icon_name(icon_name)
+    
+    def titlebar_pack_end(self, child):
+        child.set_halign(Gtk.Align.END)
+        self.__top_end.append(child)

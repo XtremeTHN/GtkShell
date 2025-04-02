@@ -1,4 +1,4 @@
-from widgets.quick.icons import NetworkIndicator, VolumeIndicator, BatteryIndicator
+from widgets.custom.icons import NetworkIndicator, VolumeIndicator, BatteryIndicator
 from widgets.bar.hypr import Workspace, ActiveWindow
 from widgets.bar.music import Music
 from widgets.custom.box import Box

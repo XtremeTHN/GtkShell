@@ -45,8 +45,7 @@ class QuickAppTray(Box):
 
 class QuickSysTrayMenu(QuickMenu):
     def __init__(self):
-        super().__init__()
-        self.logger = getLogger("QuickSysTrayMenu")
+        super().__init__("System tray", logger_name="QuickSysTrayMenu")
         self.tray = AstalTray.get_default()
         self.items = {}
 
@@ -70,15 +69,12 @@ class QuickSysTray(QuickButton):
         super().__init__(icon=self.icon, header="System tray", default_subtitle="No applications")
 
         self.tray = AstalTray.get_default()
-        self.set_menu(QuickSysTrayMenu(), "tray", "System tray")
+        self.set_menu(QuickSysTrayMenu(), "tray")
 
         self.tray.connect("notify::items", self.__on_tray_change)
 
     def __on_tray_change(self, *_):
         if len(self.tray.props.items) == 0:
             self.subtitle.set_text("No applications")
-            self.set_active(False)
-            return
         else:
             self.subtitle.set_text(f"{len(self.tray.props.items)} applications")
-            self.set_active(True)
