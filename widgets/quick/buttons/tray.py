@@ -1,4 +1,4 @@
-from widgets.custom.buttons import QuickButton
+from widgets.custom.buttons import QuickUtilButton
 from widgets.custom.box import Box, QuickMenu
 from gi.repository import Gtk, AstalTray
 from lib.logger import getLogger
@@ -63,18 +63,10 @@ class QuickSysTrayMenu(QuickMenu):
         self.remove(self.items.pop(item_id))
         self.logger.debug(f"Removed item with id {item_id} from tray")
 
-class QuickSysTray(QuickButton):
+class QuickSysTray(QuickUtilButton):
     def __init__(self):
         self.icon = Gtk.Image(icon_name="system-run-symbolic", pixel_size=24)
-        super().__init__(icon=self.icon, header="System tray", default_subtitle="No applications")
-
-        self.tray = AstalTray.get_default()
+        super().__init__(icon=self.icon, header="System tray", default_subtitle="No applications",\
+                         object=AstalTray.get_default(), watch_property="items")
+        
         self.set_menu(QuickSysTrayMenu(), "tray")
-
-        self.tray.connect("notify::items", self.__on_tray_change)
-
-    def __on_tray_change(self, *_):
-        if len(self.tray.props.items) == 0:
-            self.subtitle.set_text("No applications")
-        else:
-            self.subtitle.set_text(f"{len(self.tray.props.items)} applications")

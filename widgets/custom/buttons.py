@@ -80,3 +80,19 @@ class QuickButton(Box):
             self.active = False
             self.emit("deactivated")
             self.button.remove_css_class("active")
+
+class QuickUtilButton(QuickButton):
+    def __init__(self, icon, header, default_subtitle, object, watch_property):
+        super().__init__(icon, header, default_subtitle)
+
+        self.object: GObject.GObject = object
+        self.watch_property = watch_property
+
+        self.object.connect(f"notify::{watch_property}", self.__on_change); self.__on_change()
+    
+    def __on_change(self, *_):
+        prop = len(self.object.get_property(self.watch_property))
+        if prop == 0:
+            self.subtitle.set_text("No applications")
+        else:
+            self.subtitle.set_text("1 application" if prop == 1 else f"{prop} applications")

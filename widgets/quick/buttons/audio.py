@@ -1,4 +1,4 @@
-from widgets.custom.buttons import QuickButton
+from widgets.custom.buttons import QuickUtilButton
 from widgets.custom.box import QuickMenu, Box
 from lib.logger import getLogger
 
@@ -50,18 +50,11 @@ class QuickMixerMenu(QuickMenu):
         self.logger.debug(f"Added stream with id {id} to mixer")
         self.remove(self.__streams.pop(id))
 
-class QuickMixer(QuickButton):
+class QuickMixer(QuickUtilButton):
     def __init__(self):
         self.icon = Gtk.Image(icon_name="audio-volume-medium-symbolic", pixel_size=24)
-        super().__init__(icon=self.icon, header="Mixer", default_subtitle="No applications")
-
-        self.wp = AstalWp.get_default().get_audio()
+        wp = AstalWp.get_default().get_audio()
+        super().__init__(icon=self.icon, header="Mixer", default_subtitle="No applications", \
+                         object=wp, watch_property="streams")
+        
         self.set_menu(QuickMixerMenu(), "mixer")
-
-        self.wp.connect("notify::streams", self.__on_streams_change)
-
-    def __on_streams_change(self, *_):
-        if len(self.wp.props.streams) == 0:
-            self.subtitle.set_text("No applications")
-        else:
-            self.subtitle.set_text(f"{len(self.wp.props.streams)} applications")

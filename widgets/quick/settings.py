@@ -72,7 +72,9 @@ class MainPage(Box):
 
         # Center box
         self.center = Box(spacing=10, homogeneous=True, vertical=True)
-        self.center.append_all([QuickNetwork(), QuickBluetooth(), QuickSysTray(), QuickMixer()], map_func=lambda w: w.set_stack(self.stack))
+        self.center.append_all([QuickNetwork(), QuickBluetooth(), \
+                                QuickSysTray(), QuickMixer()], \
+                                map_func=lambda w: w.set_stack(self.stack))
 
         # Connections
         self.config.quick_username.on_change(self._update_name, once=True)
