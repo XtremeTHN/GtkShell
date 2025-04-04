@@ -113,7 +113,7 @@ class QuickBluetoothMenu(QuickMenu):
 
 class QuickBluetooth(QuickButton):
     def __init__(self):
-        super().__init__(icon=BluetoothIndicator(size=24), header="Bluetooth", default_subtitle="Disabled")
+        super().__init__(icon=BluetoothIndicator(size=24, _hide_if_no_adapter=False), header="Bluetooth", default_subtitle="Disabled")
         self.blue = AstalBluetooth.get_default()
         self.blue.connect("notify::is-connected", self.__change_subtitle); self.__change_subtitle()
         self.blue.connect("notify::is-powered", self.__change_subtitle); self.__change_subtitle()

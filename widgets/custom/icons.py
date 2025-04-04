@@ -16,13 +16,14 @@ class NetworkIndicator(Gtk.Image):
             self.net.bind_property("ssid", self, "tooltip-text", GObject.BindingFlags.SYNC_CREATE)
 
 class BluetoothIndicator(Gtk.Image):
-    def __init__(self, size=14, _class=[]):
+    def __init__(self, size=14, _class=[], _hide_if_no_adapter=True):
         super().__init__(pixel_size=size, css_classes=_class)
+        self.hide_if_no_adapter = _hide_if_no_adapter
         self.logger = getLogger("BluetoothIndicator")
         self.blue = AstalBluetooth.get_default()
         self.blue.connect("notify::adapter", self.__on_adapter_change); self.__on_adapter_change(None, None)
 
-    def __change_powered(self, _, __):
+    def __change_powered(self, *_):
         if self.blue.get_is_powered() is False:
             self.set_from_icon_name("bluetooth-disabled-symbolic")
         else:
@@ -30,8 +31,12 @@ class BluetoothIndicator(Gtk.Image):
     
     def __on_adapter_change(self, _, __):
         if self.blue.get_adapter() is None:
-            self.logger.info("No bluetooth adapter found. Hidding...")
-            self.set_visible(False)
+            self.logger.info("No bluetooth adapter found.")
+            if self.hide_if_no_adapter is True:
+                self.logger.info("Hidding...")
+                self.set_visible(False)
+                return
+            self.__change_powered()
         else:
             self.logger.info("Bluetooth adapter found. Showing...")
             self.set_visible(True)
