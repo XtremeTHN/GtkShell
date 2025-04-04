@@ -1,10 +1,11 @@
-from gi.repository import AstalBluetooth, Gtk, Pango, GObject, Adw # type: ignore
+from gi.repository import AstalBluetooth, Gtk, GObject, Adw # type: ignore
 
 from widgets.custom.icons import BluetoothIndicator
 from widgets.custom.buttons import QuickButton
 from widgets.custom.box import QuickMenu, Box
 
 from lib.config import Config
+from lib.utils import notify
 
 class QuickBluetoothDevice(Gtk.Button):
     def __init__(self, device: AstalBluetooth.Device):
@@ -49,7 +50,7 @@ class QuickBluetoothMenu(QuickMenu):
 
         self.blue = AstalBluetooth.get_default()
         self.adapter = self.blue.get_adapter()
-        self.scan_btt = Gtk.Button(icon_name="edit-find-symbolic", css_classes=["circular"])
+        self.scan_btt = Gtk.Button(icon_name="edit-find-symbolic", css_classes=["circular"], tooltip_text="Scan for devices")
         self.spinner = RevealSpin()
 
         self.blue.connect("notify::adapter", self.__change_adapter)
@@ -119,15 +120,17 @@ class QuickBluetooth(QuickButton):
         self.blue.connect("notify::is-powered", self.__change_subtitle); self.__change_subtitle()
         self.set_menu(QuickBluetoothMenu(), "bluetooth")
 
-        self.connect("activated", self.__activate)
-        self.connect("deactivated", self.__deactivate)
-
-    def __activate(self, _):
-        self.blue.get_adapter().set_powered(True)
-        print(self.blue.props.is_powered)
-
-    def __deactivate(self, _):
-        self.blue.get_adapter().set_powered(False)
+    def set_active(self, active):
+        adapter = self.blue.get_adapter()
+        if adapter is None:
+            notify("QuickBluetooth", "No bluetooth adapter found", log=True)
+            return
+        self.active = active
+        if active is True:
+            self.button.add_css_class("active")
+        else:
+            self.button.remove_css_class("active")
+        adapter.set_powered(self.active)
     
     def __change_subtitle(self, *_):
         if self.blue.get_is_connected():

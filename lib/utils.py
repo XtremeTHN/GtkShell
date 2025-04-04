@@ -61,3 +61,8 @@ class Timeout:
         if (n:=self.func(*self.args, **self.kwargs)) is not None:
             return n
         return GLib.SOURCE_REMOVE
+    
+def notify(title, message, log=True):
+    if log:
+        getLogger("notify").info("[%s] %s", title, message)
+    GLib.spawn_command_line_async(f"notify-send '{title}' '{message}'")
