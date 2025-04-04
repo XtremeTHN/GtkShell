@@ -30,7 +30,6 @@ class FramedImage(Gtk.Frame):
 class Uptime(Gtk.Label):
     def __init__(self):
         super().__init__(css_classes=["uptime"], xalign=0)
-        self.config = Config.get_default()
         self.proc_uptime = open("/proc/uptime", 'r')
         self.logger = getLogger("Uptime")
         self.update()
