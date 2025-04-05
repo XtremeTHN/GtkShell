@@ -9,14 +9,13 @@ from lib.utils import notify
 
 class QuickBluetoothDevice(Gtk.Button):
     def __init__(self, device: AstalBluetooth.Device):
-        super().__init__()
+        super().__init__()            
         self.device = device
         self.content = Box(spacing=10)
 
-        icon = Gtk.Image.new_from_icon_name(device.get_icon())
-        name = Gtk.Label.new(device.get_name())
+        icon = Gtk.Image(icon_name="dialog-question-symbolic" if (i:=device.get_icon()) is None else i)
+        name = Gtk.Label(label=device.get_address() if (n:=device.get_name()) is None else n)
 
-        print(device.get_name(), device.get_icon())
         self.content.append_all([icon, name])
 
         if device.get_connected() is True:
@@ -93,7 +92,6 @@ class QuickBluetoothMenu(QuickMenu):
             self.scan_btt.set_icon_name("edit-find-symbolic")
             self.adapter.stop_discovery()
             self.spinner.set_reveal_child(False)
-        # self.blue.get_adapter().toggle_scan()
     
     def on_children_change(self, *_):
         if len(self.content.children) == 1:
