@@ -140,7 +140,6 @@ class QuickMenu(Box):
         self.__placeholder.set_visible(visible)
     
     def set_placeholder_visibility(self, visible):
-        self.logger.debug(f"Setting placeholder visibility to {visible}")
         self.__placeholder.set_visible(visible)
     
     def set_placeholder_title(self, title):
