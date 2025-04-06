@@ -1,4 +1,4 @@
-from gi.repository import AstalNetwork, GObject, GLib, GObject
+from gi.repository import AstalNetwork, GObject, GLib, GObject, NM # type: ignore
 from lib.logger import getLogger
 from lib.utils import Object
 
@@ -115,13 +115,6 @@ class NWrapper(Object):
         con.add_setting(ip4_conf)
         con.add_setting(ip6_conf)
         return con
-
-    # def __on_connection_finish(self, _, result, callback):
-    #     try:
-    #         ac = self.client.add_and_activate_connection_finish(result)
-    #         on_success(ac)
-    #     except Exception as e:
-    #         on_error(e)
 
     def connect_to_ssid(self, access_point, password, callback):
         if self.is_wifi() is False:
