@@ -89,7 +89,7 @@ class MainPage(Box):
             map_func=lambda w: w.set_stack(self.stack))
 
         # End box
-        self.end = Box(spacing=5, vertical=True)
+        self.end = Box(spacing=10, vertical=True, margin_top=5)
         self.end.append_all([BacklightSlider(), AudioSlider()])
 
         # Connections

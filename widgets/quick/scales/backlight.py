@@ -8,20 +8,13 @@ class BacklightIcon(Gtk.Image):
 
     def __init__(self, adjustment):
         super().__init__(icon_name="display-brightness-symbolic",
-                         css_classes=["quickslider-icon"],
-                         sensitive=False)
+                         css_classes=["quickslider-icon"],)
 
         self.adj = adjustment
         self.adj.connect("notify::value", self.__on_value_change)
 
     def __on_value_change(self, *_):
         val = self.adj.get_value()
-        if val < 0.04:
-            self.remove_css_class("upper")
-            self.add_css_class("lower")
-        else:
-            self.remove_css_class("lower")
-            self.add_css_class("upper")
 
         if val >= 0.8:
             self.set_from_icon_name("display-brightness-high-symbolic")

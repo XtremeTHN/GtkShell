@@ -67,16 +67,18 @@ class VolumeIndicator(Gtk.Image):
     def on_speaker_change(self, _, __):
         self.speaker = self.wayplumber.get_default_speaker()
         if self.speaker is None:
-            self.icon_name = "audio-volume-muted-symbolic"
+            self.set_from_icon_name("audio-volume-muted-symbolic")
             return
+
         if self.bind_volume is True:
-            self.speaker.bind_property("volume-icon", self, "icon-name",
-                                       GObject.BindingFlags.SYNC_CREATE)
-        self.speaker.bind_property("volume",
+            self.speaker.bind_property("volume",
                                    self,
                                    "tooltip-text",
                                    GObject.BindingFlags.SYNC_CREATE,
                                    transform_to=convert_to_percent)
+
+        self.speaker.bind_property("volume-icon", self, "icon-name",
+                                    GObject.BindingFlags.SYNC_CREATE)
 
 
 class BatteryIndicator(Gtk.Image):

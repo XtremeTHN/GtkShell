@@ -13,7 +13,7 @@ class AudioSlider(QuickScale):
 
         icon = VolumeIndicator(bind_volume=False)
         self.set_icon(icon)
-        
+
         self.wp.connect("notify::default-speaker", self.__on_speaker_change)
         self.__on_speaker_change()
         self.scale.connect("value-changed", self.__on_value_change)
@@ -30,8 +30,6 @@ class AudioSlider(QuickScale):
 
     def __on_vol_change(self, *_):
         self.set_value(self.__speaker.get_volume())
-        print("speaker changed", self.__speaker.get_volume())
 
     def __on_value_change(self, _):
         self.__speaker.set_volume(self.get_value())
-        print("scale changed", self.get_value())
