@@ -81,9 +81,12 @@ class MainPage(Box):
 
         # Center box
         self.center = Box(spacing=10, homogeneous=True, vertical=True)
-        self.center.append_all([QuickNetwork(), QuickBluetooth(),
-                                QuickSysTray(), QuickMixer()],
-                                map_func=lambda w: w.set_stack(self.stack))
+        self.center.append_all(
+            [QuickNetwork(),
+             QuickBluetooth(),
+             QuickSysTray(),
+             QuickMixer()],
+            map_func=lambda w: w.set_stack(self.stack))
 
         # End box
         self.end = Box(spacing=5, vertical=True)
@@ -139,10 +142,13 @@ class QuickSettings(Astal.Window):
 
     def __init__(self, monitor):
         # Set resizable to false. When the quick menu shows, the window will go back to its original size
-        super().__init__(namespace="quicksettings", name="quicksettings",
+        super().__init__(namespace="quicksettings",
+                         name="quicksettings",
                          gdkmonitor=monitor,
-                         anchor=Astal.WindowAnchor.TOP | Astal.WindowAnchor.RIGHT,
-                         exclusivity=Astal.Exclusivity.NORMAL, css_classes=["quicksettings-window"],
+                         anchor=Astal.WindowAnchor.TOP
+                         | Astal.WindowAnchor.RIGHT,
+                         exclusivity=Astal.Exclusivity.NORMAL,
+                         css_classes=["quicksettings-window"],
                          resizable=False)
 
         self.content = QuickSettingsContent()

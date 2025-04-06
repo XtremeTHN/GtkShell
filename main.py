@@ -3,22 +3,16 @@ import argparse
 
 from gi.repository import Astal, AstalIO, Gio, Adw
 
+from lib.task import Task
 from lib.style import Style
 from lib.config import Config
 from lib.logger import getLogger
-from lib.constants import CONFIG_DIR
-from lib.task import Task
+from lib.constants import CONFIG_DIR, SOURCE_DIR
 
 from widgets.quick.settings import QuickSettings
 from widgets.bar import Bar
 
 Adw.init()
-
-
-class Dummy:
-
-    def get_ssid(self):
-        ...
 
 
 class ShellApp(Astal.Application):
@@ -27,6 +21,7 @@ class ShellApp(Astal.Application):
         super().__init__(instance_name=instance_name)
         self.logger = getLogger("ShellApp")
         self.conf = Config.get_default()
+        self.add_icons(str(SOURCE_DIR / "icons"))
 
     def do_astal_application_request(self, msg: str,
                                      conn: Gio.SocketConnection) -> None:
