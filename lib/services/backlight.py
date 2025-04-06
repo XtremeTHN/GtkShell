@@ -1,4 +1,4 @@
-from lib.utils import Watcher, GObject, Object
+from lib.utils import Watcher, GObject, Object, GLib
 from lib.logger import getLogger
 from os.path import join
 import os
@@ -11,6 +11,7 @@ class Adapter(GObject.GObject):
     def __init__(self, display):
         super().__init__()
         self.logger = getLogger(f"Adapter ({display})")
+        self.__watcher = Watcher()
 
         self.__max_brightness = 0
         self.__value = 0
@@ -19,9 +20,19 @@ class Adapter(GObject.GObject):
         self.__max_path = join(self.__path, "max_brightness")
         self.__curr_path = join(self.__path, "brightness")
 
+        self.__watcher.add_watch(self.__max_path)
+        self.__watcher.add_watch(self.__curr_path)
+
+        self.__watcher.connect("event", self.__read)
         self.__read()
 
-    def __read(self):
+        self.__watcher.start()
+
+    def __notify(self):
+        self.notify("max-brightness")
+        self.notify("value")
+
+    def __read(self, *_):
         try:
             max_bright = open(self.__max_path)
             curr_bright = open(self.__curr_path)
@@ -30,8 +41,7 @@ class Adapter(GObject.GObject):
         try:
             self.__max_brightness = int(max_bright.read())
             self.__value = int(curr_bright.read())
-            self.notify("max-brightness")
-            self.notify("value")
+            self.__notify()
         except:
             self.logger.exception("Couldn't parse backlight values")
 
@@ -47,8 +57,15 @@ class Adapter(GObject.GObject):
 
     @value.setter
     def value(self, value):
+        self.set_value(value)
+
+    def set_value(self, value):
         if isinstance(value, int) is False:
-            raise ValueError("Expected int")
+            try:
+                value = int(value)
+            except:
+                self.logger.exception("Couldn't convert to integer")
+                return
 
         try:
             f = open(self.__curr_path, "w")

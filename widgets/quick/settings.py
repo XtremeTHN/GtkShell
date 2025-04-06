@@ -2,11 +2,11 @@ from gi.repository import Gtk, Astal, Gdk, GLib, Adw
 from lib.logger import getLogger
 from lib.config import Config
 
+from widgets.quick.scales import BacklightSlider, AudioSlider
 from widgets.quick.buttons.bluetooth import QuickBluetooth
 from widgets.quick.buttons.network import QuickNetwork
 from widgets.quick.buttons.tray import QuickSysTray
 from widgets.quick.buttons.audio import QuickMixer
-from widgets.quick.scales import BacklightSlider
 from widgets.custom.box import Box
 
 
@@ -90,7 +90,7 @@ class MainPage(Box):
 
         # End box
         self.end = Box(spacing=5, vertical=True)
-        self.end.append_all([BacklightSlider()])
+        self.end.append_all([BacklightSlider(), AudioSlider()])
 
         # Connections
         self.config.quick_username.on_change(self._update_name, once=True)
