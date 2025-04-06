@@ -5,10 +5,9 @@ from lib.logger import getLogger
 from typing import TypeVar
 from lib.task import Task
 
+
 class Watcher(GObject.Object, Task):
-    __gsignals__ = {
-        "event": (GObject.SignalFlags.RUN_FIRST, None, (str,))
-    }
+    __gsignals__ = {"event": (GObject.SignalFlags.RUN_FIRST, None, (str, ))}
 
     def __init__(self):
         self.logger = getLogger("Watcher")
@@ -22,7 +21,7 @@ class Watcher(GObject.Object, Task):
     def add_watch(self, path, mask=IN_MODIFY):
         self.watcher.add_watch(path, mask=mask)
         self._name = path
-    
+
     def stop(self):
         self.logger.info("[%s] Stopping...", self._name)
         self.cancellable.cancel()
@@ -35,12 +34,16 @@ class Watcher(GObject.Object, Task):
             if event is not None:
                 self.emit("event", event)
 
+
 T = TypeVar("T", bound="Object")
+
+
 class Object(GObject.Object):
     _instance = None
+
     def __init__(self):
         super().__init__()
-    
+
     @classmethod
     def get_default(cls: type[T]) -> T:
         """
@@ -50,18 +53,21 @@ class Object(GObject.Object):
             cls._instance = cls()
         return cls._instance
 
+
 class Timeout:
+
     def __init__(self, func, delay, *args, **kwargs):
         self.func = func
         self.args = args
         self.kwargs = kwargs
         GLib.timeout_add(delay, self.__run)
-    
+
     def __run(self):
-        if (n:=self.func(*self.args, **self.kwargs)) is not None:
+        if (n := self.func(*self.args, **self.kwargs)) is not None:
             return n
         return GLib.SOURCE_REMOVE
-    
+
+
 def notify(title, message, log=True):
     if log:
         getLogger("notify").info("[%s] %s", title, message)

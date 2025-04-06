@@ -2,14 +2,17 @@ from gi.repository import AstalMpris, Gtk, GLib
 from lib.logger import getLogger
 from lib.config import Config
 
+
 def to_minutes(seconds):
     seconds = int(seconds)
     minutes = seconds // 60
     seconds = seconds % 60
     return f"{minutes:02d}:{seconds:02d}"
 
+
 # CONECTANDO COSAS
 class Music(Gtk.Label):
+
     def __init__(self, _class=[]):
         super().__init__(css_classes=_class)
         self.config = Config.get_default()
@@ -24,7 +27,9 @@ class Music(Gtk.Label):
         self.player.connect("notify", self.__update_info)
 
     def __update_info(self, _, __):
-        self.set_text(f"{self.player.get_title()} - {to_minutes(self.player.get_position())} / {to_minutes(self.player.get_length())}")
+        self.set_text(
+            f"{self.player.get_title()} - {to_minutes(self.player.get_position())} / {to_minutes(self.player.get_length())}"
+        )
 
     def __change_visible(self, _, __):
         if self.player.get_available() is False:
@@ -34,7 +39,7 @@ class Music(Gtk.Label):
         else:
             self.logger.info(f"{self._config_player} appeared")
             self.set_visible(True)
-        
+
         return self.player.get_available()
 
     def __change_player(self, _):

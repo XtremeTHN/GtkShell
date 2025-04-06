@@ -1,6 +1,7 @@
 import logging
 import sys
 
+
 class CustomFormatter(logging.Formatter):
     grey = "\x1b[38;20m"
     yellow = "\x1b[33;20m"
@@ -21,7 +22,8 @@ class CustomFormatter(logging.Formatter):
     def format(self, record):
         log_fmt = self.FORMATS.get(record.levelno)
         formatter = logging.Formatter(log_fmt)
-        return formatter.format(record)  
+        return formatter.format(record)
+
 
 def getLogger(name):
     handler = logging.StreamHandler(sys.stdout)

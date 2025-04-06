@@ -1,16 +1,19 @@
-from gi.repository import AstalNetwork, GObject, GLib, GObject, NM # type: ignore
+from gi.repository import AstalNetwork, GObject, GLib, GObject, NM  # type: ignore
 from lib.logger import getLogger
 from lib.utils import Object
+
 
 class NotWifi(Exception):
     pass
 
+
 class NWrapper(Object):
-    __gsignals__ = {
-        "changed": (GObject.SignalFlags.RUN_FIRST, None, tuple())
-    }
-    icon_name = GObject.Property(type=str, default="network-wired-symbolic", nick="icon-name")
+    __gsignals__ = {"changed": (GObject.SignalFlags.RUN_FIRST, None, tuple())}
+    icon_name = GObject.Property(type=str,
+                                 default="network-wired-symbolic",
+                                 nick="icon-name")
     ssid = GObject.Property(type=str, default="Disconnected", nick="ssid")
+
     def __init__(self):
         GObject.GObject.__init__(self)
         self.logger = getLogger("NetworkIndicator")
@@ -25,23 +28,25 @@ class NWrapper(Object):
 
         self.net.connect('notify::wifi', self.on_wifi_changed)
         self.net.connect('notify::wired', self.on_wired_changed)
-    
+
     def __bind_icon(self, obj: GObject.Object):
         if self.__icon_binding is not None:
             self.__icon_binding.unbind()
-        self.__icon_binding = obj.bind_property("icon-name", self, "icon-name", GObject.BindingFlags.SYNC_CREATE)
-    
+        self.__icon_binding = obj.bind_property(
+            "icon-name", self, "icon-name", GObject.BindingFlags.SYNC_CREATE)
+
     def __bind_ssid(self):
         if self.__ssid_binding is not None:
             self.__ssid_binding.unbind()
-        self.__ssid_binding = self.wifi.bind_property("ssid", self, "ssid", GObject.BindingFlags.SYNC_CREATE)
-    
+        self.__ssid_binding = self.wifi.bind_property(
+            "ssid", self, "ssid", GObject.BindingFlags.SYNC_CREATE)
+
     def __unbind_all(self):
         if self.__icon_binding is not None:
             self.__icon_binding.unbind()
         if self.__ssid_binding is not None:
             self.__ssid_binding.unbind()
-    
+
     def __bind_device_props(self):
         if self.is_wired():
             self.logger.debug("Changing state to wired...")
@@ -60,12 +65,12 @@ class NWrapper(Object):
         if self.wired.get_state() != AstalNetwork.DeviceState.UNAVAILABLE:
             return True
         return False
-    
+
     def is_wifi(self):
         if self.wifi is not None:
             return True
         return False
-    
+
     def get_connected_name(self):
         if self.is_wired():
             return "Connected (Wired)"
@@ -73,7 +78,7 @@ class NWrapper(Object):
             return self.wifi.get_ssid()
         else:
             return "No device"
-    
+
     def on_wifi_changed(self, _, __):
         self.wifi = self.net.get_wifi()
         self.__bind_device_props(self.wifi)
@@ -83,7 +88,7 @@ class NWrapper(Object):
         self.wired = self.net.get_wired()
         self.__bind_device_props(self.wired)
         self.emit("changed")
-    
+
     def __get_connection(self, ap, password):
         # from https://fedoramagazine.org/using-python-and-networkmanager-to-control-the-network/
         con = NM.SimpleConnection.new()
@@ -100,7 +105,8 @@ class NWrapper(Object):
         wifi_conf.set_property(NM.SETTING_WIRELESS_MODE, "infrastructure")
 
         wsec_conf = NM.SettingWirelessSecurity.new()
-        wsec_conf.set_property(NM.SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-psk")
+        wsec_conf.set_property(NM.SETTING_WIRELESS_SECURITY_KEY_MGMT,
+                               "wpa-psk")
         wsec_conf.set_property(NM.SETTING_WIRELESS_SECURITY_PSK, password)
 
         ip4_conf = NM.SettingIP4Config.new()
@@ -119,8 +125,9 @@ class NWrapper(Object):
     def connect_to_ssid(self, access_point, password, callback):
         if self.is_wifi() is False:
             raise NotWifi("Not using wifi")
-        
+
         wifi = self.wifi.get_device()
         con = self.__get_connection(access_point, password)
 
-        self.client.add_and_activate_connection_async(con, wifi, None, None, callback)
+        self.client.add_and_activate_connection_async(con, wifi, None, None,
+                                                      callback)

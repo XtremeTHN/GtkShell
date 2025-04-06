@@ -1,14 +1,16 @@
 from gi.repository import Gtk, GObject
 from widgets.custom.box import Box
 
+
 class QuickButton(Box):
     __gsignals__ = {
         "activated": (GObject.SIGNAL_RUN_FIRST, None, tuple()),
         "deactivated": (GObject.SIGNAL_RUN_FIRST, None, tuple()),
-        "menu-toggled": (GObject.SIGNAL_RUN_FIRST, None, (str,)),
-        "add-widget": (GObject.SIGNAL_RUN_FIRST, None, (Gtk.ScrolledWindow, str)),
+        "menu-toggled": (GObject.SIGNAL_RUN_FIRST, None, (str, )),
+        "add-widget":
+        (GObject.SIGNAL_RUN_FIRST, None, (Gtk.ScrolledWindow, str)),
     }
-    
+
     def __init__(self, icon, header, default_subtitle):
         """
         Creates a QuickButton widget.
@@ -29,12 +31,18 @@ class QuickButton(Box):
 
         self.overlay = Gtk.Overlay.new()
         self.button = Gtk.Button(css_classes=["quickbutton"])
-        self.right_button = Gtk.Button(css_classes=["quickbutton-right"], halign=Gtk.Align.END, icon_name="go-next-symbolic")
+        self.right_button = Gtk.Button(css_classes=["quickbutton-right"],
+                                       halign=Gtk.Align.END,
+                                       icon_name="go-next-symbolic")
 
         self.button_content = Box(spacing=10)
         self._label_box = Box(spacing=0, vertical=True)
-        self.heading = Gtk.Label(label=header, xalign=0, css_classes=["quickbutton-heading"])
-        self.subtitle = Gtk.Label(label=default_subtitle, xalign=0, css_classes=["quickbutton-subtitle"])
+        self.heading = Gtk.Label(label=header,
+                                 xalign=0,
+                                 css_classes=["quickbutton-heading"])
+        self.subtitle = Gtk.Label(label=default_subtitle,
+                                  xalign=0,
+                                  css_classes=["quickbutton-subtitle"])
 
         self._label_box.append_all([self.heading, self.subtitle])
         self.button_content.append_all([icon, self._label_box])
@@ -47,14 +55,14 @@ class QuickButton(Box):
 
         self.button.connect("clicked", self.__on_click)
         self.right_button.connect("clicked", self.toggle_menu)
-        
+
         self.append(self.overlay)
-    
+
     def set_stack(self, stack):
         self.stack = stack
         if self.menu is not None:
             self.stack.add_named(self.menu, self.menu_id)
-    
+
     def set_menu(self, menu, menu_id):
         self.menu = menu
         menu.back_btt.connect("clicked", self.toggle_menu)
@@ -67,10 +75,10 @@ class QuickButton(Box):
             self.stack.set_visible_child_name("main")
         else:
             self.stack.set_visible_child_name(self.menu_id)
-    
+
     def __on_click(self, _):
         self.set_active(not self.active)
-    
+
     def set_active(self, active):
         if active is True:
             self.active = True
@@ -81,18 +89,22 @@ class QuickButton(Box):
             self.emit("deactivated")
             self.button.remove_css_class("active")
 
+
 class QuickUtilButton(QuickButton):
+
     def __init__(self, icon, header, default_subtitle, object, watch_property):
         super().__init__(icon, header, default_subtitle)
 
         self.object: GObject.GObject = object
         self.watch_property = watch_property
 
-        self.object.connect(f"notify::{watch_property}", self.__on_change); self.__on_change()
-    
+        self.object.connect(f"notify::{watch_property}", self.__on_change)
+        self.__on_change()
+
     def __on_change(self, *_):
         prop = len(self.object.get_property(self.watch_property))
         if prop == 0:
             self.subtitle.set_text("No applications")
         else:
-            self.subtitle.set_text("1 application" if prop == 1 else f"{prop} applications")
+            self.subtitle.set_text("1 application" if prop ==
+                                   1 else f"{prop} applications")
