@@ -70,6 +70,28 @@
     color: $on_primary;
 }
 
+.quickslider {
+  transition: 0.2s all;
+  & > trough > highlight {
+    background-color: $primary;
+    padding: 10px 0px;
+  }
+
+  & > trough > slider {
+    background-image: image($primary);
+    box-shadow: none;
+  }
+
+  &.lower > trough > slider {
+    border-radius: 100%;
+  }
+
+  &.upper > trough > slider {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+  }
+}
+
 .n-card {
     background-color: $surface_container;
     border-bottom-right-radius: 8px;

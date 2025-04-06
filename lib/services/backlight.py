@@ -5,7 +5,7 @@ import os
 
 DISPLAYS_FOLDER = "/sys/class/backlight/"
 
-class Adapter(Watcher):
+class Adapter(GObject.GObject):
     def __init__(self, display):
         super().__init__()
         self.logger = getLogger(f"Adapter ({display})")
@@ -16,18 +16,15 @@ class Adapter(Watcher):
         self.__path = join(DISPLAYS_FOLDER, display)
         self.__max_path = join(self.__path, "max_brightness")
         self.__curr_path = join(self.__path, "brightness")
-        self.add_watch(self.__max_path)
-        self.add_watch(self.__curr_path)
 
-        self.connect("event", self.__on_event); self.__on_event(None)
+        self.__read()
 
-    def __on_event(self, _):
+    def __read(self):
         try:
             max_bright = open(self.__max_path)
             curr_bright = open(self.__curr_path)
         except:
             self.logger.exception("Couldn't open backlight files")
-        
         try:
             self.__max_brightness = int(max_bright.read())
             self.__value = int(curr_bright.read())
