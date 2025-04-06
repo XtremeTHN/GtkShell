@@ -6,6 +6,7 @@ from widgets.quick.buttons.bluetooth import QuickBluetooth
 from widgets.quick.buttons.network import QuickNetwork
 from widgets.quick.buttons.tray import QuickSysTray
 from widgets.quick.buttons.audio import QuickMixer
+from widgets.quick.scales import BacklightSlider
 from widgets.custom.box import Box
 
 
@@ -84,11 +85,15 @@ class MainPage(Box):
                                 QuickSysTray(), QuickMixer()],
                                 map_func=lambda w: w.set_stack(self.stack))
 
+        # End box
+        self.end = Box(spacing=5, vertical=True)
+        self.end.append_all([BacklightSlider()])
+
         # Connections
         self.config.quick_username.on_change(self._update_name, once=True)
         self.config.profile_picture.on_change(self.__update_pfp, once=True)
 
-        self.append_all([self.top, self.center])
+        self.append_all([self.top, self.center, self.end])
 
     def _update_name(self, *_):
         if self.config.quick_username.is_set() is False:

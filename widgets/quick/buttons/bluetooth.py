@@ -9,6 +9,7 @@ from lib.utils import notify
 
 
 class QuickBluetoothDevice(Gtk.Button):
+    # TODO: Implement connecting to device
 
     def __init__(self, device: AstalBluetooth.Device):
         super().__init__()

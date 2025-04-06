@@ -19,6 +19,23 @@ class Adapter(Watcher):
         self.add_watch(self.__max_path)
         self.add_watch(self.__curr_path)
 
+        self.connect("event", self.__on_event); self.__on_event(None)
+
+    def __on_event(self, _):
+        try:
+            max_bright = open(self.__max_path)
+            curr_bright = open(self.__curr_path)
+        except:
+            self.logger.exception("Couldn't open backlight files")
+        
+        try:
+            self.__max_brightness = int(max_bright.read())
+            self.__value = int(curr_bright.read())
+            self.notify("max-brightness")
+            self.notify("value")
+        except:
+            self.logger.exception("Couldn't parse backlight values")
+
     @GObject.Property(type=int, nick="max-brightness", flags=GObject.PARAM_READABLE)
     def max_brightness(self):
         return self.__max_brightness
@@ -33,33 +50,36 @@ class Adapter(Watcher):
             raise ValueError("Expected int")
 
         try:
-            f = open(self.__max_path, "w")
+            f = open(self.__curr_path, "w")
         except PermissionError:
             self.logger.error("Need permissions for changing brightness. Install the udev rule")
             return
 
         try:
             f.write(str(value))
+            f.flush()
         except:
             self.logger.exception("Error while setting brightness")
         finally:
             f.close()
     
 
-class Brightness(Watcher):
+class Backlight(Object):
 
     def __init__(self):
         super().__init__()
-        self.logger = getLogger("Brightness")
+        self.logger = getLogger("Backlight")
+        self.__watcher = Watcher()
+
         self.__adapters = []
         self.__adapter = None
         self.__update_adapters()
 
-        if len(adapters) == 0:
+        if len(self.__adapters) == 0:
             self.logger.warning("No adapters available")
 
-        self.add_watch(DISPLAYS_FOLDER)
-        self.connect("event", self.__on_change)
+        self.__watcher.add_watch(DISPLAYS_FOLDER)
+        self.__watcher.connect("event", self.__on_change)
 
     @GObject.Property(flags=GObject.ParamFlags.READABLE)
     def adapters(self):
@@ -70,8 +90,11 @@ class Brightness(Watcher):
         return self.__adapter
 
     def __update_adapters(self):
-        self.__adapters = [Adapter(x[1]) for x in os.walk(DISPLAYS_FOLDER)]
-        self.__adapter = __self.adapters[0]
+        self.__adapters = []
+        for _, files, _ in os.walk(DISPLAYS_FOLDER):
+            for x in files:
+                self.__adapters.append(Adapter(x))
+        self.__adapter = self.__adapters[0] if len(self.__adapters) > 0 else None
 
         self.notify("adapters")
         self.notify("adapter")
