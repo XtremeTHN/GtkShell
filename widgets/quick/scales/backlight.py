@@ -52,6 +52,7 @@ class BacklightSlider(QuickScale):
         else:
             self.set_visible(True)
             self.adapter.connect("notify::value", self.__on_back_changed)
+            self.__on_back_changed()
 
     def __on_back_changed(self, *_):
         self.set_value(self.adapter.value / self.adapter.max_brightness)
