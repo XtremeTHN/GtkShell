@@ -13,13 +13,14 @@ class QuickScale(Gtk.Overlay):
                  icon_size=16,
                  _class=[]):
         super().__init__()
-        self.scale = Gtk.Scale(css_classes=["quickslider", *_class],
-                               adjustment=Gtk.Adjustment(
-                                   lower=lower,
-                                   upper=upper,
-                                   step_increment=step_increment),
-                               hexpand=True,
-                               orientation=Gtk.Orientation.VERTICAL if vertical is True else Gtk.Orientation.HORIZONTAL)
+        self.scale = Gtk.Scale(
+            css_classes=["quickslider", *_class],
+            adjustment=Gtk.Adjustment(lower=lower,
+                                      upper=upper,
+                                      step_increment=step_increment),
+            hexpand=True,
+            orientation=Gtk.Orientation.VERTICAL
+            if vertical is True else Gtk.Orientation.HORIZONTAL)
         self.icon = icon
 
         self.set_icon(icon, size=icon_size)

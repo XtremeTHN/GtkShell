@@ -50,6 +50,7 @@ class ShellApp(Astal.Application):
             self.add_window(Bar(m))
             self.add_window(QuickSettings(m))
 
+
 def run(args):
     parser = argparse.ArgumentParser(prog="gtk-shell",
                                      description="Astal Gtk Shell")

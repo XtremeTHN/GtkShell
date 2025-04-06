@@ -38,6 +38,7 @@ class AppMixer(Box):
     def __on_volume_change(self, _, __):
         self.slider.set_value(self.stream.get_volume())
 
+
 class QuickMixerMenu(QuickMenu):
 
     def __init__(self):

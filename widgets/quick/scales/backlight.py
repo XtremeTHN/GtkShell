@@ -4,11 +4,14 @@ from lib.logger import getLogger
 
 from widgets.quick.scales.quick import QuickScale
 
+
 class BacklightIcon(Gtk.Image):
 
     def __init__(self, adjustment):
-        super().__init__(icon_name="display-brightness-symbolic",
-                         css_classes=["quickslider-icon"],)
+        super().__init__(
+            icon_name="display-brightness-symbolic",
+            css_classes=["quickslider-icon"],
+        )
 
         self.adj = adjustment
         self.adj.connect("notify::value", self.__on_value_change)

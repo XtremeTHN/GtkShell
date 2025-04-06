@@ -4,7 +4,9 @@ from lib.logger import getLogger
 from widgets.custom.icons import VolumeIndicator
 from widgets.quick.scales.quick import QuickScale
 
+
 class AudioSlider(QuickScale):
+
     def __init__(self):
         super().__init__(0, 1)
         self.wp = AstalWp.get_default()

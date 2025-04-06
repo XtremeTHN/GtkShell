@@ -72,13 +72,13 @@ class VolumeIndicator(Gtk.Image):
 
         if self.bind_volume is True:
             self.speaker.bind_property("volume",
-                                   self,
-                                   "tooltip-text",
-                                   GObject.BindingFlags.SYNC_CREATE,
-                                   transform_to=convert_to_percent)
+                                       self,
+                                       "tooltip-text",
+                                       GObject.BindingFlags.SYNC_CREATE,
+                                       transform_to=convert_to_percent)
 
         self.speaker.bind_property("volume-icon", self, "icon-name",
-                                    GObject.BindingFlags.SYNC_CREATE)
+                                   GObject.BindingFlags.SYNC_CREATE)
 
 
 class BatteryIndicator(Gtk.Image):
@@ -89,7 +89,7 @@ class BatteryIndicator(Gtk.Image):
 
         self.battery = AstalBattery.get_default()
         if self.battery.get_power_supply() is False:
-            self.logger.info("No battery found")
+            self.logger.warning("No battery found")
             self.set_visible(False)
             return
 
