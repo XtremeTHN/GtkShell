@@ -30,7 +30,7 @@ class QuickButton(Box):
         self.menu_id = None
 
         self.overlay = Gtk.Overlay.new()
-        self.button = Gtk.Button(css_classes=["quickbutton"])
+        self.button = Gtk.Button(css_classes=["quickbutton", "toggle-button"])
         self.right_button = Gtk.Button(css_classes=["quickbutton-right"],
                                        halign=Gtk.Align.END,
                                        icon_name="go-next-symbolic")

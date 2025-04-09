@@ -17,6 +17,13 @@
     font-weight: 400;
 }
 
+.toggle-button {
+  &.active {
+    background-color: $primary_container;
+    color: $on_primary_container;
+  }
+}
+
 .false-button {
     &:hover {
         background-color: color-mix(in srgb, currentColor 15%, transparent);
