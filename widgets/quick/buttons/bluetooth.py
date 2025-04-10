@@ -11,7 +11,9 @@ from lib.utils import notify
 
 
 def get_name_or_address(device):
-    return device.get_address() if (n:=device.get_name()) in ["", None] else n
+    return device.get_address() if (n := device.get_name()) in ["", None
+                                                                ] else n
+
 
 class RevealSpin(Gtk.Revealer):
 
@@ -33,6 +35,7 @@ class RevealSpin(Gtk.Revealer):
     def set_label(self, label):
         self.text.set_label(label)
 
+
 class QuickBluetoothDevice(Gtk.Button):
     # TODO: Implement connecting to device
 
@@ -46,7 +49,8 @@ class QuickBluetoothDevice(Gtk.Button):
         icon = Gtk.Image(icon_name="dialog-question-symbolic" if (
             i := device.get_icon()) is None else i)
         name = Gtk.Label(label=get_name_or_address(device),
-                         xalign=0, hexpand=True)
+                         xalign=0,
+                         hexpand=True)
 
         self.connected = Gtk.Image()
 
@@ -54,7 +58,7 @@ class QuickBluetoothDevice(Gtk.Button):
         self.content.append(self.connected)
         self.content.append(self.revealer)
         self.set_child(self.content)
-        
+
         self.__toggle()
         self.device.connect("notify::connected", self.__toggle)
         self.connect("clicked", self.toggle_connection)
@@ -70,7 +74,10 @@ class QuickBluetoothDevice(Gtk.Button):
 
     def toggle_connection(self, *_):
         if self.device.get_connecting() != 0:
-            notify("BluetoothDevice", f"A connection is already in process. Device {self.name.get_label()}")
+            notify(
+                "BluetoothDevice",
+                f"A connection is already in process. Device {self.name.get_label()}"
+            )
             return
         if self.device.get_connected() is False:
             self.revealer.set_label("Connecting...")
@@ -101,6 +108,7 @@ class QuickBluetoothDevice(Gtk.Button):
         self.__toggle()
         self.revealer.set_reveal_child(False)
 
+
 class QuickBluetoothMenu(QuickMenu):
 
     def __init__(self):
@@ -130,7 +138,7 @@ class QuickBluetoothMenu(QuickMenu):
 
         self.titlebar_pack_end(self.spinner)
         self.titlebar_pack_end(self.scan_btt)
-    
+
     @GObject.Property(nick="last-connected-device")
     def last_connected_device(self):
         return self.__last_connected
@@ -158,7 +166,7 @@ class QuickBluetoothMenu(QuickMenu):
             else:
                 self.logger.warning("Repeated device (%s). Skipping...", name)
                 return
-    
+
     def __on_disconnected(self, _, device: AstalBluetooth.Device):
         self.__last_connected = None
         self.notify("last-connected-device")
@@ -222,11 +230,15 @@ class QuickBluetooth(QuickButton):
         self.blue = AstalBluetooth.get_default()
         self.adapter = self.blue.get_adapter()
         self.__menu = QuickBluetoothMenu()
-        
+
         self.blue.connect("notify::adapter", self.__on_adapter_change)
         self.blue.connect("notify::is-connected", self.__change_subtitle)
         self.blue.connect("notify::is-powered", self.__change_subtitle)
-        self.__menu.bind_property("last-connected-device", self.heading, "label", GObject.BindingFlags.SYNC_CREATE, transform_to=self.__change_title)
+        self.__menu.bind_property("last-connected-device",
+                                  self.heading,
+                                  "label",
+                                  GObject.BindingFlags.SYNC_CREATE,
+                                  transform_to=self.__change_title)
         self.__change_subtitle()
         self.set_menu(self.__menu, "bluetooth")
 
@@ -258,4 +270,3 @@ class QuickBluetooth(QuickButton):
             self.set_active(True)
         elif self.blue.get_is_powered() is False:
             self.subtitle.set_text("Disabled")
-

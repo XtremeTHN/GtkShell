@@ -140,11 +140,10 @@ class QuickSettingsContent(Gtk.Stack):
 
 class QuickSettings(Astal.Window):
 
-    def __init__(self, monitor):
+    def __init__(self):
         # Set resizable to false. When the quick menu shows, the window will go back to its original size
         super().__init__(namespace="quicksettings",
                          name="quicksettings",
-                         gdkmonitor=monitor,
                          anchor=Astal.WindowAnchor.TOP
                          | Astal.WindowAnchor.RIGHT,
                          exclusivity=Astal.Exclusivity.NORMAL,

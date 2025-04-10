@@ -10,9 +10,14 @@ from lib.logger import getLogger
 from lib.constants import CONFIG_DIR, SOURCE_DIR
 
 from widgets.quick.settings import QuickSettings
+from widgets.apps import AppRunnerWindow
 from widgets.bar import Bar
 
 Adw.init()
+
+
+def get_from_list(index: int, _list):
+    return _list[index] if len(_list) > index else None
 
 
 class ShellApp(Astal.Application):
@@ -27,14 +32,26 @@ class ShellApp(Astal.Application):
                                      conn: Gio.SocketConnection) -> None:
         self.logger.info("Received a request: %s", msg)
 
-        args = msg.split(" ")
+        args = self.runner.parse_cmd_string(msg)
 
         if args[0] == "help":
-            AstalIO.write_sock(conn, "Available commands:\n")
+            AstalIO.write_sock(
+                conn,
+                "Available commands:\n\tset-cmd-prefix PREFIX: For AppRunner\n\treload: Reloads css"
+            )
+            return
+
+        if args[0] == "set-cmd-prefix":
+            if get_from_list(1, args) is None:
+                AstalIO.write_sock(conn, "Expected command prefix")
+                return
+            self.runner.set_launch_prefix(args[1:])
 
         if args[0] == "reload":
             self.logger.info("Reloading css...")
             self.reload()
+
+        AstalIO.write_sock(conn, "Done")
 
     def reload(self, *_):
         self.logger.debug("Applying css...")
@@ -44,11 +61,18 @@ class ShellApp(Astal.Application):
     def do_activate(self) -> None:
         self.hold()
         self.reload()
-
         Style.watcher(self.reload)
+
+        # Single-monitor windows
+        self.runner = AppRunnerWindow()
+        self.quicksettings = QuickSettings()
+
+        # Multi-monitor windows
         for m in self.get_monitors():
             self.add_window(Bar(m))
-            self.add_window(QuickSettings(m))
+
+        self.add_window(self.quicksettings)
+        self.add_window(self.runner)
 
 
 def run(args):

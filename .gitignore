@@ -175,6 +175,8 @@ cython_debug/
 *syncthing.*
 .stignore
 .stfolder
+commit
+push
 
 # Some files that need to be generated
 config.json

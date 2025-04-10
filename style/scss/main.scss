@@ -38,6 +38,10 @@
     transition: all 0.2s;
 }
 
+.bordered {
+  border-radius: 8px;
+}
+
 * {
     font-family: 'JetBrains Mono Nerd Font';
     font-weight: 600;

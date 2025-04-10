@@ -6,6 +6,11 @@ from typing import TypeVar
 from lib.task import Task
 
 
+def get_signal_args(flags, args=()):
+    return (getattr(GObject.SignalFlags,
+                    flags.replace("-", "_").upper()), None, tuple(args))
+
+
 class Watcher(GObject.Object, Task):
     __gsignals__ = {"event": (GObject.SignalFlags.RUN_FIRST, None, (str, ))}
 
