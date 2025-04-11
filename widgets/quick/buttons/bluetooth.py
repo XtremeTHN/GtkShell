@@ -113,7 +113,7 @@ class QuickBluetoothMenu(QuickMenu):
 
     def __init__(self):
         super().__init__("Bluetooth", logger_name="QuickBluetoothMenu")
-        self.config = Config.get_default()
+        self.config: Config = Config.get_default()
         self.scanning = False
         self.__last_connected = None
         self.items = {}
@@ -149,7 +149,7 @@ class QuickBluetoothMenu(QuickMenu):
             self.__on_add(None, device)
 
     def __on_add(self, _, device: AstalBluetooth.Device):
-        if self.config.quick_blue_show_no_name is False and device.get_name(
+        if self.config.quicksettings.quick_blue_show_no_name.value is False and device.get_name(
         ) == "":
             return
         name = get_name_or_address(device)

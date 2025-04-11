@@ -11,16 +11,17 @@ class ActiveWindow(Gtk.Label):
                          ellipsize=Pango.EllipsizeMode.END)
         self.logger = getLogger("ActiveWindow")
         self.hypr = AstalHyprland.get_default()
-        self.conf = Config.get_default()
-        self.fallback_name = self.conf.fallback_window_name.value
+        self.conf: Config = Config.get_default()
+        self.fallback_name = self.conf.bar.fallback_window_name.value
 
-        self.conf.fallback_window_name.on_change(self.__change_fallback_name)
+        self.conf.bar.fallback_window_name.on_change(
+            self.__change_fallback_name)
         self.hypr.connect('event', self.__on_event)
         self.hypr.connect('notify::focused-client', self.__on_window_change)
         self.__on_window_change(None, None)
 
     def __change_fallback_name(self, _):
-        self.fallback_name = self.conf.fallback_window_name.value
+        self.fallback_name = self.conf.bar.fallback_window_name.value
 
     def __on_event(self, _, event, args):
         if event == "windowtitle" or event == "windowtitlev2":

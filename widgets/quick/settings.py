@@ -62,7 +62,7 @@ class MainPage(Box):
 
     def __init__(self, stack):
         super().__init__(vertical=True, spacing=10)
-        self.config = Config.get_default()
+        self.config: Config = Config.get_default()
         self.logger = getLogger("QuickSettings")
         self.stack: Gtk.Stack = stack
 
@@ -93,31 +93,34 @@ class MainPage(Box):
         self.end.append_all([BacklightSlider(), AudioSlider()])
 
         # Connections
-        self.config.quick_username.on_change(self._update_name, once=True)
-        self.config.profile_picture.on_change(self.__update_pfp, once=True)
+        self.config.quicksettings.quick_username.on_change(self._update_name,
+                                                           once=True)
+        self.config.quicksettings.profile_picture.on_change(self.__update_pfp,
+                                                            once=True)
 
         self.append_all([self.top, self.center, self.end])
 
     def _update_name(self, *_):
-        if self.config.quick_username.is_set() is False:
+        usr = self.config.quicksettings.quick_username
+        if usr.is_set() is False:
             environ = GLib.get_environ()
             user = [
                 var.split("=")[1] for var in environ if var.startswith("USER")
             ]
             self.name.set_text(user[0].title())
         else:
-            self.name.set_text(self.config.quick_username.value)
+            self.name.set_text(usr.value)
 
     def _update_uptime(self, *_):
         self.uptime.update()
 
     def __update_pfp(self, _):
+        pfp = self.config.quicksettings.profile_picture
         self.logger.debug("Changing profile picture...")
-        self.logger.debug("Path: %s", self.config.profile_picture.value)
-        if self.config.profile_picture.is_set():
+        self.logger.debug("Path: %s", pfp.value)
+        if pfp.is_set():
             try:
-                img = Gdk.Texture.new_from_filename(
-                    self.config.profile_picture.value)
+                img = Gdk.Texture.new_from_filename(pfp.value)
                 self.pfp.set_custom_image(img)
             except:
                 self.logger.exception("Couldn't apply texture to Gtk.Picture")

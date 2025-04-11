@@ -15,11 +15,11 @@ class Music(Gtk.Label):
 
     def __init__(self, _class=[]):
         super().__init__(css_classes=_class)
-        self.config = Config.get_default()
+        self.config: Config = Config.get_default()
         self.logger = getLogger("Music")
 
-        self._config_player = self.config.player.value
-        self.config.player.on_change(self.__change_player)
+        self._config_player = self.config.bar.music_player.value
+        self.config.bar.music_player.on_change(self.__change_player)
 
         self.player = AstalMpris.Player.new(self._config_player)
         self.__change_visible(None, None)
@@ -43,6 +43,6 @@ class Music(Gtk.Label):
         return self.player.get_available()
 
     def __change_player(self, _):
-        self._config_player = self.config.player.value
+        self._config_player = self.config.bar.music_player.value
         self.logger.info("Changing player to %s...", self._config_player)
         self.player = AstalMpris.Player.new(self._config_player)
