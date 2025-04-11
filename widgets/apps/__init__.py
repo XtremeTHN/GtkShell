@@ -1,6 +1,7 @@
 from gi.repository import AstalApps, Astal, Gtk, Gdk, GObject
 from lib.utils import get_signal_args
 from lib.variable import Variable
+from lib.config import Config
 
 from widgets.custom.box import Box
 from subprocess import Popen
@@ -100,13 +101,16 @@ class Content(Box):
 class AppRunnerWindow(Astal.Window):
 
     def __init__(self):
+        _conf = Config.get_default()
         super().__init__(namespace="apprunner",
                          name="apprunner",
                          keymode=Astal.Keymode.ON_DEMAND,
                          layer=Astal.Layer.OVERLAY,
+                         visible=_conf.apprunner.show_on_start.value,
                          width_request=400,
                          height_request=400,
                          resizable=False)
+
         self.__content = Content()
         self.__content.connect("should-close",
                                lambda _: self.set_visible(False))
@@ -116,7 +120,14 @@ class AppRunnerWindow(Astal.Window):
         self.set_child(self.__content)
         self.present()
 
-    def parse_cmd_string(self, string: str):
+        self.set_visible(_conf.apprunner.show_on_start.value)
+
+    @staticmethod
+    def is_enabled():
+        return Config.get_default().apprunner.enabled.value
+
+    @staticmethod
+    def parse_cmd_string(string: str):
         return shlex.split(string)
 
     def set_launch_prefix(self, prefix: list):

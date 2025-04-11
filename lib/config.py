@@ -33,6 +33,12 @@ class QuickSettingsConfig(DefaultWindowConfig):
             "quicksettings.bluetooth.show-no-name", default=False)
 
 
+class AppRunnerConfig(DefaultWindowConfig):
+
+    def __init__(self, conf):
+        super().__init__(conf, "apprunner")
+
+
 class Config(Object):
 
     def __init__(self):

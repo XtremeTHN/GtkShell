@@ -152,7 +152,7 @@ class QuickSettings(Astal.Window):
                          exclusivity=Astal.Exclusivity.NORMAL,
                          css_classes=["quicksettings-window"],
                          resizable=False)
-
+        _conf = Config.get_default()
         self.content = QuickSettingsContent()
         self.set_child(self.content)
 
@@ -162,3 +162,8 @@ class QuickSettings(Astal.Window):
         self.set_margin_right(10)
 
         self.present()
+        self.set_visible(_conf.quicksettings.show_on_start.value)
+
+    @staticmethod
+    def is_enabled():
+        return Config.get_default().quicksettings.enabled.value

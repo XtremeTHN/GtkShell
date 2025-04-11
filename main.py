@@ -32,7 +32,7 @@ class ShellApp(Astal.Application):
                                      conn: Gio.SocketConnection) -> None:
         self.logger.info("Received a request: %s", msg)
 
-        args = self.runner.parse_cmd_string(msg)
+        args = AppRunnerWindow.parse_cmd_string(msg)
 
         if args[0] == "help":
             AstalIO.write_sock(
@@ -58,21 +58,22 @@ class ShellApp(Astal.Application):
         Style.compile_scss()
         self.apply_css(str(CONFIG_DIR / "style/style.css"), True)
 
+    def add_if_enabled(self, window_class):
+        if window_class.is_enabled() is True:
+            self.add_window(window_class())
+
     def do_activate(self) -> None:
         self.hold()
         self.reload()
         Style.watcher(self.reload)
 
-        # Single-monitor windows
-        self.runner = AppRunnerWindow()
-        self.quicksettings = QuickSettings()
-
         # Multi-monitor windows
         for m in self.get_monitors():
             self.add_window(Bar(m))
 
-        self.add_window(self.quicksettings)
-        self.add_window(self.runner)
+        # Single-monitor windows
+        self.add_if_enabled(AppRunnerWindow)
+        self.add_if_enabled(QuickSettings)
 
 
 def run(args):
