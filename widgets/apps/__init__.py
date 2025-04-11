@@ -29,7 +29,7 @@ class App(Gtk.Button):
 
     def __on_clicked(self, _):
         exe = self.__app.get_executable()
-        should_run.set_value(shlex.split(exe))
+        should_run.set_value(shlex.split(exe.replace("%u", "")))
 
 
 class Content(Box):
