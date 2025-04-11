@@ -14,10 +14,15 @@ class App(Gtk.Button):
 
     def __init__(self, app):
         super().__init__()
+        __icon_name = app.get_icon_name()
+        self.icon = Gtk.Image()
+        if __icon_name.startswith("/") is True:
+            self.icon.set_from_file(__icon_name)
+        else:
+            self.icon.set_from_icon_name(__icon_name)
 
         self.__app = app
         self.__content = Box(spacing=10)
-        self.icon = Gtk.Image.new_from_icon_name(app.get_icon_name())
         self.label = Gtk.Label.new(app.get_name())
         self.__content.append_all([self.icon, self.label])
         self.set_child(self.__content)
@@ -42,7 +47,9 @@ class Content(Box):
         self.__apps = AstalApps.Apps.new()
         self.prefix = []
 
-        self.entry = Gtk.Entry(placeholder_text="Application")
+        self.entry = Gtk.Entry(placeholder_text="Search...")
+        self.entry.set_icon_from_icon_name(Gtk.EntryIconPosition.PRIMARY,
+                                           "edit-find-symbolic")
         self.scrollable = Gtk.ScrolledWindow(vexpand=True,
                                              css_classes=["card"])
         self.apps_widgets = Box(vertical=True,
