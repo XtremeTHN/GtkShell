@@ -55,13 +55,11 @@ class QuickMixerMenu(QuickMenu):
 
     def __on_stream_added(self, _, stream):
         w = AppMixer(stream)
-        self.logger.debug(f"Added stream with id {stream.get_id()} to mixer")
         self.__streams[stream.get_id()] = w
         self.append(w)
 
     def __on_stream_removed(self, _, stream):
         id = stream.get_id()
-        self.logger.debug(f"Added stream with id {id} to mixer")
         self.remove(self.__streams.pop(id))
 
 
