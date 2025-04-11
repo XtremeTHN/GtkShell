@@ -3,6 +3,14 @@ from lib.services.opt import Json
 from lib.utils import Object
 
 
+class DefaultWindowConfig:
+
+    def __init__(self, conf, _class):
+        self.enabled = conf.get_opt(f"{_class}.enabled", default=True)
+        self.show_on_start = conf.get_opt(f"{_class}.show-on-start",
+                                          default=False)
+
+
 class BarConfig():
 
     def __init__(self, conf):
@@ -12,11 +20,10 @@ class BarConfig():
         self.music_player = conf.get_opt("bar.music-player", default="spotify")
 
 
-class QuickSettings():
+class QuickSettingsConfig(DefaultWindowConfig):
 
     def __init__(self, conf):
-        self.enabled = conf.get_opt("quicksettings.enabled")
-        self.show_on_start = conf.get_opt("quicksettings.show-on-start")
+        super().__init__(conf, "quicksettings")
         self.profile_picture = conf.get_opt("quicksettings.profile-picture")
         self.quick_username = conf.get_opt("quicksettings.quick-username")
 
@@ -31,6 +38,7 @@ class Config(Object):
     def __init__(self):
         self.conf = Json(JSON_CONFIG_PATH)
         self.bar = BarConfig(self.conf)
-        self.quicksettings = QuickSettings(self.conf)
+        self.apprunner = AppRunnerConfig(self.conf)
+        self.quicksettings = QuickSettingsConfig(self.conf)
 
         self.wallpaper = self.conf.get_opt("background.wallpaper")
