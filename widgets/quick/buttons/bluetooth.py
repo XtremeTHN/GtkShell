@@ -119,7 +119,7 @@ class QuickBluetoothMenu(QuickMenu):
         self.items = {}
 
         self.blue = XtrBluetooth.get_default()
-        self.adapter = self.blue.get_adapter()
+        self.adapter = None
         self.scan_btt = Gtk.Button(icon_name="edit-find-symbolic",
                                    css_classes=["circular"],
                                    tooltip_text="Scan for devices")
@@ -127,6 +127,7 @@ class QuickBluetoothMenu(QuickMenu):
 
         self.blue.connect("notify::adapter", self.__change_adapter)
         self.blue.connect("notify::is-powered", self.__change_powered)
+        self.__change_adapter()
         self.__change_powered()
 
         self.__add_bulk()
@@ -212,6 +213,8 @@ class QuickBluetoothMenu(QuickMenu):
                                    "bluetooth-disabled-symbolic", True)
 
     def __change_powered(self, *_):
+        if self.adapter is None:
+            return
         powered = self.blue.get_is_powered()
         self.scan_btt.set_sensitive(powered)
         if powered is False:
@@ -247,6 +250,9 @@ class QuickBluetooth(QuickButton):
         self.set_sensitive(not self.adapter is None)
 
     def set_active(self, active):
+        if self.adapter is None:
+            notify("QuickBluetooth", "No bluetooth adapters available")
+            return
         self.active = active
         if active is True:
             self.button.add_css_class("active")
