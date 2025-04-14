@@ -1,14 +1,9 @@
-from gi.repository import GObject, Gio, GLib
+from gi.repository import GObject, Gio, GLib, Gtk
 from inotify.constants import IN_MODIFY
 from inotify.adapters import Inotify
 from lib.logger import getLogger
 from typing import TypeVar
 from lib.task import Task
-
-
-def get_signal_args(flags, args=()):
-    return (getattr(GObject.SignalFlags,
-                    flags.replace("-", "_").upper()), None, tuple(args))
 
 
 class Watcher(GObject.Object, Task):
@@ -77,3 +72,10 @@ def notify(title, message, log=True):
     if log:
         getLogger("notify").info("[%s] %s", title, message)
     GLib.spawn_command_line_async(f"notify-send '{title}' '{message}'")
+
+def get_signal_args(flags, args=()):
+    return (getattr(GObject.SignalFlags,
+                    flags.replace("-", "_").upper()), None, tuple(args))
+
+def lookup_icon(name: str):
+    return Gtk.IconTheme().has_icon(name)
