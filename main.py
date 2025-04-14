@@ -9,6 +9,7 @@ from lib.config import Config
 from lib.logger import getLogger
 from lib.constants import CONFIG_DIR, SOURCE_DIR
 
+from widgets.notifications import NotificationsWindow
 from widgets.quick.settings import QuickSettings
 from widgets.apps import AppRunnerWindow
 from widgets.bar import Bar
@@ -72,6 +73,7 @@ class ShellApp(Astal.Application):
             self.add_window(Bar(m))
 
         # Single-monitor windows
+        self.add_if_enabled(NotificationsWindow)
         self.add_if_enabled(AppRunnerWindow)
         self.add_if_enabled(QuickSettings)
 

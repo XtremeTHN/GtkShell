@@ -73,9 +73,11 @@ def notify(title, message, log=True):
         getLogger("notify").info("[%s] %s", title, message)
     GLib.spawn_command_line_async(f"notify-send '{title}' '{message}'")
 
+
 def get_signal_args(flags, args=()):
     return (getattr(GObject.SignalFlags,
                     flags.replace("-", "_").upper()), None, tuple(args))
+
 
 def lookup_icon(name: str):
     return Gtk.IconTheme().has_icon(name)

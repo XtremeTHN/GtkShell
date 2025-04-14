@@ -33,6 +33,12 @@ class QuickSettingsConfig(DefaultWindowConfig):
             "quicksettings.bluetooth.show-no-name", default=False)
 
 
+class NotificationsConfig(DefaultWindowConfig):
+
+    def __init__(self, conf):
+        super().__init__(conf, "notifications")
+
+
 class AppRunnerConfig(DefaultWindowConfig):
 
     def __init__(self, conf):
@@ -45,6 +51,7 @@ class Config(Object):
         self.conf = Json(JSON_CONFIG_PATH)
         self.bar = BarConfig(self.conf)
         self.apprunner = AppRunnerConfig(self.conf)
+        self.notifications = NotificationsConfig(self.conf)
         self.quicksettings = QuickSettingsConfig(self.conf)
 
         self.wallpaper = self.conf.get_opt("background.wallpaper")
