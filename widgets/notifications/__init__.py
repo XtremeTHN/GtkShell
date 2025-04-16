@@ -26,8 +26,6 @@ class NotificationsWindow(Astal.Window):
         self.notifd.connect("notified", self.__add_notification)
         self.notifd.connect("resolved", self.__remove_notification)
         self.content.connect("notify::children", self.__on_children_changed)
-        map(lambda n: self.__add_notification(None, n),
-            self.notifd.props.notifications)
 
         self.set_child(self.content)
         self.present()
@@ -41,7 +39,6 @@ class NotificationsWindow(Astal.Window):
             self.set_visible(True)
 
     def __add_notification(self, _, _id, replaced):
-        # TODO: trigger the animation
         if replaced is True:
             self.__remove_notification(None, _id,
                                        AstalNotifd.ClosedReason.UNDEFINED)
@@ -53,15 +50,14 @@ class NotificationsWindow(Astal.Window):
         self.content.append(w)
 
     def __remove_notification(self, _, _id, reason: AstalNotifd.ClosedReason):
-        # TODO: trigger the close animation and wait for it and then closing the Notification
         if _id in self.list:
             w = self.list.pop(_id)
             self.content.remove(w)
             w.unmap()
         else:
-            self.logger.warning(
-                "Remove notification signal recieved, but there's no notification with id of %d",
-                _id)
+            for x in self.notifd.get_notifications():
+                if x.get_id() == _id:
+                    x.dismiss()
 
     @staticmethod
     def is_enabled():

@@ -105,6 +105,7 @@ class BatteryIndicator(Gtk.Image):
 
 # class BluetoothIndicator(Gtk.Image)
 
+
 class FramedImage(Gtk.Frame):
 
     def __init__(self, size: int, _class=[]):

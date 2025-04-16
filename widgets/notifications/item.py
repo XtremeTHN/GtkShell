@@ -45,7 +45,9 @@ class Notification(Adw.Bin):
     def __init__(self, notif: AstalNotifd.Notification):
         super().__init__(margin_end=20)
 
-        v_cont = Box(vertical=True, spacing=10, css_classes=["card", "notification"])
+        v_cont = Box(vertical=True,
+                     spacing=10,
+                     css_classes=["card", "notification"])
 
         h_cont = Box(spacing=15)
         self.header = Header(notif)
