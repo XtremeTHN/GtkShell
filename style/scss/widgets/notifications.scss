@@ -1,5 +1,15 @@
+@use "sass:string";
+
+@function gtkalpha($c, $a) {
+    @return string.unquote("alpha(#{$c},#{$a})");
+}
+
 .notification {
-    padding: 5px;
-    border-radius: 8px;
-    min-width: 300px;
+    padding: 10px;
+    border-radius: 13px;
+    min-width: 400px;
+    margin: .5rem 1rem .5rem 1rem;
+    box-shadow: 2px 3px 8px 0 gtkalpha(black, .4);
+    border: 1pt solid gtkalpha($primary, .03);
+    margin-bottom: 1px;
 }

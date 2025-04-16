@@ -55,7 +55,7 @@ class Bar(Astal.Window):
 
     def __init__(self, m):
         super().__init__(gdkmonitor=m,
-                         namespace="topbar",
+                         namespace="astal-topbar",
                          css_classes=["bar-window"],
                          anchor=Astal.WindowAnchor.TOP
                          | Astal.WindowAnchor.LEFT | Astal.WindowAnchor.RIGHT,

@@ -102,7 +102,7 @@ class AppRunnerWindow(Astal.Window):
 
     def __init__(self):
         _conf = Config.get_default()
-        super().__init__(namespace="apprunner",
+        super().__init__(namespace="astal-apprunner",
                          name="apprunner",
                          keymode=Astal.Keymode.ON_DEMAND,
                          layer=Astal.Layer.OVERLAY,

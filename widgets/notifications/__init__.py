@@ -10,7 +10,7 @@ class NotificationsWindow(Astal.Window):
 
     def __init__(self):
         super().__init__(name="notifications",
-                         namespace="notifications",
+                         namespace="astal-notifications",
                          margin_top=10,
                          css_classes=["nobackground-window"],
                          resizable=False,

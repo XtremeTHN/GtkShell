@@ -1,5 +1,6 @@
 from lib.utils import lookup_icon, get_signal_args
 from gi.repository import Gtk, Adw, AstalNotifd, Pango
+from widgets.custom.icons import FramedImage
 from widgets.custom.box import Box
 
 
@@ -42,14 +43,13 @@ class Notification(Adw.Bin):
     }
 
     def __init__(self, notif: AstalNotifd.Notification):
-        super().__init__(css_classes=["card", "notification"], margin_end=20)
+        super().__init__(margin_end=20)
 
-        #self.toolbar = Adw.ToolbarView()
-        v_cont = Box(vertical=True, spacing=10)
+        v_cont = Box(vertical=True, spacing=10, css_classes=["card", "notification"])
 
         h_cont = Box(spacing=15)
         self.header = Header(notif)
-        self.image = Gtk.Image()
+        self.image = FramedImage(42)
 
         labels_box = Box(vertical=True)
         self.title = Gtk.Label(label=notif.get_summary(),
@@ -57,15 +57,12 @@ class Notification(Adw.Bin):
                                use_markup=True,
                                css_classes=["title-2"])
         self.body = Gtk.Label(label=notif.get_body(),
-                              xalign=True,
+                              xalign=0,
                               hexpand=True,
-                              vexpand=True,
                               wrap=True,
-                              wrap_mode=Pango.WrapMode.CHAR,
                               use_markup=True,
-                              max_width_chars=70)
+                              max_width_chars=24)
 
-        #self.toolbar.add_top_bar(self.header)
         v_cont.append(self.header)
         labels_box.append_all([self.title, self.body])
 
@@ -76,22 +73,17 @@ class Notification(Adw.Bin):
             else:
                 self.image.set_from_icon_name(img)
             h_cont.append(self.image)
-        h_cont.append(
-            Adw.Clamp(child=labels_box,
-                      maximum_size=300,
-                      halign=Gtk.Align.START))
 
+        h_cont.append(labels_box)
         v_cont.append(h_cont)
 
         actions = notif.get_actions()
         if len(actions) > 0:
-            actions_box = Box(spacing=5)
+            actions_box = Box(spacing=5, homogeneous=True)
             actions_box.append_all(
                 [NotifAction(a) for a in actions],
                 map_func=lambda x: x.connect("clicked", self.__invoke, notif))
             v_cont.append(actions_box)
-
-        #self.toolbar.set_content(v_cont)
 
         self.set_child(v_cont)
 

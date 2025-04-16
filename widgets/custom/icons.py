@@ -104,3 +104,20 @@ class BatteryIndicator(Gtk.Image):
 
 
 # class BluetoothIndicator(Gtk.Image)
+
+class FramedImage(Gtk.Frame):
+
+    def __init__(self, size: int, _class=[]):
+        super().__init__(css_classes=["quickframe"])
+
+        self.image = Gtk.Image(css_classes=_class, pixel_size=size)
+        self.set_child(self.image)
+
+    def set_paintable(self, paintable):
+        self.image.set_from_paintable(paintable)
+
+    def set_from_file(self, file):
+        self.image.set_from_file(file)
+
+    def set_from_icon_name(self, icon_name):
+        self.image.set_from_icon_name(icon_name)

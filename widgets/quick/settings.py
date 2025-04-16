@@ -17,21 +17,6 @@ def get_pretty_seconds(seconds):
     return dias, horas, minutos
 
 
-class FramedImage(Gtk.Frame):
-
-    def __init__(self, size: int, _class=[]):
-        super().__init__(css_classes=["quickframe"])
-
-        self.image = Gtk.Image(css_classes=_class, pixel_size=size)
-        self.set_child(self.image)
-
-    def set_paintable(self, paintable):
-        self.image.set_from_paintable(paintable)
-
-    def set_icon_name(self, icon_name):
-        self.image.set_from_icon_name(icon_name)
-
-
 class Uptime(Gtk.Label):
 
     def __init__(self):
@@ -145,7 +130,7 @@ class QuickSettings(Astal.Window):
 
     def __init__(self):
         # Set resizable to false. When the quick menu shows, the window will go back to its original size
-        super().__init__(namespace="quicksettings",
+        super().__init__(namespace="astal-quicksettings",
                          name="quicksettings",
                          anchor=Astal.WindowAnchor.TOP
                          | Astal.WindowAnchor.RIGHT,
