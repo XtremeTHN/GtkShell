@@ -1,5 +1,5 @@
-from lib.utils import lookup_icon, get_signal_args
 from gi.repository import Gtk, Adw, AstalNotifd, Pango
+from lib.utils import lookup_icon, get_signal_args
 from widgets.custom.icons import FramedImage
 from widgets.custom.box import Box
 
@@ -8,92 +8,102 @@ class Header(Box):
 
     def __init__(self, notif):
         super().__init__(css_classes=["header"], vertical=True)
+
+        self.title_widget = Gtk.Label(
+            label=notif.get_app_name(),
+            xalign=0,
+            css_classes=["dimmed"],
+            hexpand=True,
+        )
+        self.close_btt = Gtk.Button(
+            icon_name="window-close-symbolic",
+            css_classes=["flat"],
+        )
+
         control = Box()
-        self.title_widget = Gtk.Label(label=notif.get_app_name(),
-                                      xalign=0,
-                                      css_classes=["dimmed"],
-                                      hexpand=True)
-        self.close_btt = Gtk.Button(icon_name="window-close-symbolic",
-                                    vexpand=False,
-                                    css_classes=["flat"])
         control.append_all([self.title_widget, self.close_btt])
         self.append(control)
-
-        sep = Gtk.Separator()
-        self.append(sep)
+        self.append(Gtk.Separator())
 
 
 class NotifAction(Gtk.Button):
 
     def __init__(self, action: AstalNotifd.Action):
-        super().__init__()
-        content = Box()
-
-        self.label = Gtk.Label(label=action.label)
+        super().__init__(label=action.label)
         self.id = action.id
 
-        content.append(self.label)
-        self.set_child(content)
 
-
-class Notification(Adw.Bin):
+class Notification(Box):
     __gsignals__ = {
         "dismiss":
         get_signal_args("run-last", args=(int, AstalNotifd.ClosedReason))
     }
 
     def __init__(self, notif: AstalNotifd.Notification):
-        super().__init__(margin_end=20)
+        super().__init__(
+            vertical=True,
+            spacing=10,
+            margin_end=20,
+            css_classes=["card", "notification"],
+        )
 
-        v_cont = Box(vertical=True,
-                     spacing=10,
-                     css_classes=["card", "notification"])
-
-        h_cont = Box(spacing=15)
+        # Header
         self.header = Header(notif)
+        self.append(self.header)
+
+        # Content layout
+        h_cont = Box(spacing=15)
         self.image = FramedImage(42)
 
-        labels_box = Box(vertical=True)
-        self.title = Gtk.Label(label=notif.get_summary(),
-                               xalign=0,
-                               use_markup=True,
-                               css_classes=["title-2"])
-        self.body = Gtk.Label(label=notif.get_body(),
-                              xalign=0,
-                              hexpand=True,
-                              wrap=True,
-                              use_markup=True,
-                              max_width_chars=24)
+        # Labels
+        self.title = Gtk.Label(
+            label=notif.get_summary(),
+            xalign=0,
+            use_markup=True,
+            css_classes=["title-2"],
+        )
+        self.body = Gtk.Label(
+            label=notif.get_body(),
+            valign=Gtk.Align.CENTER,
+            xalign=0,
+            hexpand=True,
+            wrap=True,
+            use_markup=True,
+            max_width_chars=24,
+        )
 
-        v_cont.append(self.header)
+        labels_box = Box(vertical=True)
         labels_box.append_all([self.title, self.body])
 
+        # Optional image
         img = notif.get_image()
-        if img is not None:
-            if lookup_icon(img) is False:
+        if img:
+            if not lookup_icon(img):
                 self.image.set_from_file(img)
             else:
                 self.image.set_from_icon_name(img)
             h_cont.append(self.image)
 
         h_cont.append(labels_box)
-        v_cont.append(h_cont)
+        self.append(h_cont)
 
+        # Optional actions
         actions = notif.get_actions()
-        if len(actions) > 0:
+        if actions:
             actions_box = Box(spacing=5, homogeneous=True)
-            actions_box.append_all(
-                [NotifAction(a) for a in actions],
-                map_func=lambda x: x.connect("clicked", self.__invoke, notif))
-            v_cont.append(actions_box)
+            for action in actions:
+                action_btn = NotifAction(action)
+                action_btn.connect("clicked", self.__invoke, notif)
+                actions_box.append(action_btn)
+            self.append(actions_box)
 
-        self.set_child(v_cont)
-
+        # Connect close button
         self.header.close_btt.connect("clicked", self.__close, notif)
 
-    def __invoke(self, btt: NotifAction, notif):
-        notif.invoke(btt.id)
+    def __invoke(self, button: NotifAction, notif):
+        notif.invoke(button.id)
 
-    def __close(self, _, notif):
+    def __close(self, *_args):
+        notif = _args[1]
         self.emit("dismiss", notif.get_id(),
                   AstalNotifd.ClosedReason.DISMISSED_BY_USER)
