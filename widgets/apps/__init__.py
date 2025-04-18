@@ -1,14 +1,14 @@
-from gi.repository import AstalApps, Astal, Gtk, Gdk, GObject
+from gi.repository import AstalApps, Astal, Gtk, Gdk
 from lib.utils import get_signal_args
 from lib.variable import Variable
 from lib.config import Config
 
 from widgets.custom.box import Box
-from subprocess import Popen
+from subprocess import Popen, DEVNULL
 
 import shlex
 
-should_run = Variable([])
+launched = Variable([])
 
 
 class App(Gtk.Button):
@@ -16,6 +16,9 @@ class App(Gtk.Button):
     def __init__(self, app):
         super().__init__()
         __icon_name = app.get_icon_name()
+        if __icon_name is None:
+            __icon_name = "applications-other-symbolic"
+
         self.icon = Gtk.Image()
         if __icon_name.startswith("/") is True:
             self.icon.set_from_file(__icon_name)
@@ -34,9 +37,12 @@ class App(Gtk.Button):
         self.__on_clicked(None)
 
     def __on_clicked(self, _):
-        exe = self.__app.get_executable()
-        should_run.set_value(shlex.split(exe.replace("%u", "")))
-
+        # exe = [x for x in shlex.split(self.__app.get_executable()) if x.startswith("%") is False or x.startswith("@") is False]
+        # print(exe)
+        
+        # should_run.set_value(exe)
+        self.__app.launch()
+        launched.set_value(True)
 
 class Content(Box):
 
@@ -63,11 +69,10 @@ class Content(Box):
         self.__refresh()
         self.entry.connect("changed", self.__search)
         contr.connect("key-released", self.__on_key_released)
-        should_run.connect_notify(self.__run)
+        launched.connect_notify(self.__on_launch)
         self.add_controller(contr)
 
-    def __run(self):
-        proc = Popen(args=[*self.prefix, *should_run.get_value()])
+    def __on_launch(self):
         self.emit("should-close")
 
     def reset(self):
