@@ -9,12 +9,13 @@ class DefaultWindowConfig:
         self.enabled = conf.get_opt(f"{_class}.enabled", default=True)
         self.show_on_start = conf.get_opt(f"{_class}.show-on-start",
                                           default=False)
+        self.background_opacity = conf.get_opt(f"{_class}.background-opacity", default=1)
 
 
-class BarConfig():
+class BarConfig(DefaultWindowConfig):
 
     def __init__(self, conf):
-        self.enabled = conf.get_opt("bar.enabled")
+        super().__init__(conf, "bar")
         self.fallback_window_name = conf.get_opt("bar.fallback-name",
                                                  default="ArchLinux")
         self.music_player = conf.get_opt("bar.music-player", default="spotify")
@@ -37,6 +38,7 @@ class NotificationsConfig(DefaultWindowConfig):
 
     def __init__(self, conf):
         super().__init__(conf, "notifications")
+        self.default_expire_timeout = conf.get_opt("notifications.default_expire_timeout", default=6000)
 
 
 class AppRunnerConfig(DefaultWindowConfig):

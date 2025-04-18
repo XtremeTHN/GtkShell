@@ -1,4 +1,4 @@
-import subprocess
+from subprocess import Popen, check_call, PIPE, DEVNULL
 
 from lib.utils import Watcher
 from lib.constants import CONFIG_DIR
@@ -11,16 +11,23 @@ class Style:
 
     def compile_scss():
         try:
-            subprocess.check_call([
+            check_call([
                 "sass",
                 str(Style.STYLES_DIR / "scss" / "main.scss"),
                 str(Style.STYLES_DIR / "style.css")
-            ],
-                                  stdout=subprocess.DEVNULL,
-                                  stderr=subprocess.DEVNULL)
+            ], stdout=DEVNULL, stderr=DEVNULL)
         except Exception as e:
             print(e)
             return
+
+    def compile_scss_string(string):
+        string = '@use "sass:string"; @use "colors"; * { STRING }'.replace("STRING", string)
+        proc = Popen(["bash", "-c", f'echo \'{string}\' | sass --stdin -I {Style.STYLES_DIR / "scss"}'], stderr=PIPE, stdout=PIPE)
+        out, err = proc.communicate()
+        if err != b"":
+            raise RuntimeError(err.decode())
+        else:
+            return out.decode()
 
     def watcher(cb):
         w = Watcher()

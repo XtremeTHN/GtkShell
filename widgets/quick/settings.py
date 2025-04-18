@@ -5,6 +5,7 @@ from lib.config import Config
 from widgets.quick.scales import BacklightSlider, AudioSlider
 from widgets.quick.buttons.bluetooth import QuickBluetooth
 from widgets.quick.buttons.network import QuickNetwork
+from widgets.custom.widget import CustomizableWidget
 from widgets.quick.buttons.tray import QuickSysTray
 from widgets.quick.buttons.audio import QuickMixer
 from widgets.custom.box import Box
@@ -47,8 +48,9 @@ class MainPage(Box):
 
     def __init__(self, stack):
         super().__init__(vertical=True, spacing=10)
+
         self.config: Config = Config.get_default()
-        self.logger = getLogger("QuickSettings")
+        self.logger = getLogger(self.__class__.__name__)
         self.stack: Gtk.Stack = stack
 
         # Top part of the window
@@ -114,17 +116,21 @@ class MainPage(Box):
             self.pfp.set_icon_name("avatar-default-symbolic")
 
 
-class QuickSettingsContent(Gtk.Stack):
+class QuickSettingsContent(Gtk.Stack, CustomizableWidget):
 
     def __init__(self):
-        super().__init__(
+        Gtk.Stack.__init__(self,
             css_classes=["quicksettings-content"],
             transition_type=Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+        CustomizableWidget.__init__(self)
+        self.config = Config.get_default()
+        self.background_opacity = self.config.quicksettings.background_opacity
+
         self.main_page = MainPage(self)
 
+        self.background_opacity.on_change(self.change_opacity, once=True)
         self.add_named(self.main_page, "main")
         self.set_visible_child_name("main")
-
 
 class QuickSettings(Astal.Window):
 

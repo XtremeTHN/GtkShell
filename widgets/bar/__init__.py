@@ -1,17 +1,22 @@
 from widgets.custom.icons import NetworkIndicator, VolumeIndicator, BatteryIndicator
+from widgets.custom.widget import CustomizableWidget
 from widgets.bar.hypr import Workspace, ActiveWindow
 from widgets.bar.music import Music
 from widgets.custom.box import Box
 
 from gi.repository import Gtk, Astal, GLib
+from lib.config import Config
 
-
-class BarContent(Gtk.CenterBox):
-
+class BarContent(Gtk.CenterBox, CustomizableWidget):
     def __init__(self):
-        super().__init__(css_classes=["bar"],
-                         orientation=Gtk.Orientation.HORIZONTAL)
+        Gtk.CenterBox.__init__(self, css_classes=["bar"], orientation=Gtk.Orientation.HORIZONTAL)
+        CustomizableWidget.__init__(self)
+        self.conf = Config.get_default()
+        self.background_opacity = self.conf.bar.background_opacity
+        self._setup_widgets()
+        self._connect_signals()
 
+    def _setup_widgets(self):
         # Left side
         self.left_box = Box(spacing=10)
         self.workspaces = Workspace(_class=["bar-container"])
@@ -39,11 +44,9 @@ class BarContent(Gtk.CenterBox):
         self.set_start_widget(self.left_box)
         self.set_end_widget(self.right_box)
 
-        # Tasks
+    def _connect_signals(self):
         GLib.timeout_add(1000, self.__update_date)
-
-        # Connections
-        # self.__date.connect("changed", self.date_widget.)
+        self.conf.bar.background_opacity.on_change(self.change_opacity, once=True)
 
     def __update_date(self, *_):
         GLib.idle_add(self.date_widget.set_label,
