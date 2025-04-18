@@ -56,15 +56,17 @@ class NotificationsWindow(Astal.Window):
     def __on_notification_removed(self, _, notif_id,
                                   reason: AstalNotifd.ClosedReason):
         widget = self.list.pop(notif_id, None)
+        notif = self.notifd.get_notification(notif_id)
 
         if widget:
+            if reason == AstalNotifd.ClosedReason.DISMISSED_BY_USER:
+                notif.dismiss()
             self.content.remove(widget)
         else:
-            # Fallback: force dismiss from notifd
-            for notif in self.notifd.get_notifications():
-                if notif.get_id() == notif_id:
-                    notif.dismiss()
-                    break
+            if notif is None:
+                self.logger.warning("Recieved resolve signal but no notification with id of %d", notif_id)
+                return
+            notif.dismiss()
 
     @staticmethod
     def is_enabled():
