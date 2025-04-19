@@ -47,7 +47,7 @@ class Notification(Adw.Bin):
             css_classes=["notification-wrap"],
         )
 
-        content = Box(vertical=True, spacing=10, css_classes=["card", "notification"])
+        content = Box(vertical=True, spacing=10, css_classes=["notification"])
 
         # Header
         self.header = Header(notif)
