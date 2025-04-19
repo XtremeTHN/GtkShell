@@ -16,4 +16,4 @@ gi.require_versions({"Astal": "4.0", "Adw": "1"})
 
 __require_astal_feats(["IO", "Hyprland", "Network", "Wp",\
                        "Battery", "Mpris", "Tray", "Bluetooth",\
-                       "Apps"])
+                       "Apps", "Notifd"])
