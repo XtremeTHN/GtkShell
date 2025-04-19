@@ -4,6 +4,8 @@ from lib.variable import Variable
 from lib.utils import lookup_icon
 from lib.config import Config
 
+from widgets.custom.widget import CustomizableWidget
+
 
 should_close = Variable(False)
 class AppItem(Gtk.Button):
@@ -27,9 +29,10 @@ class AppItem(Gtk.Button):
         self.app.launch()
         should_close.set_value(True)
 
-class Content(Box):
+class Content(Box, CustomizableWidget):
     def __init__(self):
-        super().__init__(css_classes=["box-10"], vertical=True, spacing=10)
+        Box.__init__(self, css_classes=["box-10", "shadow-box"], vertical=True, spacing=10)
+
         self.apps = AstalApps.Apps.new()
         
         self.entry = Gtk.SearchEntry()
@@ -38,6 +41,7 @@ class Content(Box):
         
         scrolled.set_child(self.apps_widget)
         self.append_all([self.entry, scrolled])
+
         # Connections
         self.entry.connect("search-changed", self.__refresh)
         self.__refresh()
@@ -56,9 +60,9 @@ class Content(Box):
             item = AppItem(x)
             self.apps_widget.append(item)
 
-class ApplicationLauncher(Astal.Window):
+class ApplicationLauncher(Astal.Window, CustomizableWidget):
     def __init__(self):
-        super().__init__(name="applauncher",
+        Astal.Window.__init__(self, name="applauncher",
                          namespace="astal-apps",
                          resizable=False,
                          width_request=400,
@@ -66,10 +70,14 @@ class ApplicationLauncher(Astal.Window):
                          keymode=Astal.Keymode.ON_DEMAND,
                          layer=Astal.Layer.OVERLAY)
         
+        CustomizableWidget.__init__(self)
+        self.background_opacity = Config.get_default().applauncher.background_opacity
         self.content = Content()
         self.add_css_class("bordered")
         self.set_child(self.content)
         self.present()
+        
+        self.background_opacity.on_change(self.change_opacity, once=True)
 
         should_close.connect_notify(self.__close)
     
