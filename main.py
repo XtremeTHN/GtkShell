@@ -11,7 +11,7 @@ from lib.constants import CONFIG_DIR, SOURCE_DIR
 
 from widgets.notifications import NotificationsWindow
 from widgets.quick.settings import QuickSettings
-from widgets.apps import AppRunnerWindow
+from widgets.apps import ApplicationLauncher
 from widgets.bar import Bar
 
 Adw.init()
@@ -33,26 +33,26 @@ class ShellApp(Astal.Application):
                                      conn: Gio.SocketConnection) -> None:
         self.logger.info("Received a request: %s", msg)
 
-        args = AppRunnerWindow.parse_cmd_string(msg)
+        # args = AppRunnerWindow.parse_cmd_string(msg)
 
-        if args[0] == "help":
-            AstalIO.write_sock(
-                conn,
-                "Available commands:\n\tset-cmd-prefix PREFIX: For AppRunner\n\treload: Reloads css"
-            )
-            return
+        # if args[0] == "help":
+        #     AstalIO.write_sock(
+        #         conn,
+        #         "Available commands:\n\tset-cmd-prefix PREFIX: For AppRunner\n\treload: Reloads css"
+        #     )
+        #     return
 
-        if args[0] == "set-cmd-prefix":
-            if get_from_list(1, args) is None:
-                AstalIO.write_sock(conn, "Expected command prefix")
-                return
-            self.runner.set_launch_prefix(args[1:])
+        # if args[0] == "set-cmd-prefix":
+        #     if get_from_list(1, args) is None:
+        #         AstalIO.write_sock(conn, "Expected command prefix")
+        #         return
+        #     self.runner.set_launch_prefix(args[1:])
 
-        if args[0] == "reload":
-            self.logger.info("Reloading css...")
-            self.reload()
+        # if args[0] == "reload":
+        #     self.logger.info("Reloading css...")
+        #     self.reload()
 
-        AstalIO.write_sock(conn, "Done")
+        # AstalIO.write_sock(conn, "Done")
 
     def reload(self, *_):
         self.logger.debug("Applying css...")
@@ -60,6 +60,9 @@ class ShellApp(Astal.Application):
         self.apply_css(str(CONFIG_DIR / "style/style.css"), True)
 
     def add_if_enabled(self, window_class):
+        if hasattr(window_class, "is_enabled") is False:
+            self.logger.warning(f"implement is_enabled() for class {window_class.__name__}!")
+            return
         if window_class.is_enabled() is True:
             self.add_window(window_class())
 
@@ -74,7 +77,7 @@ class ShellApp(Astal.Application):
 
         # Single-monitor windows
         self.add_if_enabled(NotificationsWindow)
-        self.add_if_enabled(AppRunnerWindow)
+        self.add_if_enabled(ApplicationLauncher)
         self.add_if_enabled(QuickSettings)
 
 

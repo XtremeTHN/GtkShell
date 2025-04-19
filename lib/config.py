@@ -41,10 +41,10 @@ class NotificationsConfig(DefaultWindowConfig):
         self.default_expire_timeout = conf.get_opt("notifications.default_expire_timeout", default=6000)
 
 
-class AppRunnerConfig(DefaultWindowConfig):
+class AppLauncherConfig(DefaultWindowConfig):
 
     def __init__(self, conf):
-        super().__init__(conf, "apprunner")
+        super().__init__(conf, "applauncher")
 
 
 class Config(Object):
@@ -52,7 +52,7 @@ class Config(Object):
     def __init__(self):
         self.conf = Json(JSON_CONFIG_PATH)
         self.bar = BarConfig(self.conf)
-        self.apprunner = AppRunnerConfig(self.conf)
+        self.applauncher = AppLauncherConfig(self.conf)
         self.notifications = NotificationsConfig(self.conf)
         self.quicksettings = QuickSettingsConfig(self.conf)
 
