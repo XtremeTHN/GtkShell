@@ -71,15 +71,18 @@ class ApplicationLauncher(Astal.Window, CustomizableWidget):
                          layer=Astal.Layer.OVERLAY)
         
         CustomizableWidget.__init__(self)
-        self.background_opacity = Config.get_default().applauncher.background_opacity
+        self._conf = Config.get_default().applauncher
         self.content = Content()
         self.add_css_class("bordered")
         self.set_child(self.content)
         self.present()
         
+        self.background_opacity = self._conf.background_opacity
         self.background_opacity.on_change(self.change_opacity, once=True)
 
         should_close.connect_notify(self.__close)
+
+        self.set_visible(self._conf.show_on_start.value)
     
     def __close(self):
         if should_close.get_value():
