@@ -43,12 +43,18 @@ class Content(Box, CustomizableWidget):
         self.append_all([self.entry, scrolled])
 
         # Connections
+        self.apps_widget.connect("child-activated", self.__on_child_activated)
         self.entry.connect("search-changed", self.__refresh)
         self.__refresh()
     
     def reset(self):
         self.entry.set_text("")
         self.__refresh()
+    
+    def __on_child_activated(self, _, item: Gtk.FlowBoxChild):
+        item: AppItem = item.get_child()
+        item.app.launch()
+        should_close.set_value(True)
     
     def __refresh(self, *_):
         text = self.entry.get_text()
