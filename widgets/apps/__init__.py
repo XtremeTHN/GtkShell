@@ -31,7 +31,7 @@ class AppItem(Gtk.Button):
 
 class Content(Box):
     def __init__(self):
-        Box.__init__(self, css_classes=["box-10", "shadow-box"], vertical=True, spacing=10)
+        super().__init__(css_classes=["box-10", "shadow-box"], vertical=True, spacing=10)
 
         self.apps = AstalApps.Apps.new()
         
