@@ -1,11 +1,10 @@
-from gi.repository import Astal, AstalApps, Gtk, GLib
+from gi.repository import Astal, AstalApps, Gtk, GLib, Gdk
 from widgets.custom.box import Box
 from lib.variable import Variable
 from lib.utils import lookup_icon
 from lib.config import Config
 
 from widgets.custom.widget import CustomizableWidget
-
 
 should_close = Variable(False)
 class AppItem(Gtk.Button):
@@ -31,8 +30,8 @@ class AppItem(Gtk.Button):
 
 class Content(Box):
     def __init__(self):
-        super().__init__(css_classes=["box-10", "shadow-box"], vertical=True, spacing=10)
-
+        super().__init__(css_classes=["box-10"], vertical=True, spacing=10)
+        contr = Gtk.EventControllerKey.new()
         self.apps = AstalApps.Apps.new()
         
         self.entry = Gtk.SearchEntry()
@@ -41,15 +40,28 @@ class Content(Box):
         
         scrolled.set_child(self.apps_widget)
         self.append_all([self.entry, scrolled])
+        self.add_controller(contr)
 
         # Connections
         self.apps_widget.connect("child-activated", self.__on_child_activated)
         self.entry.connect("search-changed", self.__refresh)
+        contr.connect("key-released", self.__on_key_released)
         self.__refresh()
     
     def reset(self):
         self.entry.set_text("")
         self.__refresh()
+
+    def __on_key_released(self, _, val, code, state):
+        if val == Gdk.KEY_Tab:
+            return
+        elif val == Gdk.KEY_Escape:
+            # if entry is not focused grab focus
+            if self.entry.get_state_flags() == 128:
+                self.entry.grab_focus()
+            # else close the window
+            else:
+                should_close.set_value(True)
     
     def __on_child_activated(self, _, item: Gtk.FlowBoxChild):
         item: AppItem = item.get_child()
@@ -92,7 +104,8 @@ class ApplicationLauncher(Astal.Window, CustomizableWidget):
     
     def __close(self):
         if should_close.get_value():
-            self.hide()
+            self.set_visible(False)
+            self.content.reset()
             should_close.set_value(False)
     
     @staticmethod
