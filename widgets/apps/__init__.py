@@ -29,7 +29,7 @@ class AppItem(Gtk.Button):
         self.app.launch()
         should_close.set_value(True)
 
-class Content(Box, CustomizableWidget):
+class Content(Box):
     def __init__(self):
         Box.__init__(self, css_classes=["box-10", "shadow-box"], vertical=True, spacing=10)
 
@@ -37,7 +37,7 @@ class Content(Box, CustomizableWidget):
         
         self.entry = Gtk.SearchEntry()
         scrolled = Gtk.ScrolledWindow(max_content_height=350, vexpand=True)
-        self.apps_widget = Gtk.FlowBox(max_children_per_line=6)
+        self.apps_widget = Gtk.FlowBox(max_children_per_line=6, vexpand=True)
         
         scrolled.set_child(self.apps_widget)
         self.append_all([self.entry, scrolled])
