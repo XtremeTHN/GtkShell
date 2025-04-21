@@ -1,4 +1,4 @@
-from gi.repository import Astal, AstalApps, Gtk, GLib, Gdk
+from gi.repository import Astal, AstalApps, Gtk, GLib, Gdk, GObject
 from widgets.custom.box import Box
 from lib.variable import Variable
 from lib.utils import lookup_icon
@@ -7,18 +7,21 @@ from lib.config import Config
 from widgets.custom.widget import CustomizableWidget
 
 should_close = Variable(False)
+_conf = Config.get_default().applauncher
 class AppItem(Gtk.Button):
     def __init__(self, app: AstalApps.Application):
         super().__init__(css_classes=["flat"], tooltip_text=app.get_name())
         self.app = app
 
-        icon_name = app.get_icon_name() or "item-missing-symbolic"
+        icon_name = app.get_icon_name()
         icon = Gtk.Image(pixel_size=46)
 
         if GLib.file_test(icon_name, GLib.FileTest.EXISTS):
             icon.set_from_file(icon_name)
         elif lookup_icon(icon_name):
             icon.set_from_icon_name(icon_name)
+        else:
+            icon.set_from_icon_name("item-missing-symbolic")
         
         self.set_child(icon)
 
@@ -34,7 +37,7 @@ class Content(Box):
         contr = Gtk.EventControllerKey.new()
         self.apps = AstalApps.Apps.new()
         
-        self.entry = Gtk.SearchEntry()
+        self.entry = Gtk.SearchEntry(placeholder_text="Search for an app")
         scrolled = Gtk.ScrolledWindow(max_content_height=350, vexpand=True)
         self.apps_widget = Gtk.FlowBox(max_children_per_line=6, vexpand=True)
         
@@ -46,11 +49,16 @@ class Content(Box):
         self.apps_widget.connect("child-activated", self.__on_child_activated)
         self.entry.connect("search-changed", self.__refresh)
         contr.connect("key-released", self.__on_key_released)
+
+        _conf.search_delay.on_change(self.__change_delay, once=True)
         self.__refresh()
     
     def reset(self):
         self.entry.set_text("")
         self.__refresh()
+    
+    def __change_delay(self, *_):
+        self.entry.set_search_delay(_conf.search_delay.value)
 
     def __on_key_released(self, _, val, code, state):
         if val == Gdk.KEY_Tab:

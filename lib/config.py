@@ -45,6 +45,7 @@ class AppLauncherConfig(DefaultWindowConfig):
 
     def __init__(self, conf):
         super().__init__(conf, "applauncher")
+        self.search_delay = conf.get_opt("applauncher.search-delay", default=500)
 
 
 class Config(Object):

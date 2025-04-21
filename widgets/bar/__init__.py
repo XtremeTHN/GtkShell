@@ -63,6 +63,7 @@ class Bar(Astal.Window):
                          anchor=Astal.WindowAnchor.TOP
                          | Astal.WindowAnchor.LEFT | Astal.WindowAnchor.RIGHT,
                          exclusivity=Astal.Exclusivity.EXCLUSIVE)
-        self.set_child(BarContent())
+        self.content = BarContent()
 
+        self.set_child(self.content)
         self.present()
