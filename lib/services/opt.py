@@ -105,6 +105,8 @@ class Json(Watcher):
     def __read_content(self):
         try:
             self.content = json.loads(self.file_obj.read_text())
+        except json.JSONDecodeError as e:
+            self.logger.error("Failed to parse json: %s", " ".join(e.args))
         except:
             self.logger.exception("Failed to parse json")
             self.logger.info("Config unchanged")
