@@ -32,6 +32,7 @@ class opt(GObject.GObject):
         self.connect("changed", function)
 
     def trigger(self):
+        self.notify("value")
         self.emit("changed")
 
     def __get(self):
@@ -56,6 +57,7 @@ class opt(GObject.GObject):
         if (v := self.__get()) is not None:
             if v != self._value:
                 self._value = v
+                self.notify("value")
                 self.emit("changed")
         else:
             self._set = False
@@ -71,7 +73,8 @@ class opt(GObject.GObject):
     def value(self, value):
         self.__set(value)
         self.settings_obj.save()
-
+        
+        self.notify("value")
         self.emit("changed")
 
 
