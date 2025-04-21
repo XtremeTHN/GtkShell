@@ -3,26 +3,25 @@ from lib.utils import getLogger
 
 
 class Box(Gtk.Box):
-
-    def __init__(self,
-                 vertical=False,
-                 spacing=0,
-                 children=[],
-                 css_classes=[],
-                 **kwargs):
+    def __init__(
+        self, vertical=False, spacing=0, children=[], css_classes=[], **kwargs
+    ):
         """
         Helper class for :class:`Gtk.Box`
-        
+
         :param vertical: If True, the box will be vertical. Otherwise horizontal.
         :param spacing: The spacing between each child.
         :param children: An iterable of :class:`Gtk.Widget` to append to the box.
         :param css_classes: A list of CSS classes to apply to the box.
         """
-        super().__init__(orientation=Gtk.Orientation.VERTICAL
-                         if vertical else Gtk.Orientation.HORIZONTAL,
-                         spacing=spacing,
-                         css_classes=css_classes,
-                         **kwargs)
+        super().__init__(
+            orientation=Gtk.Orientation.VERTICAL
+            if vertical
+            else Gtk.Orientation.HORIZONTAL,
+            spacing=spacing,
+            css_classes=css_classes,
+            **kwargs,
+        )
         self.__children = []
         self.append_all(children)
 
@@ -74,16 +73,13 @@ class Box(Gtk.Box):
 
 
 class StatusPage(Box):
-
     def __init__(self, title=None, description=None, icon=None):
         super().__init__(vertical=True, vexpand=True, valign=Gtk.Align.CENTER)
         self.__title = Gtk.Label(label=title, css_classes=["title-3"])
-        self.__description = Gtk.Label(label=description,
-                                       css_classes=["dimmed"])
-        self.__icon = Gtk.Image(icon_name=icon,
-                                pixel_size=28,
-                                margin_bottom=10,
-                                css_classes=["dimmed"])
+        self.__description = Gtk.Label(label=description, css_classes=["dimmed"])
+        self.__icon = Gtk.Image(
+            icon_name=icon, pixel_size=28, margin_bottom=10, css_classes=["dimmed"]
+        )
 
         self.append_all([self.__icon, self.__title, self.__description])
 
@@ -105,8 +101,9 @@ class QuickPage(Box):
         self.max_height = max_height
         self.__top = Box(spacing=10)
 
-        self.back_btt = Gtk.Button(icon_name="go-previous-symbolic",
-                                   css_classes=["circular"])
+        self.back_btt = Gtk.Button(
+            icon_name="go-previous-symbolic", css_classes=["circular"]
+        )
         self.__title = Gtk.Label(label=title, css_classes=["title-3"])
 
         self.__top.append_all([self.back_btt, self.__title])
@@ -114,10 +111,13 @@ class QuickPage(Box):
 
     def set_child(self, child):
         self.append(
-            Gtk.ScrolledWindow(css_classes=["box-10", "card"],
-                               child=child,
-                               vexpand=True,
-                               max_content_height=self.max_height))
+            Gtk.ScrolledWindow(
+                css_classes=["box-10", "card"],
+                child=child,
+                vexpand=True,
+                max_content_height=self.max_height,
+            )
+        )
 
     def pack_end(self, child):
         child.set_halign(Gtk.Align.END)
@@ -125,21 +125,21 @@ class QuickPage(Box):
 
 
 class QuickMenu(Box):
-
     def __init__(self, title: str, max_height=150, logger_name="QuickMenu"):
         super().__init__(vertical=True, spacing=10)
         self.logger = getLogger(logger_name)
         self.max_height = max_height
 
         self.__top = Box(spacing=10, hexpand=True)
-        self.back_btt = Gtk.Button(icon_name="go-previous-symbolic",
-                                   css_classes=["circular"])
+        self.back_btt = Gtk.Button(
+            icon_name="go-previous-symbolic", css_classes=["circular"]
+        )
         self.__title = Gtk.Label(label=title, css_classes=["title-3"])
         self.__top_end = Box(spacing=10, hexpand=True, halign=Gtk.Align.END)
 
-        self.__scroll = Gtk.ScrolledWindow(css_classes=["box-10", "card"],
-                                           vexpand=True,
-                                           max_content_height=max_height)
+        self.__scroll = Gtk.ScrolledWindow(
+            css_classes=["box-10", "card"], vexpand=True, max_content_height=max_height
+        )
         self.content = Box(spacing=4, vertical=True, vexpand=True)
         self.__placeholder = StatusPage()
 
@@ -163,11 +163,7 @@ class QuickMenu(Box):
         else:
             self.__placeholder.set_visible(False)
 
-    def set_placeholder_attrs(self,
-                              title,
-                              description,
-                              icon_name,
-                              visible=True):
+    def set_placeholder_attrs(self, title, description, icon_name, visible=True):
         self.__placeholder.set_title(title)
         self.__placeholder.set_description(description)
         self.__placeholder.set_icon_name(icon_name)

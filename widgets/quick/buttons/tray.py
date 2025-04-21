@@ -5,13 +5,11 @@ from lib.logger import getLogger
 
 
 class QuickAppTray(Box):
-
     def __init__(self, item):
         super().__init__(spacing=10, css_classes=["false-button"])
         self.item = item
 
-        self.icon = Gtk.Image(icon_name=self.item.props.icon_name,
-                              pixel_size=24)
+        self.icon = Gtk.Image(icon_name=self.item.props.icon_name, pixel_size=24)
         self.menu = Gtk.PopoverMenu()
         self.description = Gtk.Label(label=self.item.props.title.title())
         self.gesture = Gtk.GestureSingle(button=0)
@@ -50,15 +48,16 @@ class QuickAppTray(Box):
 
 
 class QuickSysTrayMenu(QuickMenu):
-
     def __init__(self):
         super().__init__("System tray", logger_name="QuickSysTrayMenu")
         self.tray = AstalTray.get_default()
         self.items = {}
 
-        self.set_placeholder_attrs("No applications",
-                                   "Open an application to use the tray",
-                                   "system-run-symbolic")
+        self.set_placeholder_attrs(
+            "No applications",
+            "Open an application to use the tray",
+            "system-run-symbolic",
+        )
         self.tray.connect("item-added", self.__on_item_added)
         self.tray.connect("item-removed", self.__on_item_removed)
 
@@ -74,10 +73,14 @@ class QuickSysTrayMenu(QuickMenu):
 
 
 class QuickSysTray(QuickUtilButton):
-
     def __init__(self):
         self.icon = Gtk.Image(icon_name="system-run-symbolic", pixel_size=24)
-        super().__init__(icon=self.icon, header="System tray", default_subtitle="No applications",\
-                         object=AstalTray.get_default(), watch_property="items")
+        super().__init__(
+            icon=self.icon,
+            header="System tray",
+            default_subtitle="No applications",
+            object=AstalTray.get_default(),
+            watch_property="items",
+        )
 
         self.set_menu(QuickSysTrayMenu(), "tray")

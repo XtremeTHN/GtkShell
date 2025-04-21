@@ -11,12 +11,10 @@ from lib.utils import notify
 
 
 def get_name_or_address(device):
-    return device.get_address() if (n := device.get_name()) in ["", None
-                                                                ] else n
+    return device.get_address() if (n := device.get_name()) in ["", None] else n
 
 
 class RevealSpin(Gtk.Revealer):
-
     def __init__(self, label="", size=14):
         super().__init__()
         self.__content = Box(spacing=10)
@@ -46,11 +44,12 @@ class QuickBluetoothDevice(Gtk.Button):
         self.content = Box(spacing=10)
         self.revealer = RevealSpin()
 
-        icon = Gtk.Image(icon_name="dialog-question-symbolic" if (
-            i := device.get_icon()) is None else i)
-        name = Gtk.Label(label=get_name_or_address(device),
-                         xalign=0,
-                         hexpand=True)
+        icon = Gtk.Image(
+            icon_name="dialog-question-symbolic"
+            if (i := device.get_icon()) is None
+            else i
+        )
+        name = Gtk.Label(label=get_name_or_address(device), xalign=0, hexpand=True)
 
         self.connected = Gtk.Image()
 
@@ -76,7 +75,7 @@ class QuickBluetoothDevice(Gtk.Button):
         if self.device.get_connecting() != 0:
             notify(
                 "BluetoothDevice",
-                f"A connection is already in process. Device {self.name.get_label()}"
+                f"A connection is already in process. Device {self.name.get_label()}",
             )
             return
         if self.device.get_connected() is False:
@@ -94,7 +93,7 @@ class QuickBluetoothDevice(Gtk.Button):
             self.device.disconnect_device_finish(res)
             XtrBluetooth.get_default().emit("device-disconnected", self.device)
         except:
-            self.logger.exception('Error')
+            self.logger.exception("Error")
 
     def __on_connected(self, _, res):
         self.__hide_revealer()
@@ -110,7 +109,6 @@ class QuickBluetoothDevice(Gtk.Button):
 
 
 class QuickBluetoothMenu(QuickMenu):
-
     def __init__(self):
         super().__init__("Bluetooth", logger_name="QuickBluetoothMenu")
         self.config: Config = Config.get_default()
@@ -120,9 +118,11 @@ class QuickBluetoothMenu(QuickMenu):
 
         self.blue = XtrBluetooth.get_default()
         self.adapter = None
-        self.scan_btt = Gtk.Button(icon_name="edit-find-symbolic",
-                                   css_classes=["circular"],
-                                   tooltip_text="Scan for devices")
+        self.scan_btt = Gtk.Button(
+            icon_name="edit-find-symbolic",
+            css_classes=["circular"],
+            tooltip_text="Scan for devices",
+        )
         self.spinner = RevealSpin("Scanning...")
 
         self.blue.connect("notify::adapter", self.__change_adapter)
@@ -149,8 +149,10 @@ class QuickBluetoothMenu(QuickMenu):
             self.__on_add(None, device)
 
     def __on_add(self, _, device: AstalBluetooth.Device):
-        if self.config.quicksettings.quick_blue_show_no_name.value is False and device.get_name(
-        ) == "":
+        if (
+            self.config.quicksettings.quick_blue_show_no_name.value is False
+            and device.get_name() == ""
+        ):
             return
         name = get_name_or_address(device)
         self.items[name] = QuickBluetoothDevice(device)
@@ -199,18 +201,29 @@ class QuickBluetoothMenu(QuickMenu):
     def on_children_change(self, *_):
         if len(self.content.children) == 1:
             self.set_placeholder_attrs(
-                "Bluetooth", "No bluetooth devices available. Start a scan",
-                "bluetooth-symbolic", True)
+                "Bluetooth",
+                "No bluetooth devices available. Start a scan",
+                "bluetooth-symbolic",
+                True,
+            )
         else:
             self.set_placeholder_visibility(False)
 
     def __show_no_adapter_placeholder(self):
-        self.set_placeholder_attrs("Bluetooth", "No bluetooth adapter found",
-                                   "bluetooth-disabled-symbolic", True)
+        self.set_placeholder_attrs(
+            "Bluetooth",
+            "No bluetooth adapter found",
+            "bluetooth-disabled-symbolic",
+            True,
+        )
 
     def __show_disabled_placeholder(self):
-        self.set_placeholder_attrs("Bluetooth", "The bluetooth is disabled",
-                                   "bluetooth-disabled-symbolic", True)
+        self.set_placeholder_attrs(
+            "Bluetooth",
+            "The bluetooth is disabled",
+            "bluetooth-disabled-symbolic",
+            True,
+        )
 
     def __change_powered(self, *_):
         if self.adapter is None:
@@ -224,12 +237,12 @@ class QuickBluetoothMenu(QuickMenu):
 
 
 class QuickBluetooth(QuickButton):
-
     def __init__(self):
-        super().__init__(icon=BluetoothIndicator(size=24,
-                                                 _hide_if_no_adapter=False),
-                         header="Bluetooth",
-                         default_subtitle="Disabled")
+        super().__init__(
+            icon=BluetoothIndicator(size=24, _hide_if_no_adapter=False),
+            header="Bluetooth",
+            default_subtitle="Disabled",
+        )
         self.blue = AstalBluetooth.get_default()
         self.adapter = self.blue.get_adapter()
         self.__menu = QuickBluetoothMenu()
@@ -237,11 +250,13 @@ class QuickBluetooth(QuickButton):
         self.blue.connect("notify::adapter", self.__on_adapter_change)
         self.blue.connect("notify::is-connected", self.__change_subtitle)
         self.blue.connect("notify::is-powered", self.__change_subtitle)
-        self.__menu.bind_property("last-connected-device",
-                                  self.heading,
-                                  "label",
-                                  GObject.BindingFlags.SYNC_CREATE,
-                                  transform_to=self.__change_title)
+        self.__menu.bind_property(
+            "last-connected-device",
+            self.heading,
+            "label",
+            GObject.BindingFlags.SYNC_CREATE,
+            transform_to=self.__change_title,
+        )
         self.__change_subtitle()
         self.set_menu(self.__menu, "bluetooth")
 

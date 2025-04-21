@@ -5,8 +5,8 @@ from widgets.custom.box import Box
 
 from lib.config import Config
 
-class Header(Box):
 
+class Header(Box):
     def __init__(self, notif):
         super().__init__(css_classes=["header"], vertical=True)
 
@@ -28,7 +28,6 @@ class Header(Box):
 
 
 class NotifAction(Gtk.Button):
-
     def __init__(self, action: AstalNotifd.Action):
         super().__init__(label=action.label)
         self.id = action.id
@@ -37,8 +36,7 @@ class NotifAction(Gtk.Button):
 # inherits from Adw.Bin to fix ugly shadows
 class Notification(Adw.Bin):
     __gsignals__ = {
-        "dismiss":
-        get_signal_args("run-last", args=(int, AstalNotifd.ClosedReason))
+        "dismiss": get_signal_args("run-last", args=(int, AstalNotifd.ClosedReason))
     }
 
     def __init__(self, notif: AstalNotifd.Notification):
@@ -105,11 +103,13 @@ class Notification(Adw.Bin):
         self.header.close_btt.connect("clicked", self.__close, notif)
 
         if notif.get_expire_timeout() == -1:
-            Timeout(lambda: self.__close(None, notif, AstalNotifd.ClosedReason.EXPIRED), Config.get_default().notifications.default_expire_timeout.value)
+            Timeout(
+                lambda: self.__close(None, notif, AstalNotifd.ClosedReason.EXPIRED),
+                Config.get_default().notifications.default_expire_timeout.value,
+            )
 
     def __invoke(self, button: NotifAction, notif):
         notif.invoke(button.id)
 
     def __close(self, _, notif, reason=AstalNotifd.ClosedReason.DISMISSED_BY_USER):
-        self.emit("dismiss", notif.get_id(),
-                  reason)
+        self.emit("dismiss", notif.get_id(), reason)

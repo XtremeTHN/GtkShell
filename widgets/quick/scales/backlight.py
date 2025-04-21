@@ -6,7 +6,6 @@ from widgets.quick.scales.quick import QuickScale
 
 
 class BacklightIcon(Gtk.Image):
-
     def __init__(self, adjustment):
         super().__init__(
             icon_name="display-brightness-symbolic",
@@ -28,7 +27,6 @@ class BacklightIcon(Gtk.Image):
 
 
 class BacklightSlider(QuickScale):
-
     def __init__(self):
         super().__init__(0, 1)
         self.logger = getLogger("BacklightSlider")

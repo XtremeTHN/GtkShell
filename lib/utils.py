@@ -7,7 +7,7 @@ from lib.task import Task
 
 
 class Watcher(GObject.Object, Task):
-    __gsignals__ = {"event": (GObject.SignalFlags.RUN_FIRST, None, (str, ))}
+    __gsignals__ = {"event": (GObject.SignalFlags.RUN_FIRST, None, (str,))}
 
     def __init__(self):
         self.logger = getLogger("Watcher")
@@ -55,7 +55,6 @@ class Object(GObject.Object):
 
 
 class Timeout:
-
     def __init__(self, func, delay, *args, **kwargs):
         self.func = func
         self.args = args
@@ -75,8 +74,11 @@ def notify(title, message, log=True):
 
 
 def get_signal_args(flags, args=()):
-    return (getattr(GObject.SignalFlags,
-                    flags.replace("-", "_").upper()), None, tuple(args))
+    return (
+        getattr(GObject.SignalFlags, flags.replace("-", "_").upper()),
+        None,
+        tuple(args),
+    )
 
 
 def lookup_icon(name: str):

@@ -9,9 +9,9 @@ class NotWifi(Exception):
 
 class NWrapper(Object):
     __gsignals__ = {"changed": (GObject.SignalFlags.RUN_FIRST, None, tuple())}
-    icon_name = GObject.Property(type=str,
-                                 default="network-wired-symbolic",
-                                 nick="icon-name")
+    icon_name = GObject.Property(
+        type=str, default="network-wired-symbolic", nick="icon-name"
+    )
     ssid = GObject.Property(type=str, default="Disconnected", nick="ssid")
 
     def __init__(self):
@@ -26,20 +26,22 @@ class NWrapper(Object):
         self.__ssid_binding = None
         self.__bind_device_props()
 
-        self.net.connect('notify::wifi', self.on_wifi_changed)
-        self.net.connect('notify::wired', self.on_wired_changed)
+        self.net.connect("notify::wifi", self.on_wifi_changed)
+        self.net.connect("notify::wired", self.on_wired_changed)
 
     def __bind_icon(self, obj: GObject.Object):
         if self.__icon_binding is not None:
             self.__icon_binding.unbind()
         self.__icon_binding = obj.bind_property(
-            "icon-name", self, "icon-name", GObject.BindingFlags.SYNC_CREATE)
+            "icon-name", self, "icon-name", GObject.BindingFlags.SYNC_CREATE
+        )
 
     def __bind_ssid(self):
         if self.__ssid_binding is not None:
             self.__ssid_binding.unbind()
         self.__ssid_binding = self.wifi.bind_property(
-            "ssid", self, "ssid", GObject.BindingFlags.SYNC_CREATE)
+            "ssid", self, "ssid", GObject.BindingFlags.SYNC_CREATE
+        )
 
     def __unbind_all(self):
         if self.__icon_binding is not None:
@@ -105,8 +107,7 @@ class NWrapper(Object):
         wifi_conf.set_property(NM.SETTING_WIRELESS_MODE, "infrastructure")
 
         wsec_conf = NM.SettingWirelessSecurity.new()
-        wsec_conf.set_property(NM.SETTING_WIRELESS_SECURITY_KEY_MGMT,
-                               "wpa-psk")
+        wsec_conf.set_property(NM.SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-psk")
         wsec_conf.set_property(NM.SETTING_WIRELESS_SECURITY_PSK, password)
 
         ip4_conf = NM.SettingIP4Config.new()
@@ -129,5 +130,4 @@ class NWrapper(Object):
         wifi = self.wifi.get_device()
         con = self.__get_connection(access_point, password)
 
-        self.client.add_and_activate_connection_async(con, wifi, None, None,
-                                                      callback)
+        self.client.add_and_activate_connection_async(con, wifi, None, None, callback)

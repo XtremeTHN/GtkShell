@@ -19,10 +19,9 @@ def get_pretty_seconds(seconds):
 
 
 class Uptime(Gtk.Label):
-
     def __init__(self):
         super().__init__(css_classes=["uptime"], xalign=0)
-        self.proc_uptime = open("/proc/uptime", 'r')
+        self.proc_uptime = open("/proc/uptime", "r")
         self.logger = getLogger("Uptime")
         self.update()
 
@@ -45,7 +44,6 @@ class Uptime(Gtk.Label):
 
 
 class MainPage(Box):
-
     def __init__(self, stack):
         super().__init__(vertical=True, spacing=10)
 
@@ -55,9 +53,7 @@ class MainPage(Box):
 
         # Top part of the window
         self.top = Box(spacing=10)
-        self.label_box = Box(vertical=True,
-                             spacing=0,
-                             css_classes=["quick-labels"])
+        self.label_box = Box(vertical=True, spacing=0, css_classes=["quick-labels"])
 
         self.pfp = Adw.Avatar(size=48)
         self.name = Gtk.Label(css_classes=["quick-name"], xalign=0)
@@ -69,21 +65,19 @@ class MainPage(Box):
         # Center box
         self.center = Box(spacing=10, homogeneous=True, vertical=True)
         self.center.append_all(
-            [QuickNetwork(),
-             QuickBluetooth(),
-             QuickSysTray(),
-             QuickMixer()],
-            map_func=lambda w: w.set_stack(self.stack))
+            [QuickNetwork(), QuickBluetooth(), QuickSysTray(), QuickMixer()],
+            map_func=lambda w: w.set_stack(self.stack),
+        )
 
         # End box
         self.end = Box(spacing=10, vertical=True, margin_top=5)
         self.end.append_all([BacklightSlider(), AudioSlider()])
 
         # Connections
-        self.config.quicksettings.quick_username.on_change(self._update_name,
-                                                           once=True)
-        self.config.quicksettings.profile_picture.on_change(self.__update_pfp,
-                                                            once=True)
+        self.config.quicksettings.quick_username.on_change(self._update_name, once=True)
+        self.config.quicksettings.profile_picture.on_change(
+            self.__update_pfp, once=True
+        )
 
         self.append_all([self.top, self.center, self.end])
 
@@ -91,9 +85,7 @@ class MainPage(Box):
         usr = self.config.quicksettings.quick_username
         if usr.is_set() is False:
             environ = GLib.get_environ()
-            user = [
-                var.split("=")[1] for var in environ if var.startswith("USER")
-            ]
+            user = [var.split("=")[1] for var in environ if var.startswith("USER")]
             self.name.set_text(user[0].title())
         else:
             self.name.set_text(usr.value)
@@ -117,11 +109,12 @@ class MainPage(Box):
 
 
 class QuickSettingsContent(Gtk.Stack, CustomizableWidget):
-
     def __init__(self):
-        Gtk.Stack.__init__(self,
+        Gtk.Stack.__init__(
+            self,
             css_classes=["quicksettings-content"],
-            transition_type=Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+            transition_type=Gtk.StackTransitionType.SLIDE_LEFT_RIGHT,
+        )
         CustomizableWidget.__init__(self)
         self.config = Config.get_default()
         self.background_opacity = self.config.quicksettings.background_opacity
@@ -132,17 +125,18 @@ class QuickSettingsContent(Gtk.Stack, CustomizableWidget):
         self.add_named(self.main_page, "main")
         self.set_visible_child_name("main")
 
-class QuickSettings(Astal.Window):
 
+class QuickSettings(Astal.Window):
     def __init__(self):
         # Set resizable to false. When the quick menu shows, the window will go back to its original size
-        super().__init__(namespace="astal-quicksettings",
-                         name="quicksettings",
-                         anchor=Astal.WindowAnchor.TOP
-                         | Astal.WindowAnchor.RIGHT,
-                         exclusivity=Astal.Exclusivity.NORMAL,
-                         css_classes=["quicksettings-window"],
-                         resizable=False)
+        super().__init__(
+            namespace="astal-quicksettings",
+            name="quicksettings",
+            anchor=Astal.WindowAnchor.TOP | Astal.WindowAnchor.RIGHT,
+            exclusivity=Astal.Exclusivity.NORMAL,
+            css_classes=["quicksettings-window"],
+            resizable=False,
+        )
         _conf = Config.get_default().quicksettings
         self.content = QuickSettingsContent()
         self.set_child(self.content)

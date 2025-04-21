@@ -22,15 +22,15 @@ def get_from_list(index: int, _list):
 
 
 class ShellApp(Astal.Application):
-
     def __init__(self, instance_name):
         super().__init__(instance_name=instance_name)
         self.logger = getLogger("ShellApp")
         self.conf = Config.get_default()
         self.add_icons(str(SOURCE_DIR / "icons"))
 
-    def do_astal_application_request(self, msg: str,
-                                     conn: Gio.SocketConnection) -> None:
+    def do_astal_application_request(
+        self, msg: str, conn: Gio.SocketConnection
+    ) -> None:
         self.logger.info("Received a request: %s", msg)
 
         # args = AppRunnerWindow.parse_cmd_string(msg)
@@ -61,7 +61,9 @@ class ShellApp(Astal.Application):
 
     def add_if_enabled(self, window_class):
         if hasattr(window_class, "is_enabled") is False:
-            self.logger.warning(f"implement is_enabled() for class {window_class.__name__}!")
+            self.logger.warning(
+                f"implement is_enabled() for class {window_class.__name__}!"
+            )
             return
         if window_class.is_enabled() is True:
             self.add_window(window_class())
@@ -82,21 +84,15 @@ class ShellApp(Astal.Application):
 
 
 def run(args):
-    parser = argparse.ArgumentParser(prog="gtk-shell",
-                                     description="Astal Gtk Shell")
-    parser.add_argument("-i",
-                        "--instance",
-                        help="Instance name",
-                        default="astal")
-    parser.add_argument("-p",
-                        "--procname",
-                        help="Process name",
-                        default="astal")
+    parser = argparse.ArgumentParser(prog="gtk-shell", description="Astal Gtk Shell")
+    parser.add_argument("-i", "--instance", help="Instance name", default="astal")
+    parser.add_argument("-p", "--procname", help="Process name", default="astal")
     args = parser.parse_args(args)
 
     app = ShellApp(args.instance)
     if args.procname:
         from lib.debug import set_proc_name
+
         set_proc_name(args.procname)
 
     app.acquire_socket()

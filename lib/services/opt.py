@@ -13,10 +13,7 @@ class opt(GObject.GObject):
         "changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
-    def __init__(self,
-                 keys: list[str],
-                 settings_obj: SettingsObj,
-                 default_value=None):
+    def __init__(self, keys: list[str], settings_obj: SettingsObj, default_value=None):
         super().__init__()
         self.logger = settings_obj.logger
         self.settings_obj = settings_obj
@@ -45,8 +42,11 @@ class opt(GObject.GObject):
         return self._dict
 
     def __set(self, value):
-        python_line = 'self.settings_obj.content' + "".join(
-            f"[{key}]" for key in self.keys) + " = value"
+        python_line = (
+            "self.settings_obj.content"
+            + "".join(f"[{key}]" for key in self.keys)
+            + " = value"
+        )
         try:
             exec(python_line)
         except:
@@ -73,7 +73,7 @@ class opt(GObject.GObject):
     def value(self, value):
         self.__set(value)
         self.settings_obj.save()
-        
+
         self.notify("value")
         self.emit("changed")
 

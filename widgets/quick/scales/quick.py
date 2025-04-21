@@ -3,24 +3,27 @@ from lib.logger import getLogger
 
 
 class QuickScale(Gtk.Overlay):
-
-    def __init__(self,
-                 lower: int,
-                 upper: int,
-                 step_increment=0.1,
-                 vertical=False,
-                 icon: str | Gtk.Widget = None,
-                 icon_size=16,
-                 _class=[]):
+    def __init__(
+        self,
+        lower: int,
+        upper: int,
+        step_increment=0.1,
+        vertical=False,
+        icon: str | Gtk.Widget = None,
+        icon_size=16,
+        _class=[],
+    ):
         super().__init__()
         self.scale = Gtk.Scale(
             css_classes=["quickslider", *_class],
-            adjustment=Gtk.Adjustment(lower=lower,
-                                      upper=upper,
-                                      step_increment=step_increment),
+            adjustment=Gtk.Adjustment(
+                lower=lower, upper=upper, step_increment=step_increment
+            ),
             hexpand=True,
             orientation=Gtk.Orientation.VERTICAL
-            if vertical is True else Gtk.Orientation.HORIZONTAL)
+            if vertical is True
+            else Gtk.Orientation.HORIZONTAL,
+        )
         self.icon = icon
 
         self.set_icon(icon, size=icon_size)

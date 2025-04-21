@@ -2,6 +2,7 @@ from gi.repository import Astal, Gtk
 from lib.logger import getLogger
 from lib.style import Style
 
+
 class CustomizableWidget:
     def __init__(self, **kwargs):
         self.__provider = None
@@ -25,5 +26,7 @@ class CustomizableWidget:
         ctx.add_provider(self.__provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
     def change_opacity(self, _):
-        self.set_css(f'background-color: rgba(colors.$background, {self.background_opacity.value});')
+        self.set_css(
+            f"background-color: rgba(colors.$background, {self.background_opacity.value});"
+        )
         self.logger.debug("Changed opacity to %s", self.background_opacity.value)

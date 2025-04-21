@@ -6,7 +6,6 @@ from lib.config import Config
 
 
 class NotificationsWindow(Astal.Window):
-
     def __init__(self):
         super().__init__(
             name="notifications",
@@ -39,8 +38,9 @@ class NotificationsWindow(Astal.Window):
 
     def __on_notification_added(self, _, notif_id, replaced):
         if replaced:
-            self.__on_notification_removed(None, notif_id,
-                                          AstalNotifd.ClosedReason.UNDEFINED)
+            self.__on_notification_removed(
+                None, notif_id, AstalNotifd.ClosedReason.UNDEFINED
+            )
 
         notif = self.notifd.get_notification(notif_id)
         if notif is None:
@@ -53,8 +53,7 @@ class NotificationsWindow(Astal.Window):
         self.list[notif.get_id()] = widget
         self.content.append(widget)
 
-    def __on_notification_removed(self, _, notif_id,
-                                  reason: AstalNotifd.ClosedReason):
+    def __on_notification_removed(self, _, notif_id, reason: AstalNotifd.ClosedReason):
         widget = self.list.pop(notif_id, None)
         notif = self.notifd.get_notification(notif_id)
 
@@ -64,7 +63,10 @@ class NotificationsWindow(Astal.Window):
             self.content.remove(widget)
         else:
             if notif is None:
-                self.logger.warning("Recieved resolve signal but no notification with id of %d", notif_id)
+                self.logger.warning(
+                    "Recieved resolve signal but no notification with id of %d",
+                    notif_id,
+                )
                 return
             notif.dismiss()
 

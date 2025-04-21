@@ -7,7 +7,6 @@ DISPLAYS_FOLDER = "/sys/class/backlight/"
 
 
 class Adapter(GObject.GObject):
-
     def __init__(self, display):
         super().__init__()
         self.logger = getLogger(f"Adapter ({display})")
@@ -45,9 +44,7 @@ class Adapter(GObject.GObject):
         except:
             self.logger.exception("Couldn't parse backlight values")
 
-    @GObject.Property(type=int,
-                      nick="max-brightness",
-                      flags=GObject.PARAM_READABLE)
+    @GObject.Property(type=int, nick="max-brightness", flags=GObject.PARAM_READABLE)
     def max_brightness(self):
         return self.__max_brightness
 
@@ -85,7 +82,6 @@ class Adapter(GObject.GObject):
 
 
 class Backlight(Object):
-
     def __init__(self):
         super().__init__()
         self.logger = getLogger("Backlight")
@@ -114,8 +110,7 @@ class Backlight(Object):
         for _, files, _ in os.walk(DISPLAYS_FOLDER):
             for x in files:
                 self.__adapters.append(Adapter(x))
-        self.__adapter = self.__adapters[0] if len(
-            self.__adapters) > 0 else None
+        self.__adapter = self.__adapters[0] if len(self.__adapters) > 0 else None
 
         self.notify("adapters")
         self.notify("adapter")

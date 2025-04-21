@@ -4,7 +4,6 @@ import time
 
 
 class TaskWrapper:
-
     def __init__(self, object, method: str):
         self.object = object
         self.method = method
@@ -39,20 +38,21 @@ class Task(Thread):
 
     @staticmethod
     def add_cancellable_task(task):
-        Task.unfinished_cancelable_tasks.append(
-            task)  # self.should_stop = Event()
+        Task.unfinished_cancelable_tasks.append(task)  # self.should_stop = Event()
 
     @staticmethod
     def stop_cancellable_tasks():
         l = getLogger("Task")
         for task in Task.unfinished_cancelable_tasks:
-            l.debug("Stopping %s with function name %s...",
-                    task.__class__.__name__, task.func.__name__)
+            l.debug(
+                "Stopping %s with function name %s...",
+                task.__class__.__name__,
+                task.func.__name__,
+            )
             task.stop()
 
 
 class LoopTask(Task):
-
     def __init__(self, function, delay=0, *args, **kwargs):
         """
         Initializes a LoopTask with a given function, delay and arguments.

@@ -12,7 +12,6 @@ def to_minutes(seconds):
 
 # CONECTANDO COSAS
 class Music(Gtk.Label):
-
     def __init__(self, _class=[]):
         super().__init__(css_classes=_class)
         self.config: Config = Config.get_default()

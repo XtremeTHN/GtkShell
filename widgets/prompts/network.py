@@ -7,15 +7,20 @@ from lib.logger import getLogger
 
 
 class Background(Astal.Window):
-
     def __init__(self):
-        super().__init__(namespace="astal-background", css_classes=["background"],\
-                         anchor=Astal.WindowAnchor.TOP | Astal.WindowAnchor.RIGHT | Astal.WindowAnchor.BOTTOM | Astal.WindowAnchor.LEFT,\
-                         layer=Astal.Layer.TOP, opacity=0.4)
+        super().__init__(
+            namespace="astal-background",
+            css_classes=["background"],
+            anchor=Astal.WindowAnchor.TOP
+            | Astal.WindowAnchor.RIGHT
+            | Astal.WindowAnchor.BOTTOM
+            | Astal.WindowAnchor.LEFT,
+            layer=Astal.Layer.TOP,
+            opacity=0.4,
+        )
 
 
 class Spinner(Box):
-
     def __init__(self, size=14, description=None):
         super().__init__(vertical=True, spacing=10)
         self.desc = Gtk.Label.new(description)
@@ -27,8 +32,8 @@ class Spinner(Box):
 
 class PasswordPage(Box):
     __gsignals__ = {
-        "next-page": (GObject.SIGNAL_RUN_FIRST, None, (str, )),
-        "cancel": (GObject.SIGNAL_RUN_FIRST, None, tuple())
+        "next-page": (GObject.SIGNAL_RUN_FIRST, None, (str,)),
+        "cancel": (GObject.SIGNAL_RUN_FIRST, None, tuple()),
     }
 
     def __init__(self, ap: AccessPoint):
@@ -42,10 +47,11 @@ class PasswordPage(Box):
         self.revealer = Gtk.Revealer(
             child=self.error_msg,
             transition_duration=400,
-            transition_type=Gtk.RevealerTransitionType.SLIDE_UP)
+            transition_type=Gtk.RevealerTransitionType.SLIDE_UP,
+        )
 
         self.password = Gtk.PasswordEntry(show_peek_icon=True)
-        self.password.connect('activate', self.__next_page)
+        self.password.connect("activate", self.__next_page)
 
         entry_box.append_all([self.revealer, self.password])
 
@@ -66,10 +72,8 @@ class PasswordPage(Box):
 
 
 class NetworkPromptNavigator(Gtk.Stack):
-
     def __init__(self, access_point: AccessPoint):
-        super().__init__(
-            transition_type=Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+        super().__init__(transition_type=Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
         self.ap = access_point
         self.logger = getLogger("NetPromptNav")
         self.net = NWrapper.get_default()
@@ -77,9 +81,9 @@ class NetworkPromptNavigator(Gtk.Stack):
         self._pass = PasswordPage(access_point)
         self._pass.connect("next-page", self.__on_next_page)
 
-        loading = Spinner(size=24,
-                          description="Connecting to %s" %
-                          access_point.get_ssid())
+        loading = Spinner(
+            size=24, description="Connecting to %s" % access_point.get_ssid()
+        )
 
         self.add_named(self._pass, "password")
         self.add_named(loading, "loading")
@@ -98,15 +102,16 @@ class NetworkPromptNavigator(Gtk.Stack):
 
     def __on_next_page(self, _, password):
         self.set_visible_child_name("loading")
-        self.net.connect_to_ssid(self.ap, password,
-                                 self.__on_connection_finish)
+        self.net.connect_to_ssid(self.ap, password, self.__on_connection_finish)
 
 
 class NetworkPrompt(Astal.Window):
-
     def __init__(self, access_point: AccessPoint):
-        super().__init__(exclusivity=Astal.Exclusivity.NORMAL, keymode=Astal.Keymode.ON_DEMAND,\
-                         css_classes=["network-prompt", "background"])
+        super().__init__(
+            exclusivity=Astal.Exclusivity.NORMAL,
+            keymode=Astal.Keymode.ON_DEMAND,
+            css_classes=["network-prompt", "background"],
+        )
 
         self.background = Background()
         self.background.present()
