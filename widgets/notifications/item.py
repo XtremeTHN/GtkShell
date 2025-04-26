@@ -1,30 +1,10 @@
-from lib.utils import lookup_icon, get_signal_args, Timeout
-from gi.repository import Gtk, Adw, AstalNotifd
-from widgets.custom.icons import FramedImage
-from widgets.custom.box import Box
+from gi.repository import Adw, AstalNotifd, Gtk
 
 from lib.config import Config
-
-
-class Header(Box):
-    def __init__(self, notif):
-        super().__init__(css_classes=["header"], vertical=True)
-
-        self.title_widget = Gtk.Label(
-            label=notif.get_app_name(),
-            xalign=0,
-            css_classes=["dimmed"],
-            hexpand=True,
-        )
-        self.close_btt = Gtk.Button(
-            icon_name="window-close-symbolic",
-            css_classes=["flat"],
-        )
-
-        control = Box()
-        control.append_all([self.title_widget, self.close_btt])
-        self.append(control)
-        self.append(Gtk.Separator())
+from lib.utils import Timeout, get_signal_args, lookup_icon
+from widgets.custom.box import Box
+from widgets.custom.header import Header
+from widgets.custom.icons import FramedImage
 
 
 class NotifAction(Gtk.Button):
@@ -39,16 +19,17 @@ class Notification(Adw.Bin):
         "dismiss": get_signal_args("run-last", args=(int, AstalNotifd.ClosedReason))
     }
 
-    def __init__(self, notif: AstalNotifd.Notification):
+    def __init__(self, notif: AstalNotifd.Notification, timeout=True, width=400):
         super().__init__(
             margin_end=10,
+            width_request=width,
             css_classes=["notification-wrap"],
         )
 
         content = Box(vertical=True, spacing=10, css_classes=["notification"])
 
         # Header
-        self.header = Header(notif)
+        self.header = Header(notif.get_app_name())
         content.append(self.header)
 
         # Content layout
@@ -102,11 +83,14 @@ class Notification(Adw.Bin):
         # Connect close button
         self.header.close_btt.connect("clicked", self.__close, notif)
 
-        if notif.get_expire_timeout() == -1:
-            Timeout(
-                lambda: self.__close(None, notif, AstalNotifd.ClosedReason.EXPIRED),
-                Config.get_default().notifications.default_expire_timeout.value,
-            )
+        if timeout:
+            if notif.get_expire_timeout() == -1:
+                Timeout(
+                    lambda: self.__close(
+                        None, notif, AstalNotifd.ClosedReason.UNDEFINED
+                    ),
+                    Config.get_default().notifications.default_expire_timeout.value,
+                )
 
     def __invoke(self, button: NotifAction, notif):
         notif.invoke(button.id)

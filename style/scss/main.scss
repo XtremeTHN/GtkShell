@@ -14,6 +14,14 @@
     padding: 10px;
 }
 
+.background-box {
+    background-color: $background;
+}
+
+.bordered {
+    border-radius: 8px;
+}
+
 .shadow-box {
     box-shadow: 2px 3px 8px 0 gtkalpha(black, .4);
     border: 1pt solid gtkalpha($primary, .03);
@@ -62,10 +70,6 @@
     padding: 5px;
     border-radius: 6px;
     transition: all 0.2s;
-}
-
-.bordered {
-  border-radius: 8px;
 }
 
 * {

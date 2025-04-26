@@ -1,4 +1,5 @@
-from gi.repository import Gtk, GObject
+from gi.repository import GObject, Gtk
+
 from lib.utils import getLogger
 
 
@@ -125,29 +126,32 @@ class QuickPage(Box):
 
 
 class QuickMenu(Box):
-    def __init__(self, title: str, max_height=150, logger_name="QuickMenu"):
+    def __init__(
+        self, title: str, max_height=150, show_top_bar=True, logger_name="QuickMenu"
+    ):
         super().__init__(vertical=True, spacing=10)
         self.logger = getLogger(logger_name)
         self.max_height = max_height
+        if show_top_bar:
+            self.__top = Box(spacing=10, hexpand=True)
+            self.back_btt = Gtk.Button(
+                icon_name="go-previous-symbolic", css_classes=["circular"]
+            )
+            self.__title = Gtk.Label(label=title, css_classes=["title-3"])
+            self.__top_end = Box(spacing=10, hexpand=True, halign=Gtk.Align.END)
+            self.__top.append_all([self.back_btt, self.__title, self.__top_end])
+            self.append(self.__top)
 
-        self.__top = Box(spacing=10, hexpand=True)
-        self.back_btt = Gtk.Button(
-            icon_name="go-previous-symbolic", css_classes=["circular"]
-        )
-        self.__title = Gtk.Label(label=title, css_classes=["title-3"])
-        self.__top_end = Box(spacing=10, hexpand=True, halign=Gtk.Align.END)
-
-        self.__scroll = Gtk.ScrolledWindow(
+        self.scroll = Gtk.ScrolledWindow(
             css_classes=["box-10", "card"], vexpand=True, max_content_height=max_height
         )
         self.content = Box(spacing=4, vertical=True, vexpand=True)
         self.__placeholder = StatusPage()
 
-        self.__scroll.set_child(self.content)
+        self.scroll.set_child(self.content)
 
         self.content.append(self.__placeholder)
-        self.__top.append_all([self.back_btt, self.__title, self.__top_end])
-        self.append_all([self.__top, self.__scroll])
+        self.append(self.scroll)
 
         self.content.connect("notify::children", self.on_children_change)
         self.on_children_change()

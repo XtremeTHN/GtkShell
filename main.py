@@ -1,20 +1,21 @@
-import lib.versions as _
 import argparse
 
-from gi.repository import Astal, AstalIO, Gio, Adw
+from lib.versions import init
 
-from lib.task import Task
-from lib.style import Style
-from lib.config import Config
-from lib.logger import getLogger
-from lib.constants import CONFIG_DIR, SOURCE_DIR
+init()
 
-from widgets.notifications import NotificationsWindow
-from widgets.quick.settings import QuickSettings
-from widgets.apps import ApplicationLauncher
-from widgets.bar import Bar
+from gi.repository import Astal, Gio  # noqa: E402
 
-Adw.init()
+from lib.config import Config  # noqa: E402
+from lib.constants import CONFIG_DIR, SOURCE_DIR  # noqa: E402
+from lib.logger import getLogger  # noqa: E402
+from lib.style import Style  # noqa: E402
+from lib.task import Task  # noqa: E402
+from widgets.apps import ApplicationLauncher  # noqa: E402
+from widgets.bar import Bar  # noqa: E402
+from widgets.notifications import NotificationsWindow  # noqa: E402
+from widgets.notifications.center import NotificationCenter  # noqa: E402
+from widgets.quick.settings import QuickSettings  # noqa: E402
 
 
 def get_from_list(index: int, _list):
@@ -32,27 +33,6 @@ class ShellApp(Astal.Application):
         self, msg: str, conn: Gio.SocketConnection
     ) -> None:
         self.logger.info("Received a request: %s", msg)
-
-        # args = AppRunnerWindow.parse_cmd_string(msg)
-
-        # if args[0] == "help":
-        #     AstalIO.write_sock(
-        #         conn,
-        #         "Available commands:\n\tset-cmd-prefix PREFIX: For AppRunner\n\treload: Reloads css"
-        #     )
-        #     return
-
-        # if args[0] == "set-cmd-prefix":
-        #     if get_from_list(1, args) is None:
-        #         AstalIO.write_sock(conn, "Expected command prefix")
-        #         return
-        #     self.runner.set_launch_prefix(args[1:])
-
-        # if args[0] == "reload":
-        #     self.logger.info("Reloading css...")
-        #     self.reload()
-
-        # AstalIO.write_sock(conn, "Done")
 
     def reload(self, *_):
         self.logger.debug("Applying css...")
@@ -79,6 +59,7 @@ class ShellApp(Astal.Application):
 
         # Single-monitor windows
         self.add_if_enabled(NotificationsWindow)
+        self.add_if_enabled(NotificationCenter)
         self.add_if_enabled(ApplicationLauncher)
         self.add_if_enabled(QuickSettings)
 
