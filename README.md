@@ -13,3 +13,4 @@ Maybe i'll add more things to this list
 - Fix all devices active in QuickBluetoothMenu
 - Weather to bar or quicksettings
 - Shell and hyprland config manager
+- Notification center
