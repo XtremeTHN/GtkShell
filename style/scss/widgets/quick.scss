@@ -106,39 +106,6 @@
     background-color: $primary;
 }
 
-//.quickslider {
-//  transition: 0.2s all;
-//  margin-right: 8px;
-//
-//  & > trough > highlight {
-//    background-color: $primary;
-//    min-height: 25px;
-//    //padding: 15px 0px;
-//  }
-//
-//  & > trough {
-//    min-height: 2.25rem;
-//    border-radius: 1rem;
-//    //margin: 20px 0px;
-//  }
-//
-//  & > trough > slider {
-//    background-image: image($primary);
-//    //min-height: 25px;
-//    //min-width: 25px;
-//    box-shadow: none;
-//  }
-//
-//  &.lower > trough > slider {
-//    border-radius: 100%;
-//  }
-//
-//  &.upper > trough > slider {
-//    border-top-left-radius: 0px;
-//    border-bottom-left-radius: 0px;
-//  }
-//}
-
 .n-card {
     background-color: $surface_container;
     border-bottom-right-radius: 8px;
