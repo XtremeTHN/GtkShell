@@ -16,12 +16,6 @@ class NotificationList(Box):
         # Connect signals
         self.notifd.connect("notified", self.__on_notification_added)
         self.notifd.connect("resolved", self.__on_notification_removed)
-        self.connect("notify::children", self.__on_children_changed)
-
-    def __on_children_changed(self, *_):
-        # if there's no children in the window, it will freeze
-        # idk why, so i will hide it.
-        self.set_visible(bool(self.children))
 
     def __on_notification_added(self, _, notif_id, replaced):
         if replaced:
@@ -72,8 +66,14 @@ class NotificationsWindow(Astal.Window):
 
         self.content = NotificationList()
         self.set_child(self.content)
+        self.content.connect("notify::children", self.__on_children_changed)
 
         self.present()
+
+    def __on_children_changed(self, *_):
+        # if there's no children in the window, it will freeze
+        # idk why, so i will hide it.
+        self.set_visible(bool(self.content.children))
 
     @staticmethod
     def is_enabled():
