@@ -1,7 +1,6 @@
 # GtkShell
 A gtk shell for my dots
 
-
 ## TODO
 Maybe i'll add more things to this list
 - Greeter
@@ -12,3 +11,5 @@ Maybe i'll add more things to this list
 - Add card, bordered and box-10 to box in quicksliders
 - Implement formating of arguments in desktop entries
 - Fix all devices active in QuickBluetoothMenu
+- Weather to bar or quicksettings
+- Shell and hyprland config manager
