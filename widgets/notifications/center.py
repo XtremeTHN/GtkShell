@@ -1,4 +1,4 @@
-from gi.repository import Astal, Gtk
+from gi.repository import Adw, Astal, Gtk
 
 from lib.config import Config
 from widgets.custom.box import Box, QuickMenu
@@ -24,12 +24,20 @@ class Content(Box):
         )
         menu.scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
-        manager = NotificationManager(spacing=0, enable_timeout=False)
-        manager.set_box(menu)
-        for x in manager.notifd.get_notifications():
-            manager._on_notification_added(None, x.get_id(), False)
+        self.manager = NotificationManager(spacing=0, enable_timeout=False)
+        self.manager.set_box(menu)
+        for x in self.manager.notifd.get_notifications():
+            self.manager._on_notification_added(None, x.get_id(), False)
 
-        self.append_all([header, menu])
+        cnt = Adw.ButtonContent(icon_name="edit-clear-all", label="Clear All")
+        rm_btt = Gtk.Button(child=cnt)
+        rm_btt.connect("clicked", self.__on_clear_clicked)
+
+        self.append_all([header, menu, rm_btt])
+
+    def __on_clear_clicked(self, _):
+        for x in self.manager.notifd.get_notifications():
+            x.dismiss()
 
 
 class NotificationCenter(Astal.Window):
