@@ -1,9 +1,9 @@
-from gi.repository import Astal, AstalApps, Gtk, GLib, Gdk, GObject
-from widgets.custom.box import Box
-from lib.variable import Variable
-from lib.utils import lookup_icon
-from lib.config import Config
+from gi.repository import Astal, AstalApps, Gdk, GLib, GObject, Gtk
 
+from lib.config import Config
+from lib.utils import lookup_icon
+from lib.variable import Variable
+from widgets.custom.box import Box
 from widgets.custom.widget import CustomizableWidget
 
 should_close = Variable(False)
@@ -114,8 +114,13 @@ class ApplicationLauncher(Astal.Window, CustomizableWidget):
         self.background_opacity.on_change(self.change_opacity, once=True)
 
         should_close.connect_notify(self.__close)
+        self.connect("notify::visible", self.__on_visible)
 
         self.set_visible(self._conf.show_on_start.value)
+
+    def __on_visible(self, *_):
+        if self.get_visible():
+            self.content.entry.grab_focus()
 
     def __close(self):
         if should_close.get_value():
