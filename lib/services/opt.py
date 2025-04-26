@@ -1,9 +1,11 @@
+import json
 from pathlib import Path
 from typing import TypeVar
-from lib.utils import Watcher
-from lib.logger import getLogger
+
 from gi.repository import GObject
-import json
+
+from lib.logger import getLogger
+from lib.utils import Watcher
 
 SettingsObj = TypeVar("SettingsObj", bound="Json")
 
@@ -109,7 +111,6 @@ class Json(Watcher):
             self.logger.error("Failed to parse json: %s", " ".join(e.args))
         except:
             self.logger.exception("Failed to parse json")
-            self.logger.info("Config unchanged")
 
     def __on_event(self, _, event):
         self.logger.debug("Recieved event: %s", event)

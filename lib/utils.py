@@ -1,8 +1,10 @@
-from gi.repository import GObject, Gio, GLib, Gtk
-from inotify.constants import IN_MODIFY
-from inotify.adapters import Inotify
-from lib.logger import getLogger
 from typing import TypeVar
+
+from gi.repository import Gio, GLib, GObject, Gtk
+from inotify.adapters import Inotify
+from inotify.constants import IN_MODIFY
+
+from lib.logger import getLogger
 from lib.task import Task
 
 
@@ -32,7 +34,7 @@ class Watcher(GObject.Object, Task):
                 break
 
             if event is not None:
-                self.emit("event", event)
+                self.emit("event", event[1][0])
 
 
 T = TypeVar("T", bound="Object")
