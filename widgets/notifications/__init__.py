@@ -1,40 +1,27 @@
-from gi.repository import AstalNotifd, Astal, Adw, Gtk
-from widgets.notifications.item import Notification
-from widgets.custom.box import Box
-from lib.logger import getLogger
+from gi.repository import Adw, Astal, AstalNotifd, Gtk
+
 from lib.config import Config
+from lib.logger import getLogger
+from widgets.custom.box import Box
+from widgets.notifications.item import Notification
 
 
-class NotificationsWindow(Astal.Window):
+class NotificationList(Box):
     def __init__(self):
-        super().__init__(
-            name="notifications",
-            namespace="astal-notifications",
-            margin_top=10,
-            css_classes=["nobackground-window"],
-            resizable=False,
-            anchor=Astal.WindowAnchor.TOP | Astal.WindowAnchor.RIGHT,
-            layer=Astal.Layer.OVERLAY,
-        )
-
+        super().__init__(vertical=True, spacing=10)
         self.logger = getLogger("Notifications")
         self.notifd = AstalNotifd.get_default()
         self.list = {}
 
-        self.content = Box(vertical=True, spacing=10)
-        self.set_child(self.content)
-
         # Connect signals
         self.notifd.connect("notified", self.__on_notification_added)
         self.notifd.connect("resolved", self.__on_notification_removed)
-        self.content.connect("notify::children", self.__on_children_changed)
-
-        self.present()
+        self.connect("notify::children", self.__on_children_changed)
 
     def __on_children_changed(self, *_):
         # if there's no children in the window, it will freeze
         # idk why, so i will hide it.
-        self.set_visible(bool(self.content.children))
+        self.set_visible(bool(self.children))
 
     def __on_notification_added(self, _, notif_id, replaced):
         if replaced:
@@ -51,7 +38,7 @@ class NotificationsWindow(Astal.Window):
         widget.connect("dismiss", self.__on_notification_removed)
 
         self.list[notif.get_id()] = widget
-        self.content.append(widget)
+        self.append(widget)
 
     def __on_notification_removed(self, _, notif_id, reason: AstalNotifd.ClosedReason):
         widget = self.list.pop(notif_id, None)
@@ -60,7 +47,7 @@ class NotificationsWindow(Astal.Window):
         if widget:
             if reason == AstalNotifd.ClosedReason.DISMISSED_BY_USER:
                 notif.dismiss()
-            self.content.remove(widget)
+            self.remove(widget)
         else:
             if notif is None:
                 self.logger.warning(
@@ -69,6 +56,24 @@ class NotificationsWindow(Astal.Window):
                 )
                 return
             notif.dismiss()
+
+
+class NotificationsWindow(Astal.Window):
+    def __init__(self):
+        super().__init__(
+            name="notifications",
+            namespace="astal-notifications",
+            margin_top=10,
+            css_classes=["nobackground-window"],
+            resizable=False,
+            anchor=Astal.WindowAnchor.TOP | Astal.WindowAnchor.RIGHT,
+            layer=Astal.Layer.OVERLAY,
+        )
+
+        self.content = NotificationList()
+        self.set_child(self.content)
+
+        self.present()
 
     @staticmethod
     def is_enabled():
