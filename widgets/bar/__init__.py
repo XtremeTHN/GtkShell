@@ -1,11 +1,11 @@
-from widgets.custom.icons import NetworkIndicator, VolumeIndicator, BatteryIndicator
-from widgets.custom.widget import CustomizableWidget
-from widgets.bar.hypr import Workspace, ActiveWindow
+from gi.repository import Astal, GLib, Gtk
+
+from lib.config import Config
+from widgets.bar.hypr import ActiveWindow, Workspace
 from widgets.bar.music import Music
 from widgets.custom.box import Box
-
-from gi.repository import Gtk, Astal, GLib
-from lib.config import Config
+from widgets.custom.icons import BatteryIndicator, NetworkIndicator, VolumeIndicator
+from widgets.custom.widget import CustomizableWidget
 
 
 class BarContent(Gtk.CenterBox, CustomizableWidget):
@@ -61,6 +61,7 @@ class Bar(Astal.Window):
     def __init__(self, m):
         super().__init__(
             gdkmonitor=m,
+            name="topbar",
             namespace="astal-topbar",
             css_classes=["bar-window"],
             anchor=Astal.WindowAnchor.TOP
