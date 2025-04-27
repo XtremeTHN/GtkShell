@@ -3,6 +3,7 @@ from requests import get
 
 from lib.config import Config, WeatherLocationTypes, WeatherProviders, WeatherUnits
 from lib.task import Task
+from lib.logger import getLogger
 from lib.utils import Object, get_signal_args
 
 
@@ -22,6 +23,7 @@ class FreeWeather(Object):
 
     def __init__(self):
         super().__init__()
+        self.logger = getLogger("FreeWeather")
 
         self.conf = Config().get_default().weather
         self.url = "http://api.weatherapi.com/v1/current.json?key={}&q={}&aqi=no"
@@ -43,11 +45,19 @@ class FreeWeather(Object):
         self.conf.round_temp.disconnect(self.__round_temp_id)
 
     def __on_updated(self, cnt):
-        cnt = cnt.json()
+        cnt: dict = cnt.json()
+        if (e := cnt.get("error")) is not None:
+            self.logger.warning("Error while fetching weather data: %s", e["message"])
+            return
+
         if self.conf.unit.value == WeatherUnits.CENTIGRADE:
             self.temp = cnt["current"]["temp_c"]
         elif self.conf.unit.value == WeatherUnits.FAHRENHEIT:
             self.temp = cnt["current"]["temp_f"]
+
+        if self.conf.round_temp.value:
+            self.temp = round(self.temp)
+
         self.condition = cnt["current"]["condition"]["text"]
         download(
             "https:" + cnt["current"]["condition"]["icon"],
