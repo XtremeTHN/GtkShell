@@ -52,6 +52,7 @@ class Content(Box, CustomizableWidget):
 
     def reset(self):
         self.entry.set_text("")
+        self.apps.reload()
         self.__refresh()
 
     def __refresh(self, *_):
