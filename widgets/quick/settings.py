@@ -1,15 +1,15 @@
-from gi.repository import Gtk, Astal, Gdk, GLib, Adw
-from lib.logger import getLogger
-from lib.config import Config
+from gi.repository import Adw, Astal, Gdk, GLib, Gtk
 
-from widgets.quick.scales import BacklightSlider, AudioSlider
-from widgets.quick.buttons.bluetooth import QuickBluetooth
-from widgets.quick.buttons.network import QuickNetwork
-from widgets.custom.widget import CustomizableWidget
-from widgets.quick.buttons.dnd import QuickDndButton
-from widgets.quick.buttons.tray import QuickSysTray
-from widgets.quick.buttons.audio import QuickMixer
+from lib.config import Config
+from lib.logger import getLogger
 from widgets.custom.box import Box
+from widgets.custom.widget import CustomizableWidget
+from widgets.quick.buttons.audio import QuickMixer
+from widgets.quick.buttons.bluetooth import QuickBluetooth
+from widgets.quick.buttons.dnd import QuickDndButton
+from widgets.quick.buttons.network import QuickNetwork
+from widgets.quick.buttons.tray import QuickSysTray
+from widgets.quick.scales import AudioSlider, BacklightSlider
 
 
 def get_pretty_seconds(seconds):
@@ -53,7 +53,7 @@ class MainPage(Box):
         self.stack: Gtk.Stack = stack
 
         # Top part of the window
-        self.top = Box(spacing=10)
+        self.top = Box(css_classes=["card", "box-10"], spacing=10)
         self.label_box = Box(vertical=True, spacing=0, css_classes=["quick-labels"])
 
         self.pfp = Adw.Avatar(size=48)
@@ -64,25 +64,27 @@ class MainPage(Box):
         self.top.append_all([self.pfp, self.label_box])
 
         # Center box
-        self.center = Box(spacing=10, vertical=True)
+        self.center = Box(css_classes=["card", "box-10"], spacing=10, vertical=True)
         up = Box(
             children=[QuickNetwork(self.stack), QuickBluetooth(self.stack)],
             spacing=10,
             homogeneous=True,
         )
         down = Box(
-            children=[QuickDndButton()],
+            children=[
+                QuickDndButton(),
+                QuickSysTray(self.stack),
+            ],
             spacing=10,
             hexpand=True,
             homogeneous=True,
-            margin_bottom=5,
         )
-        self.center.append_all(
-            [up, down, QuickSysTray(self.stack), QuickMixer(self.stack)]
-        )
+        self.center.append_all([up, down, QuickMixer(self.stack)])
 
         # End box
-        self.end = Box(spacing=10, vertical=True, margin_top=5)
+        self.end = Box(
+            css_classes=["card", "box-10"], spacing=10, vertical=True, margin_top=5
+        )
         self.end.append_all([BacklightSlider(), AudioSlider()])
 
         # Connections
@@ -147,7 +149,7 @@ class QuickSettings(Astal.Window):
             anchor=Astal.WindowAnchor.TOP | Astal.WindowAnchor.RIGHT,
             exclusivity=Astal.Exclusivity.NORMAL,
             css_classes=["bordered"],
-            width_request=380,
+            width_request=450,
             resizable=False,
         )
         _conf = Config.get_default().quicksettings

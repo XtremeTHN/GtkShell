@@ -1,6 +1,6 @@
-from widgets.custom.buttons import QuickUtilButton
+from gi.repository import AstalNotifd, Gtk
 
-from gi.repository import Gtk, AstalNotifd
+from widgets.custom.buttons import QuickUtilButton
 
 
 class QuickDndButton(QuickUtilButton):
@@ -8,13 +8,13 @@ class QuickDndButton(QuickUtilButton):
         icon = Gtk.Image(icon_name="bell-outline-symbolic")
         super().__init__(
             icon=icon,
-            header="Do not disturb",
+            header="Dnd",
             default_subtitle="Off",
             watch_property="dont-disturb",
             object=AstalNotifd.get_default(),
             cb=self.__on_changed,
         )
-    
+
     def __on_changed(self, *_):
         if self.object.props.dont_disturb:
             self.subtitle.set_label("On")

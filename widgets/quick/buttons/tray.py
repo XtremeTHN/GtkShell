@@ -1,7 +1,7 @@
-from widgets.custom.buttons import QuickUtilButton
+from gi.repository import AstalTray, Gtk
+
 from widgets.custom.box import Box, QuickMenu
-from gi.repository import Gtk, AstalTray
-from lib.logger import getLogger
+from widgets.custom.buttons import QuickUtilButton
 
 
 class QuickAppTray(Box):
@@ -84,4 +84,4 @@ class QuickSysTray(QuickUtilButton):
         )
 
         self.set_menu(QuickSysTrayMenu(), "tray")
-        self.stack = stack
+        self.set_stack(stack)
