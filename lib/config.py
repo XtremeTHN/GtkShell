@@ -2,6 +2,8 @@ from lib.constants import JSON_CONFIG_PATH
 from lib.services.opt import Json, opt
 from lib.utils import Object
 
+from lib.logger import getLogger
+
 
 class BaseConfig:
     def __init__(self, conf, _class):
@@ -80,6 +82,8 @@ class WeatherUnits:
 class WeatherConfig(BaseConfig):
     def __init__(self, conf):
         super().__init__(conf, "weather")
+        self.logger = getLogger("WeatherConfig")
+
         self.api_key = self.get_opt("api-key")
         self.provider = self.get_opt("provider", default=WeatherProviders.FREEWEATHER)
         self.location_type = self.get_opt(
@@ -88,6 +92,24 @@ class WeatherConfig(BaseConfig):
         self.location = self.get_opt("location")
         self.unit = self.get_opt("unit", default=WeatherUnits.CENTIGRADE)
         self.round_temp = self.get_opt("round-temp", default=True)
+
+        self.provider.on_change(self.__on_provider_changed, once=True)
+        self.location_type.on_change(self.__on_location_type_changed, once=True)
+        self.unit.on_change(self.__on_unit_changed, once=True)
+    
+    def __on_unit_changed(self, _):
+        if self.unit.value not in WeatherUnits.__dict__.values():
+            self.logger.warning(f"Invalid unit: {self.unit.value}")
+
+    def __on_location_type_changed(self, _):
+        if self.location_type.value not in WeatherLocationTypes.__dict__.values():
+            self.logger.warning(
+                f"Invalid location type: {self.location_type.value}"
+            )
+    
+    def __on_provider_changed(self, _):
+        if self.provider.value not in WeatherProviders.__dict__.values():
+            self.logger.warning(f"Invalid provider: {self.provider.value}")
 
 
 class LogWatcherConfig(BaseConfig):

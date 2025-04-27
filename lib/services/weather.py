@@ -91,9 +91,7 @@ class Weather(Object):
 
     def __on_provider_changed(self, _):
         if self.manager is not None:
-            self.manager.destroy()
+            self.manager.disconnect_all()
         if self.conf.provider.value == WeatherProviders.FREEWEATHER:
             self.manager = FreeWeather()
-        else:
-            raise ValueError("Unknown weather provider")
         self.manager.update()
