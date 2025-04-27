@@ -147,6 +147,7 @@ class QuickSettings(Astal.Window):
             anchor=Astal.WindowAnchor.TOP | Astal.WindowAnchor.RIGHT,
             exclusivity=Astal.Exclusivity.NORMAL,
             css_classes=["quicksettings-window"],
+            width_request=380,
             resizable=False,
         )
         _conf = Config.get_default().quicksettings
