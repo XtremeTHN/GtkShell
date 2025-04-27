@@ -56,11 +56,12 @@ class FreeWeather(Object):
         self.emit("changed")
 
     def update(self, *_):
+        location = self.conf.location.value
         if self.conf.location_type.value == WeatherLocationTypes.IP:
-            self.conf.location.value = get_public_ip()
+            location = get_public_ip()
 
         download(
-            self.url.format(self.conf.api_key.value, self.conf.location.value),
+            self.url.format(self.conf.api_key.value, location),
             self.__on_updated,
         )
 
