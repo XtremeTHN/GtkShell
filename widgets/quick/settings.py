@@ -146,7 +146,7 @@ class QuickSettings(Astal.Window):
             name="quicksettings",
             anchor=Astal.WindowAnchor.TOP | Astal.WindowAnchor.RIGHT,
             exclusivity=Astal.Exclusivity.NORMAL,
-            css_classes=["quicksettings-window"],
+            css_classes=["bordered"],
             width_request=380,
             resizable=False,
         )
