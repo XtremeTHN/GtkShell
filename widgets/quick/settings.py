@@ -6,6 +6,7 @@ from widgets.quick.scales import BacklightSlider, AudioSlider
 from widgets.quick.buttons.bluetooth import QuickBluetooth
 from widgets.quick.buttons.network import QuickNetwork
 from widgets.custom.widget import CustomizableWidget
+from widgets.quick.buttons.dnd import QuickDndButton
 from widgets.quick.buttons.tray import QuickSysTray
 from widgets.quick.buttons.audio import QuickMixer
 from widgets.custom.box import Box
@@ -63,11 +64,22 @@ class MainPage(Box):
         self.top.append_all([self.pfp, self.label_box])
 
         # Center box
-        self.center = Box(spacing=10, homogeneous=True, vertical=True)
-        self.center.append_all(
-            [QuickNetwork(), QuickBluetooth(), QuickSysTray(), QuickMixer()],
-            map_func=lambda w: w.set_stack(self.stack),
-        )
+        self.center = Box(spacing=10, vertical=True)
+        up = Box(spacing=10, homogeneous=True)
+        up.append_all([QuickNetwork(), QuickBluetooth()], map_func=lambda w: w.set_stack(self.stack))
+        down = Box(spacing=10, hexpand=True, homogeneous=True)
+        down.append_all([QuickDndButton()], map_func=lambda w: w.set_stack(self.stack))
+        self.center.append_all([up, down])
+
+        for x in [QuickSysTray(), QuickMixer()]:
+            x.set_stack(self.stack)
+            self.center.append(x)
+
+        # self.center = 
+        # self.center.append_all(
+        #     [QuickNetwork(), QuickBluetooth(), QuickSysTray(), QuickMixer()],
+        #     map_func=lambda w: w.set_stack(self.stack),
+        # )
 
         # End box
         self.end = Box(spacing=10, vertical=True, margin_top=5)

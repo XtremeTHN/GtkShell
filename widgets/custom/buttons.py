@@ -10,7 +10,7 @@ class QuickButton(Box):
         "add-widget": (GObject.SIGNAL_RUN_FIRST, None, (Gtk.ScrolledWindow, str)),
     }
 
-    def __init__(self, icon, header, default_subtitle):
+    def __init__(self, icon, header, default_subtitle, has_menu=True):
         """
         Creates a QuickButton widget.
 
@@ -30,11 +30,16 @@ class QuickButton(Box):
 
         self.overlay = Gtk.Overlay.new()
         self.button = Gtk.Button(css_classes=["quickbutton", "toggle-button"])
-        self.right_button = Gtk.Button(
-            css_classes=["quickbutton-right"],
-            halign=Gtk.Align.END,
-            icon_name="go-next-symbolic",
-        )
+
+        if has_menu:
+            self.right_button = Gtk.Button(
+                css_classes=["quickbutton-right"],
+                halign=Gtk.Align.END,
+                icon_name="go-next-symbolic",
+            )
+
+            self.right_button.connect("clicked", self.toggle_menu)
+
 
         self.button_content = Box(spacing=10)
         self._label_box = Box(spacing=0, vertical=True)
@@ -51,11 +56,11 @@ class QuickButton(Box):
         self.button.set_child(self.button_content)
 
         self.overlay.set_child(self.button)
-        self.overlay.add_overlay(self.right_button)
+        if has_menu:
+            self.overlay.add_overlay(self.right_button)
         self.overlay.set_measure_overlay(self.right_button, True)
 
         self.button.connect("clicked", self.__on_click)
-        self.right_button.connect("clicked", self.toggle_menu)
 
         self.append(self.overlay)
 
@@ -92,14 +97,15 @@ class QuickButton(Box):
 
 
 class QuickUtilButton(QuickButton):
-    def __init__(self, icon, header, default_subtitle, object, watch_property):
-        super().__init__(icon, header, default_subtitle)
+    def __init__(self, icon, header, default_subtitle, object, watch_property, has_menu=True, cb=None):
+        super().__init__(icon, header, default_subtitle, has_menu=has_menu)
+        cb = cb or self.__on_change
 
         self.object: GObject.GObject = object
         self.watch_property = watch_property
 
-        self.object.connect(f"notify::{watch_property}", self.__on_change)
-        self.__on_change()
+        self.object.connect(f"notify::{watch_property}", cb or self.__on_change)
+        cb()
 
     def __on_change(self, *_):
         prop = len(self.object.get_property(self.watch_property))
