@@ -17,7 +17,8 @@ class AppItem(Gtk.Button):
 
         icon_name = app.get_icon_name()
         icon = Gtk.Image(pixel_size=46)
-
+        if icon_name is None:
+            icon_name = "item-missing-symbolic"
         if GLib.file_test(icon_name, GLib.FileTest.EXISTS):
             icon.set_from_file(icon_name)
         elif lookup_icon(icon_name):
