@@ -73,7 +73,7 @@ class QuickSysTrayMenu(QuickMenu):
 
 
 class QuickSysTray(QuickUtilButton):
-    def __init__(self):
+    def __init__(self, stack):
         self.icon = Gtk.Image(icon_name="system-run-symbolic", pixel_size=24)
         super().__init__(
             icon=self.icon,
@@ -84,3 +84,4 @@ class QuickSysTray(QuickUtilButton):
         )
 
         self.set_menu(QuickSysTrayMenu(), "tray")
+        self.stack = stack

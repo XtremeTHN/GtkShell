@@ -67,7 +67,7 @@ class QuickMixerMenu(QuickMenu):
 
 
 class QuickMixer(QuickUtilButton):
-    def __init__(self):
+    def __init__(self, stack):
         self.icon = Gtk.Image(icon_name="audio-volume-medium-symbolic", pixel_size=24)
         wp = AstalWp.get_default().get_audio()
         super().__init__(
@@ -77,5 +77,6 @@ class QuickMixer(QuickUtilButton):
             object=wp,
             watch_property="streams",
         )
-
+        
         self.set_menu(QuickMixerMenu(), "mixer")
+        self.set_stack(stack)

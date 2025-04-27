@@ -65,21 +65,21 @@ class MainPage(Box):
 
         # Center box
         self.center = Box(spacing=10, vertical=True)
-        up = Box(spacing=10, homogeneous=True)
-        up.append_all([QuickNetwork(), QuickBluetooth()], map_func=lambda w: w.set_stack(self.stack))
-        down = Box(spacing=10, hexpand=True, homogeneous=True)
-        down.append_all([QuickDndButton()], map_func=lambda w: w.set_stack(self.stack))
-        self.center.append_all([up, down])
-
-        for x in [QuickSysTray(), QuickMixer()]:
-            x.set_stack(self.stack)
-            self.center.append(x)
-
-        # self.center = 
-        # self.center.append_all(
-        #     [QuickNetwork(), QuickBluetooth(), QuickSysTray(), QuickMixer()],
-        #     map_func=lambda w: w.set_stack(self.stack),
-        # )
+        up = Box(
+            children=[QuickNetwork(self.stack), QuickBluetooth(self.stack)],
+            spacing=10,
+            homogeneous=True,
+        )
+        down = Box(
+            children=[QuickDndButton()],
+            spacing=10,
+            hexpand=True,
+            homogeneous=True,
+            margin_bottom=5,
+        )
+        self.center.append_all(
+            [up, down, QuickSysTray(self.stack), QuickMixer(self.stack)]
+        )
 
         # End box
         self.end = Box(spacing=10, vertical=True, margin_top=5)

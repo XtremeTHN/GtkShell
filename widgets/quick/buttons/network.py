@@ -98,7 +98,7 @@ class QuickNetworkMenu(QuickMenu):
 
 
 class QuickNetwork(QuickButton):
-    def __init__(self):
+    def __init__(self, stack):
         self.net_icon = NetworkIndicator(size=24, bind_ssid=False)
         self.wrapper = self.net_icon.net
         super().__init__(
@@ -110,6 +110,7 @@ class QuickNetwork(QuickButton):
         self.__change_title()
 
         self.set_menu(QuickNetworkMenu(), "network")
+        self.set_stack(stack)
 
         self.connect("activated", self.on_activate)
         self.connect("deactivated", self.on_deactivate)

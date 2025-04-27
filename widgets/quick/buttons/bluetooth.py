@@ -237,7 +237,7 @@ class QuickBluetoothMenu(QuickMenu):
 
 
 class QuickBluetooth(QuickButton):
-    def __init__(self):
+    def __init__(self, stack):
         super().__init__(
             icon=BluetoothIndicator(size=24, _hide_if_no_adapter=False),
             header="Bluetooth",
@@ -259,6 +259,7 @@ class QuickBluetooth(QuickButton):
         )
         self.__change_subtitle()
         self.set_menu(self.__menu, "bluetooth")
+        self.set_stack(stack)
 
     def __on_adapter_change(self, *_):
         self.adapter = self.blue.get_adapter()
