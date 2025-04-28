@@ -8,7 +8,7 @@ from lib.utils import Object, get_signal_args
 
 def download(url, cb):
     def __down():
-        cb(get(url).content)
+        cb(get(url))
 
     Task(__down).start()
 
@@ -42,14 +42,8 @@ class FreeWeather(Object):
         self.conf.api_key.disconnect(self.__api_key)
         self.conf.round_temp.disconnect(self.__round_temp_id)
 
-    def update(self, *_):
-        if self.conf.location_type.value == WeatherLocationTypes.IP:
-            self.conf.location.value = get_public_ip()
-
-        cnt = get(
-            self.url.format(self.conf.api_key.value, self.conf.location.value)
-        ).json()
-
+    def __on_updated(self, cnt):
+        cnt = cnt.json()
         if self.conf.unit.value == WeatherUnits.CENTIGRADE:
             self.temp = cnt["current"]["temp_c"]
         elif self.conf.unit.value == WeatherUnits.FAHRENHEIT:
@@ -61,8 +55,17 @@ class FreeWeather(Object):
         )
         self.emit("changed")
 
+    def update(self, *_):
+        if self.conf.location_type.value == WeatherLocationTypes.IP:
+            self.conf.location.value = get_public_ip()
+
+        download(
+            self.url.format(self.conf.api_key.value, self.conf.location.value),
+            self.__on_updated,
+        )
+
     def __on_icon_loaded(self, contents):
-        self.paintable = Gdk.Texture.new_from_bytes(GLib.Bytes.new(contents))
+        self.paintable = Gdk.Texture.new_from_bytes(GLib.Bytes.new(contents.content))
         self.emit("changed")
 
 
