@@ -15,8 +15,8 @@ Maybe i'll add more things to this list
 - GcrPrompter for gnome keyring
 - To-do list
 - ~~Notifications~~
-- Add card, bordered and box-10 to box in quicksliders
+- ~~Add card, bordered and box-10 to box in quicksliders~~
 - Fix all devices active in QuickBluetoothMenu
-- Weather to bar or quicksettings
+- ~~Weather to bar or quicksettings~~
 - Shell and hyprland config manager
 - ~~Notification center~~
