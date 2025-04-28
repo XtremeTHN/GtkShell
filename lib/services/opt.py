@@ -25,10 +25,10 @@ class opt(GObject.GObject):
         self.settings_obj.connect("changed", self.__settings_changed)
         self.__settings_changed(None)
 
-    def on_change(self, function, once=False):
+    def on_change(self, function, once=False) -> int:
         if once is True:
             function(None)
-        self.connect("changed", function)
+        return self.connect("changed", function)
 
     def trigger(self):
         self.notify("value")
@@ -116,14 +116,6 @@ class Json(Watcher):
         self.logger.debug("Recieved event: %s", event)
         self.__read_content()
         self.emit("changed")
-
-    def stop(self):
-        """
-        Stops watching the file for changes and cancels any outstanding IO operations.
-        """
-        self.logger.info("Stopping...")
-        self.watcher.remove_watch(str(self.file_obj))
-        self.cancellable.cancel()
 
     def get_opt(self, key, default=None):
         """

@@ -3,17 +3,22 @@ from lib.services.opt import Json, opt
 from lib.utils import Object
 
 
-class DefaultWindowConfig:
+class BaseConfig:
     def __init__(self, conf, _class):
         self.conf = conf
         self._class = _class.strip(".") + "."
 
+    def get_opt(self, key, default=None) -> opt:
+        return self.conf.get_opt(self._class + key, default=default)
+
+
+class DefaultWindowConfig(BaseConfig):
+    def __init__(self, conf, _class):
+        super().__init__(conf, _class)
+
         self.enabled = self.get_opt("enabled", default=True)
         self.show_on_start = self.get_opt("show-on-start", default=False)
         self.background_opacity = self.get_opt("background-opacity", default=1)
-
-    def get_opt(self, key, default=None) -> opt:
-        return self.conf.get_opt(self._class + key, default=default)
 
 
 class BarConfig(DefaultWindowConfig):
@@ -56,6 +61,35 @@ class AppLauncherConfig(DefaultWindowConfig):
         self.search_delay = self.get_opt("search-delay", default=500)
 
 
+class WeatherProviders:
+    FREEWEATHER = "freeweather"
+    OPENWEATHER = "openweather"
+
+
+class WeatherLocationTypes:
+    IP = "ip"
+    CITY = "city"
+    COORDINATES = "coordinates"
+
+
+class WeatherUnits:
+    CENTIGRADE = "centigrade"
+    FAHRENHEIT = "fahrenheit"
+
+
+class WeatherConfig(BaseConfig):
+    def __init__(self, conf):
+        super().__init__(conf, "weather")
+        self.api_key = self.get_opt("api-key")
+        self.provider = self.get_opt("provider", default=WeatherProviders.FREEWEATHER)
+        self.location_type = self.get_opt(
+            "location-type", default=WeatherLocationTypes.IP
+        )
+        self.location = self.get_opt("location")
+        self.unit = self.get_opt("unit", default=WeatherUnits.CENTIGRADE)
+        self.round_temp = self.get_opt("round-temp", default=True)
+
+
 class Config(Object):
     def __init__(self):
         self.conf = Json(JSON_CONFIG_PATH)
@@ -63,5 +97,6 @@ class Config(Object):
         self.applauncher = AppLauncherConfig(self.conf)
         self.notifications = NotificationsConfig(self.conf)
         self.quicksettings = QuickSettingsConfig(self.conf)
+        self.weather = WeatherConfig(self.conf)
 
         self.wallpaper = self.conf.get_opt("background.wallpaper")

@@ -2,6 +2,7 @@ from gi.repository import Adw, Astal, Gdk, GLib, Gtk
 
 from lib.config import Config
 from lib.logger import getLogger
+from lib.services.weather import Weather
 from widgets.custom.box import Box
 from widgets.custom.widget import CustomizableWidget
 from widgets.quick.buttons.audio import QuickMixer
@@ -44,8 +45,34 @@ class Uptime(Gtk.Label):
         self.set_label(string.strip(","))
 
 
+class WeatherWidget(Box):
+    def __init__(self):
+        super().__init__(
+            vertical=False,
+            spacing=0,
+            halign=Gtk.Align.END,
+            valign=Gtk.Align.CENTER,
+        )
+        self.weather = Weather.get_default()
+
+        self.icon = Gtk.Image(pixel_size=42)
+        labels_box = Box(vertical=True, valign=Gtk.Align.CENTER)
+        self.condition = Gtk.Label(xalign=1)
+        self.temp = Gtk.Label(xalign=1)
+        labels_box.append_all([self.condition, self.temp])
+
+        self.append_all([labels_box, self.icon])
+        self.weather.manager.connect("changed", self.__update_weather)
+
+    def __update_weather(self, *_):
+        self.condition.set_label(self.weather.manager.condition)
+        self.temp.set_label(f"{self.weather.manager.temp}°")
+        if self.weather.manager.paintable is not None:
+            self.icon.set_from_paintable(self.weather.manager.paintable)
+
+
 class MainPage(Box):
-    def __init__(self, stack):
+    def __init__(self, stack, win):
         super().__init__(vertical=True, spacing=10)
 
         self.config: Config = Config.get_default()
@@ -54,14 +81,22 @@ class MainPage(Box):
 
         # Top part of the window
         self.top = Box(css_classes=["card", "box-10"], spacing=10)
-        self.label_box = Box(vertical=True, spacing=0, css_classes=["quick-labels"])
+        self.label_box = Box(
+            vertical=True,
+            spacing=0,
+            css_classes=["quick-labels"],
+            valign=Gtk.Align.CENTER,
+        )
 
         self.pfp = Adw.Avatar(size=48)
         self.name = Gtk.Label(css_classes=["quick-name"], xalign=0)
         self.uptime = Uptime()
+        self.uptime.set_hexpand(True)
+
+        self.weather = WeatherWidget()
 
         self.label_box.append_all([self.name, self.uptime])
-        self.top.append_all([self.pfp, self.label_box])
+        self.top.append_all([self.pfp, self.label_box, self.weather])
 
         # Center box
         self.center = Box(css_classes=["card", "box-10"], spacing=10, vertical=True)
@@ -92,8 +127,12 @@ class MainPage(Box):
         self.config.quicksettings.profile_picture.on_change(
             self.__update_pfp, once=True
         )
+        win.connect("notify::visible", self.__update_weather)
 
         self.append_all([self.top, self.center, self.end])
+
+    def __update_weather(self, *_):
+        self.weather.weather.manager.update()
 
     def _update_name(self, *_):
         usr = self.config.quicksettings.quick_username
@@ -123,7 +162,7 @@ class MainPage(Box):
 
 
 class QuickSettingsContent(Gtk.Stack, CustomizableWidget):
-    def __init__(self):
+    def __init__(self, win):
         Gtk.Stack.__init__(
             self,
             css_classes=["quicksettings-content"],
@@ -133,7 +172,7 @@ class QuickSettingsContent(Gtk.Stack, CustomizableWidget):
         self.config = Config.get_default()
         self.background_opacity = self.config.quicksettings.background_opacity
 
-        self.main_page = MainPage(self)
+        self.main_page = MainPage(self, win)
 
         self.background_opacity.on_change(self.change_opacity, once=True)
         self.add_named(self.main_page, "main")
@@ -153,7 +192,7 @@ class QuickSettings(Astal.Window):
             resizable=False,
         )
         _conf = Config.get_default().quicksettings
-        self.content = QuickSettingsContent()
+        self.content = QuickSettingsContent(self)
         self.set_child(self.content)
 
         self.connect("notify::visible", self.content.main_page._update_uptime)
