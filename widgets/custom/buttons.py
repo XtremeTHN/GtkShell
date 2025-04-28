@@ -1,4 +1,5 @@
-from gi.repository import Gtk, GObject
+from gi.repository import GObject, Gtk
+
 from widgets.custom.box import Box
 
 
@@ -31,16 +32,6 @@ class QuickButton(Box):
         self.overlay = Gtk.Overlay.new()
         self.button = Gtk.Button(css_classes=["quickbutton", "toggle-button"])
 
-        if has_menu:
-            self.right_button = Gtk.Button(
-                css_classes=["quickbutton-right"],
-                halign=Gtk.Align.END,
-                icon_name="go-next-symbolic",
-            )
-
-            self.right_button.connect("clicked", self.toggle_menu)
-
-
         self.button_content = Box(spacing=10)
         self._label_box = Box(spacing=0, vertical=True)
         self.heading = Gtk.Label(
@@ -57,8 +48,16 @@ class QuickButton(Box):
 
         self.overlay.set_child(self.button)
         if has_menu:
+            self.right_button = Gtk.Button(
+                css_classes=["quickbutton-right"],
+                halign=Gtk.Align.END,
+                icon_name="go-next-symbolic",
+            )
+
+            self.right_button.connect("clicked", self.toggle_menu)
+
             self.overlay.add_overlay(self.right_button)
-        self.overlay.set_measure_overlay(self.right_button, True)
+            self.overlay.set_measure_overlay(self.right_button, True)
 
         self.button.connect("clicked", self.__on_click)
 
@@ -97,7 +96,16 @@ class QuickButton(Box):
 
 
 class QuickUtilButton(QuickButton):
-    def __init__(self, icon, header, default_subtitle, object, watch_property, has_menu=True, cb=None):
+    def __init__(
+        self,
+        icon,
+        header,
+        default_subtitle,
+        object,
+        watch_property,
+        has_menu=True,
+        cb=None,
+    ):
         super().__init__(icon, header, default_subtitle, has_menu=has_menu)
         cb = cb or self.__on_change
 

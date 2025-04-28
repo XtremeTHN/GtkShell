@@ -12,8 +12,18 @@ class QuickDndButton(QuickUtilButton):
             default_subtitle="Off",
             watch_property="dont-disturb",
             object=AstalNotifd.get_default(),
+            has_menu=False,
             cb=self.__on_changed,
         )
+
+        self.connect("activated", self.on_activate)
+        self.connect("deactivated", self.on_deactivate)
+
+    def on_activate(self, _):
+        self.object.set_dont_disturb(True)
+
+    def on_deactivate(self, _):
+        self.object.set_dont_disturb(False)
 
     def __on_changed(self, *_):
         if self.object.props.dont_disturb:
