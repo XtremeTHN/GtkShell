@@ -90,9 +90,27 @@ class WeatherConfig(BaseConfig):
         self.round_temp = self.get_opt("round-temp", default=True)
 
 
+class LogWatcherConfig(BaseConfig):
+    def __init__(self, conf):
+        super().__init__(conf, "log.watcher")
+        self.show_stop_messages = self.get_opt("show-stop-messages", default=True)
+        self.show_json_event_messages = self.get_opt(
+            "show-json-event-messages", default=True
+        )
+
+
+class LogConfig(BaseConfig):
+    def __init__(self, conf):
+        super().__init__(conf, "log")
+        self.watcher = LogWatcherConfig(conf)
+        self.level = self.get_opt("level", default="info")
+
+
 class Config(Object):
     def __init__(self):
         self.conf = Json(JSON_CONFIG_PATH)
+        self.log = LogConfig(self.conf)
+
         self.bar = BarConfig(self.conf)
         self.applauncher = AppLauncherConfig(self.conf)
         self.notifications = NotificationsConfig(self.conf)

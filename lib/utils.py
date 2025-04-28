@@ -25,7 +25,6 @@ class Watcher(GObject.Object, Task):
         self._name = path
 
     def stop(self):
-        self.logger.info("[%s] Stopping...", self._name)
         self.cancellable.cancel()
 
     def __run(self):

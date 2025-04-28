@@ -113,7 +113,6 @@ class Json(Watcher):
             self.logger.exception("Failed to parse json")
 
     def __on_event(self, _, event):
-        self.logger.debug("Recieved event: %s", event)
         self.__read_content()
         self.emit("changed")
 
