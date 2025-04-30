@@ -16,17 +16,28 @@ class MusicPopover(Gtk.Popover):
     def __init__(self, player=None):
         super().__init__(has_arrow=False)
         self.player = player
+        self._initialize_ui()
+
+    def _initialize_ui(self):
         self.set_size_request(350, 150)
         self.set_offset(0, 8)
 
-        ovrl = Gtk.Overlay()
+        overlay = Gtk.Overlay()
+        self._setup_background(overlay)
+        self._setup_content(overlay)
+
+        self.set_child(overlay)
+
+    def _setup_background(self, overlay):
         self.background = Gtk.Picture(
             content_fit=Gtk.ContentFit.COVER, vexpand=False, hexpand=False
         )
         frame = Gtk.Frame(child=self.background)
         transparency = Box(css_classes=["music-popover-content"])
-        ovrl.set_child(Box())
+        overlay.add_overlay(frame)
+        overlay.add_overlay(transparency)
 
+    def _setup_content(self, overlay):
         content = Box(
             vertical=True,
             spacing=10,
@@ -34,35 +45,36 @@ class MusicPopover(Gtk.Popover):
             halign=Gtk.Align.CENTER,
         )
 
+        info = self._create_info_section()
+        controllers = self._create_controller_section()
+
+        content.append_all([info, controllers])
+        overlay.add_overlay(content)
+
+    def _create_info_section(self):
         info = Box(vertical=True, spacing=0)
         self.title = Gtk.Label(css_classes=["title-2"])
         self.artist = Gtk.Label()
         info.append_all([self.title, self.artist])
+        return info
 
+    def _create_controller_section(self):
         controllers = Box(spacing=10, halign=Gtk.Align.CENTER)
-        play_btt = Gtk.Button(
-            icon_name="media-playback-start-symbolic", tooltip_text="Play"
-        )
-        prev_btt = Gtk.Button(
-            icon_name="media-skip-backward-symbolic", tooltip_text="Previous"
-        )
-        next_btt = Gtk.Button(
-            icon_name="media-skip-forward-symbolic", tooltip_text="Next"
-        )
-        controllers.append_all([prev_btt, play_btt, next_btt])
+        play_button = self._create_button("media-playback-start-symbolic", "Play")
+        prev_button = self._create_button("media-skip-backward-symbolic", "Previous")
+        next_button = self._create_button("media-skip-forward-symbolic", "Next")
+        controllers.append_all([prev_button, play_button, next_button])
+        return controllers
 
-        content.append_all([info, controllers])
-        ovrl.add_overlay(frame)
-        ovrl.add_overlay(transparency)
-        ovrl.add_overlay(content)
-
-        self.set_child(ovrl)
+    @staticmethod
+    def _create_button(icon_name, tooltip_text):
+        return Gtk.Button(icon_name=icon_name, tooltip_text=tooltip_text)
 
     def set_player(self, player):
         self.player: AstalMpris.Player = player
 
     def update_info(self):
-        if self.get_visible() is False:
+        if not self.get_visible():
             return
 
         self.background.set_filename(self.player.props.cover_art)
