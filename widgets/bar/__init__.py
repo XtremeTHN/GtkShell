@@ -29,7 +29,7 @@ class BarContent(Gtk.CenterBox, CustomizableWidget):
         # Right side
         self.right_box = Box(spacing=10)
 
-        self.music = Music(_class=["bar-container"])
+        self.music = Music(_class=["bar-container", "clickable"])
         self.date_widget = Gtk.Label(css_classes=["bar-container"])
 
         self.quickicons = Box(spacing=10, css_classes=["bar-container"])

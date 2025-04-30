@@ -1,4 +1,5 @@
-from gi.repository import Gtk, GObject, AstalWp, AstalBattery, AstalBluetooth
+from gi.repository import AstalBattery, AstalBluetooth, AstalWp, GObject, Gtk
+
 from lib.logger import getLogger
 from lib.network import NWrapper
 

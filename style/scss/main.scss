@@ -72,6 +72,16 @@
     transition: all 0.2s;
 }
 
+.clickable {
+    &:hover {
+        background-color: color-mix(in srgb, currentColor 15%, transparent);
+    }
+    &:active {
+        background-color: color-mix(in srgb, currentColor 30%, transparent);
+    }
+    transition: all 0.2s;
+}
+
 * {
     font-family: 'JetBrains Mono Nerd Font';
     font-weight: 600;
