@@ -8,7 +8,7 @@ meson setup build
 meson install -C build
 ```
 
-Install the project in pip only if you want autocompletions
+Install the project in pip only if you want autocompletions<br>
 Via pip (execute this in the root directory of the repo):
 ```bash
 pip install .
