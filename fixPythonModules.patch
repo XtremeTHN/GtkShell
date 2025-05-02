@@ -1,0 +1,13 @@
+diff --git a/xtreme_shell/meson.build b/xtreme_shell/meson.build
+index 904de73..4489230 100644
+--- a/xtreme_shell/meson.build
++++ b/xtreme_shell/meson.build
+@@ -2,7 +2,7 @@ pkgdatadir = get_option('prefix') / get_option('datadir')
+ moduledir = pkgdatadir / meson.project_name()
+ 
+ python = import('python')
+-python_i = python.find_installation('python3', modules: ['gi', 'inotify', 'requests'])
++python_i = python.find_installation('python3')
+ 
+ conf = configuration_data()
+ conf.set('VERSION', meson.project_version())

@@ -185,3 +185,6 @@ style.css
 style.css.map
 installation
 builddir
+
+# Nix
+result
