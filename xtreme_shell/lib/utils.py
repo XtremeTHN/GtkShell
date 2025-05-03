@@ -21,7 +21,11 @@ class Watcher(GObject.Object, Task):
         self.watcher = Inotify()
 
     def add_watch(self, path, mask=IN_MODIFY):
-        self.watcher.add_watch(path, mask=mask)
+        try:
+            self.watcher.add_watch(path, mask=mask)
+        except Exception:
+            self.logger.exception("Failed to add watch for %s", path)
+            return
         self._name = path
 
     def stop(self):

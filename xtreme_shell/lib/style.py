@@ -1,11 +1,11 @@
 from subprocess import DEVNULL, PIPE, Popen, check_call
 
-from .constants import CONFIG_DIR
+from .constants import SOURCE_DIR
 from .utils import Watcher
 
 
 class Style:
-    STYLES_DIR = CONFIG_DIR / "style"
+    STYLES_DIR = SOURCE_DIR / "style"
 
     def compile_scss():
         try:
