@@ -1,0 +1,207 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "type": "object",
+    "properties": {
+      "notifications": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "default": true
+          },
+          "show-on-start": {
+            "type": "boolean",
+            "default": false
+          },
+          "background-opacity": {
+            "type": "number",
+            "default": 1,
+            "minimum": 0,
+            "maximum": 1
+          },
+          "default-expire-timeout": {
+            "type": "number",
+            "default": 6000
+          },
+          "center": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean",
+                "default": true
+              },
+              "show-on-start": {
+                "type": "boolean",
+                "default": false
+              },
+              "background-opacity": {
+                "type": "number",
+                "default": 1,
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          }
+        }
+      },
+      "bar": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "default": true
+          },
+          "show-on-start": {
+            "type": "boolean",
+            "default": false
+          },
+          "background-opacity": {
+            "type": "number",
+            "default": 1,
+            "minimum": 0,
+            "maximum": 1
+          },
+          "fallback-name": {
+            "type": "string",
+            "default": "ArchLinux"
+          },
+          "music": {
+            "type": "object",
+            "properties": {
+              "player": {
+                "type": "string",
+                "default": "spotify"
+              },
+              "transparency": {
+                "type": "number",
+                "default": 0.8,
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          }
+        }
+      },
+      "quicksettings": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "default": true
+          },
+          "show-on-start": {
+            "type": "boolean",
+            "default": false
+          },
+          "background-opacity": {
+            "type": "number",
+            "default": 1,
+            "minimum": 0,
+            "maximum": 1
+          },
+          "profile-picture": {
+            "type": "string"
+          },
+          "quick-username": {
+            "type": "string"
+          },
+          "bluetooth": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "show-no-name": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        }
+      },
+      "applauncher": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "default": true
+          },
+          "show-on-start": {
+            "type": "boolean",
+            "default": false
+          },
+          "background-opacity": {
+            "type": "number",
+            "default": 1,
+            "minimum": 0,
+            "maximum": 1
+          },
+          "search-delay": {
+            "type": "number",
+            "default": 500
+          }
+        }
+      },
+      "weather": {
+        "type": "object",
+        "properties": {
+          "api-key": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string",
+            "enum": ["freeweather", "openweather"],
+            "default": "freeweather"
+          },
+          "location-type": {
+            "type": "string",
+            "enum": ["ip", "city", "coordinates"],
+            "default": "ip"
+          },
+          "location": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string",
+            "enum": ["centigrade", "fahrenheit"],
+            "default": "centigrade"
+          },
+          "round-temp": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "log": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": ["info", "warn", "error"],
+            "default": "info"
+          },
+          "watcher": {
+            "type": "object",
+            "properties": {
+              "show-stop-messages": {
+                "type": "boolean",
+                "default": true
+              },
+              "show-json-event-messages": {
+                "type": "boolean",
+                "default": true
+              }
+            }
+          }
+        }
+      },
+      "background": {
+        "type": "object",
+        "properties": {
+          "wallpaper": {
+            "type": "string"
+          }
+        }
+      }
+    }
+}
