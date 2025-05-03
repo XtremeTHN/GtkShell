@@ -177,7 +177,7 @@
         "properties": {
           "level": {
             "type": "string",
-            "enum": ["info", "warn", "error"],
+            "enum": ["info", "warning", "error", "debug"],
             "default": "info"
           },
           "watcher": {
