@@ -7,7 +7,7 @@ init()
 from gi.repository import Astal, Gio  # noqa: E402
 
 from .lib.config import Config  # noqa: E402
-from .lib.constants import CONFIG_DIR, SOURCE_DIR  # noqa: E402
+from .lib.constants import SOURCE_DIR  # noqa: E402
 from .lib.logger import getLogger  # noqa: E402
 from .lib.style import Style  # noqa: E402
 from .lib.task import Task  # noqa: E402
@@ -36,8 +36,7 @@ class ShellApp(Astal.Application):
 
     def reload(self, *_):
         self.logger.debug("Applying css...")
-        Style.compile_scss()
-        self.apply_css(str(CONFIG_DIR / "style/style.css"), True)
+        self.apply_css(Style.compile_scss(), True)
 
     def add_if_enabled(self, window_class):
         if hasattr(window_class, "is_enabled") is False:
@@ -62,6 +61,7 @@ class ShellApp(Astal.Application):
         self.add_if_enabled(NotificationCenter)
         self.add_if_enabled(ApplicationLauncher)
         self.add_if_enabled(QuickSettings)
+        self.reload()
 
 
 def run(args):
