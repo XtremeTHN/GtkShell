@@ -21,7 +21,6 @@
       nativeBuildInputs = with pkgs; [
         meson
         ninja
-        # makeWrapper
         wrapGAppsHook
       ];
 
@@ -58,7 +57,7 @@
       doCheck = false;
       dontWrapGApps = true;
       mesonFlags = [
-        "-Dudevrules=usr/lib/udev/rules.d"
+        "-Dudevrules=lib/udev/rules.d"
       ];
 
       patches = [
