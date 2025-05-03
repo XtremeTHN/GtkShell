@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import TypeVar
 
 from gi.repository import GObject
+
 from xtreme_shell.lib.logger import getLogger
 from xtreme_shell.lib.utils import Watcher
 
@@ -90,6 +91,7 @@ class Json(Watcher):
         """
         super().__init__()
         self.logger = getLogger("Watcher (Json)")
+        (file_obj.parent / "scss").mkdir(parents=True, exist_ok=True)
 
         if file_obj.is_file() is False:
             file_obj.write_text("{}")
