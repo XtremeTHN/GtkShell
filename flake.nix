@@ -57,11 +57,11 @@
       doCheck = false;
       dontWrapGApps = true;
       mesonFlags = [
-        "-Dudevrules=lib/udev/rules.d"
+        "-Dudevrules=etc/udev/rules.d"
       ];
 
       patches = [
-        ./fixPythonModules.patch
+        ./nix/fixPythonModules.patch
       ];
 
       preFixup = ''
