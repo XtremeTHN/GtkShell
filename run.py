@@ -25,4 +25,7 @@ if os.path.exists("build") is False or (r := "-r" in sys.argv) is True:
 
 exec(["meson", "install"], cwd="build", stdout=QUIET)
 if "-b" not in sys.argv:
-    exec(["./installation/bin/shell"])
+    try:
+        exec(["./installation/bin/shell"])
+    except:
+        pass
