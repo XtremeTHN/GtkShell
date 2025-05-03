@@ -44,7 +44,8 @@
         apps
         notifd
         network
-
+        
+        pkgs.coreutils
         pkgs.dart-sass  
         pkgs.gobject-introspection
         pkgs.networkmanager
@@ -61,6 +62,11 @@
       ];
 
       patches = [
+        (pkgs.substituteAll {
+          src = ./nix/fixUdevRules.patch;
+          chgrp = "${pkgs.coreutils}/bin/chgrp";
+          chmod = "${pkgs.coreutils}/bin/chmod";
+         })
         ./nix/fixPythonModules.patch
       ];
 
