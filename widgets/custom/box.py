@@ -1,6 +1,7 @@
 from gi.repository import GObject, Gtk
 
 from lib.utils import getLogger
+from widgets.custom.widget import CustomizableWidget
 
 
 class Box(Gtk.Box):
@@ -188,3 +189,14 @@ class QuickMenu(Box):
     def titlebar_pack_end(self, child):
         child.set_halign(Gtk.Align.END)
         self.__top_end.append(child)
+
+
+class ColoredBox(Box, CustomizableWidget):
+    def __init__(self, color: str, **kwargs):
+        """
+        A box with a background color.
+        :param color: The background color of the box. Use the namespace colors for accessing matugen-generated colors.
+        """
+        Box.__init__(self, **kwargs)
+        CustomizableWidget.__init__(self)
+        self.set_css(f"background-color: {color};")

@@ -1,7 +1,7 @@
-from subprocess import Popen, check_call, PIPE, DEVNULL
+from subprocess import DEVNULL, PIPE, Popen, check_call
 
-from lib.utils import Watcher
 from lib.constants import CONFIG_DIR
+from lib.utils import Watcher
 
 print("Copy/link the style directory to ~/.config/shell/style pls")
 

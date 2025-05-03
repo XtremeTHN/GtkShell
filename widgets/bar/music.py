@@ -1,8 +1,8 @@
-from gi.repository import AstalMpris, Gtk
+from gi.repository import AstalMpris, Gtk, Pango
 
 from lib.config import Config
 from lib.logger import getLogger
-from widgets.custom.box import Box
+from widgets.custom.box import Box, ColoredBox
 
 
 def to_minutes(seconds):
@@ -17,6 +17,7 @@ class MusicPopover(Gtk.Popover):
         super().__init__(has_arrow=False)
         self.player = None
         self.__signal_id = 0
+        self.conf = Config.get_default().bar.music
         self.set_player(player)
 
         self.set_size_request(350, 150)
@@ -27,7 +28,8 @@ class MusicPopover(Gtk.Popover):
             content_fit=Gtk.ContentFit.COVER, vexpand=False, hexpand=False
         )
         frame = Gtk.Frame(child=self.background)
-        transparency = Box(css_classes=["music-popover-content"])
+        transparency = ColoredBox("rgba(colors.$background, 0.8)")
+        transparency.set_background_opt(self.conf.transparency)
         overlay.add_overlay(frame)
         overlay.add_overlay(transparency)
 
@@ -39,7 +41,11 @@ class MusicPopover(Gtk.Popover):
         )
 
         info = Box(vertical=True, spacing=0)
-        self.title = Gtk.Label(css_classes=["title-2"])
+        self.title = Gtk.Label(
+            css_classes=["title-2"],
+            ellipsize=Pango.EllipsizeMode.MIDDLE,
+            max_width_chars=25,
+        )
         self.artist = Gtk.Label()
         info.append_all([self.title, self.artist])
 
@@ -115,11 +121,11 @@ class Music(Gtk.Label):
         self.popover = MusicPopover()
         self.popover.set_parent(self)
 
-        self.config: Config = Config.get_default()
+        self.config = Config.get_default().bar.music
         self.logger = getLogger("Music")
 
-        self._config_player = self.config.bar.music_player.value
-        self.config.bar.music_player.on_change(self.__change_player)
+        self._config_player = self.config.player.value
+        self.config.player.on_change(self.__change_player)
 
         self.player = AstalMpris.Player.new(self._config_player)
         self.popover.set_player(self.player)
@@ -149,7 +155,7 @@ class Music(Gtk.Label):
         return self.player.get_available()
 
     def __change_player(self, _):
-        self._config_player = self.config.bar.music_player.value
+        self._config_player = self.config.player.value
         self.logger.info("Changing player to %s...", self._config_player)
         self.player = AstalMpris.Player.new(self._config_player)
         self.popover.set_player(self.player)

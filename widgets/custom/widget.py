@@ -1,4 +1,5 @@
-from gi.repository import Astal, Gtk
+from gi.repository import Gtk
+
 from lib.logger import getLogger
 from lib.style import Style
 
@@ -6,8 +7,17 @@ from lib.style import Style
 class CustomizableWidget:
     def __init__(self, **kwargs):
         self.__provider = None
+        self.__bg_id = 0
         self.logger = getLogger(self.__class__.__name__)
         pass
+
+    def set_background_opt(self, opt):
+        if self.background_opacity is not None and self.__bg_id != 0:
+            self.background_opacity.disconnect(self.__bg_id)
+
+        self.background_opacity = opt
+        self.__bg_id = self.background_opacity.on_change(self.change_opacity)
+        self.change_opacity(None)
 
     def set_css(self, css_string: str):
         try:
