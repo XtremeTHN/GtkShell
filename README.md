@@ -1,6 +1,18 @@
 # GtkShell
 A gtk shell for my dots
 
+## Installation
+Via meson:
+```bash
+meson setup build
+meson install -C build
+```
+
+Via pip (execute this in the root directory of the repo):
+```bash
+pip install .
+```
+
 ## Configuration
 Create a file named `config.json` in `~/.config/shell`.
 Add `"$schema": "https://raw.githubusercontent.com/XtremeTHN/GtkShell/refs/heads/main/doc/schema.json"` if you want intellisense.
