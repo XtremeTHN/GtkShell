@@ -10,11 +10,14 @@ Link or copy the `styles` folder to `~/.config/shell/styles`.
 
 ## Window names
 Here's the window names and namespaces of the shell
-- notifications: astal-notifications
-- notification-center: astal-notif-center
-- applauncher: astal-apps
-- quicksettings: astal-quicksettings
-- topbar: astal-topbar
+
+| Window name         | Layer namespace     |
+|---------------------|---------------------|
+| notification-center | astal-notif-center  |
+| applauncher         | astal-apps          |
+| quicksettings       | astal-quicksettings |
+| topbar              | astal-topbar        |
+| notifications       | astal-notifications |
 
 ## TODO
 Maybe i'll add more things to this list
