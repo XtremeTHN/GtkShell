@@ -1,6 +1,13 @@
 # GtkShell
 A gtk shell for my dots
 
+## Configuration
+Create a file named `config.json` in `~/.config/shell`.
+Add `"$schema": "https://raw.githubusercontent.com/XtremeTHN/GtkShell/refs/heads/main/doc/schema.json"` if you want intellisense.
+
+## Styles
+Link or copy the `styles` folder to `~/.config/shell/styles`.
+
 ## Window names
 Here's the window names and namespaces of the shell
 - notifications: astal-notifications
