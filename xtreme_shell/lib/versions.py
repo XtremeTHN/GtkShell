@@ -12,7 +12,7 @@ def __require_astal_feats(feature: str | list[str], version="0.1"):
 
 
 def init():
-    gi.require_versions({"Astal": "4.0", "Adw": "1"})
+    gi.require_versions({"Astal": "4.0", "Adw": "1", "NM": "1.0"})
     from gi.repository import Adw  # type: ignore
 
     Adw.init()

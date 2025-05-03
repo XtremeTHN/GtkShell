@@ -12,7 +12,6 @@ DATA_DIR = os.path.join(PREFIX_DIR, "data")
 
 r = False
 if os.path.exists("build") is False or (r := "-r" in sys.argv) is True:
-    os.makedirs(os.path.join(DATA_DIR, "shell"), exist_ok=True)
     args = [
         "meson",
         "setup",

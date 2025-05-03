@@ -1,4 +1,4 @@
-pkgdatadir = get_option('prefix') / get_option('datadir') / meson.project_name()
+pkgdatadir = get_option('prefix') / get_option('datadir')
 moduledir = pkgdatadir / meson.project_name()
 
 python = import('python')
@@ -17,12 +17,13 @@ configure_file(
     install_mode: 'r-xr-xr-x'
 )
 
-shell_sources = [
+xtreme_shell_sources = [
     '__init__.py',
     'main.py'
 ]
 
-install_data(shell_sources, install_dir: moduledir)
+install_data(xtreme_shell_sources, install_dir: moduledir)
+install_subdir('style', install_dir: moduledir)
+
 subdir('lib')
-# subdir('style')
 subdir('widgets')

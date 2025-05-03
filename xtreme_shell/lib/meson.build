@@ -6,7 +6,6 @@ modules_sources = [
     'network.py',
     'logger.py',
     'task.py',
-    'constants.py',
     'bluetooth.py',
     'variable.py',
     'utils.py',
@@ -14,6 +13,15 @@ modules_sources = [
     'versions.py',
     'config.py',
 ]
+
+configure_file(
+    input: 'constants.in',
+    output: 'constants.py',
+    configuration: conf,
+    install: true,
+    install_dir: moduledir,
+    install_mode: 'r--r--r--'
+)
 
 install_data(modules_sources, install_dir: moduledir)
 

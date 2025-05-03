@@ -3,8 +3,6 @@ from subprocess import DEVNULL, PIPE, Popen, check_call
 from .constants import CONFIG_DIR
 from .utils import Watcher
 
-print("Copy/link the style directory to ~/.config/shell/style pls")
-
 
 class Style:
     STYLES_DIR = CONFIG_DIR / "style"
