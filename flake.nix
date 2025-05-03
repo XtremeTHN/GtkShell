@@ -62,8 +62,7 @@
       ];
 
       patches = [
-        (pkgs.substituteAll {
-          src = ./nix/fixUdevRules.patch;
+        (pkgs.replaceVars ./nix/fixUdevRules.patch {
           chgrp = "${pkgs.coreutils}/bin/chgrp";
           chmod = "${pkgs.coreutils}/bin/chmod";
          })
