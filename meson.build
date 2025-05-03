@@ -3,4 +3,4 @@ project( 'xtreme_shell',
             meson_version: '>= 1.0.0',
         )
 
-subdir('src')
+subdir('xtreme_shell')

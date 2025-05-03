@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xtreme_shell"
+version = "0.1.0"
+description = "A shell application built with GTK."
+authors = [
+    { name = "Axel", email = "axelandresvalles@gmail.com" }
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: POSIX :: Linux",
+]
+dependencies = [
+    "pygobject",
+    "inotify",
+    "requests"
+]
+
+[project.urls]
+Homepage = "https://example.com/GtkShell"
+Repository = "https://github.com/axel/GtkShell"
+
+[tool.setuptools]
+packages = ["xtreme_shell"]
