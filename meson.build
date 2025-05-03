@@ -4,3 +4,4 @@ project( 'xtreme_shell',
         )
 
 subdir('xtreme_shell')
+subdir('data')
