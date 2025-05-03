@@ -8,6 +8,7 @@ class CustomizableWidget:
     def __init__(self, **kwargs):
         self.__provider = None
         self.__bg_id = 0
+        self.background_opacity = None
         self.logger = getLogger(self.__class__.__name__)
         pass
 
@@ -36,6 +37,10 @@ class CustomizableWidget:
         ctx.add_provider(self.__provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
     def change_opacity(self, _):
+        """
+        Change the opacity of the background color.
+        You need to set the self.background_opacity attribute or call set_background_opt() to set it.
+        """
         self.set_css(
             f"background-color: rgba(colors.$background, {self.background_opacity.value});"
         )
