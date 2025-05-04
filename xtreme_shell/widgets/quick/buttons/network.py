@@ -1,4 +1,5 @@
 from gi.repository import AstalNetwork, Gtk
+
 from xtreme_shell.lib.network import NWrapper
 from xtreme_shell.widgets.custom.box import Box, QuickMenu
 from xtreme_shell.widgets.custom.buttons import QuickButton
@@ -147,3 +148,6 @@ class QuickNetwork(QuickButton):
                 self.subtitle.set_label("Connecting...")
             case _:
                 self.subtitle.set_label("Unknown state")
+
+        if self.wrapper.is_available() is False:
+            self.subtitle.set_label("No adapter")

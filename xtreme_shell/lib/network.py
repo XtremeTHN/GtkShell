@@ -62,7 +62,7 @@ class NWrapper(Object):
         else:
             self.__unbind_all()
             self.icon_name = "network-wireless-disabled-symbolic"
-            self.ssid = "Disconnected (No device)"
+            self.ssid = None
 
     def is_wired(self):
         if self.wired.get_state() != AstalNetwork.DeviceState.UNAVAILABLE:
@@ -71,6 +71,13 @@ class NWrapper(Object):
 
     def is_wifi(self):
         if self.wifi is not None:
+            return True
+        return False
+
+    def is_available(self):
+        if self.is_wifi():
+            return True
+        if self.is_wired():
             return True
         return False
 

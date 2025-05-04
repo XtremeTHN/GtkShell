@@ -1,5 +1,6 @@
-from gi.repository import Gdk, GLib
+from gi.repository import AstalNetwork, Gdk, GLib
 from requests import get
+
 from xtreme_shell.lib.config import (
     Config,
     WeatherLocationTypes,
@@ -7,19 +8,30 @@ from xtreme_shell.lib.config import (
     WeatherUnits,
 )
 from xtreme_shell.lib.logger import getLogger
+from xtreme_shell.lib.network import NWrapper
 from xtreme_shell.lib.task import Task
 from xtreme_shell.lib.utils import Object, get_signal_args
 
 
 def download(url, cb):
     def __down():
-        cb(get(url))
+        try:
+            cb(get(url))
+        except Exception as e:
+            getLogger("download").error(
+                f"Couldn't fetch information from '{url}' because {[str(x) for x in e.args]}"
+            )
 
     Task(__down).start()
 
 
 def get_public_ip():
-    return get("https://api.ipify.org").text
+    try:
+        return get("https://api.ipify.org").text
+    except Exception as e:
+        getLogger("get_public_ip").error(
+            f"Couldn't fetch public ip because {' '.join(e.args)}"
+        )
 
 
 class FreeWeather(Object):
@@ -29,6 +41,7 @@ class FreeWeather(Object):
         super().__init__()
         self.logger = getLogger("FreeWeather")
 
+        self.nm = NWrapper.get_default()
         self.conf = Config().get_default().weather
         self.url = "http://api.weatherapi.com/v1/current.json?key={}&q={}&aqi=no"
         self.temp = 0
@@ -70,14 +83,15 @@ class FreeWeather(Object):
         self.emit("changed")
 
     def update(self, *_):
-        location = self.conf.location.value
-        if self.conf.location_type.value == WeatherLocationTypes.IP:
-            location = get_public_ip()
+        if self.nm.net.get_state() == AstalNetwork.State.CONNECTED_GLOBAL:
+            location = self.conf.location.value
+            if self.conf.location_type.value == WeatherLocationTypes.IP:
+                location = get_public_ip()
 
-        download(
-            self.url.format(self.conf.api_key.value, location),
-            self.__on_updated,
-        )
+            download(
+                self.url.format(self.conf.api_key.value, location),
+                self.__on_updated,
+            )
 
     def __on_icon_loaded(self, contents):
         self.paintable = Gdk.Texture.new_from_bytes(GLib.Bytes.new(contents.content))
