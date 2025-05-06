@@ -2,14 +2,14 @@
 A gtk shell for my dots
 
 ## Installation
-Via meson:
+##### Meson:
 ```bash
 meson setup build
 meson install -C build
 ```
-
+##### Pip
 Install the project in pip only if you want autocompletions<br>
-Via pip (execute this in the root directory of the repo):
+Execute this in the root directory of the repo:
 ```bash
 pip install .
 ```
