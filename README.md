@@ -42,7 +42,6 @@ Create a file named `config.json` in `~/.config/shell`. And add this:
 Link or copy the `styles` folder to `~/.config/shell/styles`.
 
 ## Window names
-Here's the window names and namespaces of the shell
 
 | Window name         | Layer namespace     |
 |---------------------|---------------------|
