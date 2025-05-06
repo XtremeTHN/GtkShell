@@ -2,24 +2,6 @@
 A gtk shell for my dots
 
 ## Installation
-##### NixOS
-Add this repository to inputs in your nix flake
-```nix
-# flake.nix
-inputs.xtremeShell = {
-  url = "github:XtremeTHN/GtkShell;
-  inputs.nixpkgs.follows = "nixpkgs";
-};
-```
-Then add xtremeShell to the `home.packages` or `environment.systemPackages`.
-
-```nix
-# home.nix
-home.packages = [
-  inputs.xtremeShell.packages."x86_64-linux".default
-];
-```
-
 ##### Meson:
 ```bash
 meson setup build
@@ -30,6 +12,22 @@ Install the project in pip only if you want autocompletions<br>
 Execute this in the root directory of the repo:
 ```bash
 pip install .
+```
+##### NixOS
+Add this repository to inputs in your nix flake
+```nix
+# flake.nix
+inputs.xtremeShell = {
+  url = "github:XtremeTHN/GtkShell;
+  inputs.nixpkgs.follows = "nixpkgs";
+};
+```
+Then add xtremeShell to the `home.packages` or `environment.systemPackages`.
+```nix
+# home.nix
+home.packages = [
+  inputs.xtremeShell.packages."x86_64-linux".default
+];
 ```
 
 ## Configuration
