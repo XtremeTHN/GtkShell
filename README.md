@@ -2,6 +2,28 @@
 A gtk shell for my dots
 
 ## Installation
+##### NixOS
+Add this repository to inputs in your nix flake
+```nix
+# flake.nix
+{
+  inputs.xtremeShell = {
+    url = "github:XtremeTHN/GtkShell;
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+}
+```
+Then add xtremeShell to the `home.packages` or `environment.systemPackages`.
+
+```nix
+# home.nix
+{ pkgs } @inputs {
+  home.packages = [
+    inputs.xtremeShell.packages."x86_64-linux".default
+  ]
+}
+```
+
 ##### Meson:
 ```bash
 meson setup build
@@ -15,8 +37,12 @@ pip install .
 ```
 
 ## Configuration
-Create a file named `config.json` in `~/.config/shell`.
-Add `"$schema": "https://raw.githubusercontent.com/XtremeTHN/GtkShell/refs/heads/main/doc/schema.json"` if you want intellisense.
+Create a file named `config.json` in `~/.config/shell`. And add this:
+```json 
+{
+  "$schema": "https://raw.githubusercontent.com/XtremeTHN/GtkShell/refs/heads/main/doc/schema.json"
+}
+```
 
 ## Styles
 Link or copy the `styles` folder to `~/.config/shell/styles`.
