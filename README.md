@@ -17,7 +17,9 @@ Then add xtremeShell to the `home.packages` or `environment.systemPackages`.
 
 ```nix
 # home.nix
-{ pkgs } @inputs {
+{ pkgs } @inputs:
+
+{
   home.packages = [
     inputs.xtremeShell.packages."x86_64-linux".default
   ]
