@@ -6,24 +6,18 @@ A gtk shell for my dots
 Add this repository to inputs in your nix flake
 ```nix
 # flake.nix
-{
-  inputs.xtremeShell = {
-    url = "github:XtremeTHN/GtkShell;
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-}
+inputs.xtremeShell = {
+  url = "github:XtremeTHN/GtkShell;
+  inputs.nixpkgs.follows = "nixpkgs";
+};
 ```
 Then add xtremeShell to the `home.packages` or `environment.systemPackages`.
 
 ```nix
 # home.nix
-{ pkgs } @inputs:
-
-{
-  home.packages = [
-    inputs.xtremeShell.packages."x86_64-linux".default
-  ]
-}
+home.packages = [
+  inputs.xtremeShell.packages."x86_64-linux".default
+];
 ```
 
 ##### Meson:
