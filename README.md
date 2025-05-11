@@ -62,3 +62,5 @@ Maybe i'll add more things to this list
 - ~~Weather to bar or quicksettings~~
 - Shell and hyprland config manager
 - ~~Notification center~~
+- Fix wifi connect prompt
+- Add wifi qr support
