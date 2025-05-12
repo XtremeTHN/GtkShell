@@ -64,3 +64,4 @@ Maybe i'll add more things to this list
 - ~~Notification center~~
 - Fix wifi connect prompt
 - Add wifi qr support
+- Create an utility for sharing data between devices
