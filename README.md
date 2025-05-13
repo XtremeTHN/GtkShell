@@ -50,15 +50,18 @@ Create a file named `config.json` in `~/.config/shell`. And add this:
 
 ## TODO
 Maybe i'll add more things to this list
-- Greeter
-- GcrPrompter for gnome keyring
-- To-do list
-- ~~Notifications~~
-- ~~Add card, bordered and box-10 to box in quicksliders~~
-- Fix all devices active in QuickBluetoothMenu
-- ~~Weather to bar or quicksettings~~
-- Shell and hyprland config manager
-- ~~Notification center~~
-- Fix wifi connect prompt
-- Add wifi qr support
-- Create an utility for sharing data between devices
+
+| Task                                                 | Done |
+|------------------------------------------------------|------|
+| Greeter                                              |      |
+| GcrPrompter for gnome keyring unlocking              |      |
+| To-do list                                           |      |
+| Notifications                                        | ✓    |
+| Add card, bordered and box 10 to box in quicksliders | ✓    |
+| Fix all devices active in QuickBluetoothMenu         |      |
+| Weather in bar or quicksettings                      | ✓    |
+| Shell and hyprland config manager                    |      |
+| Notification center                                  | ✓    |
+| Fix wifi connect prompt                              |      |
+| Add wifi qr support                                  |      |
+| Create an utility for sharing data between devices   |      |
