@@ -38,9 +38,6 @@ Create a file named `config.json` in `~/.config/shell`. And add this:
 }
 ```
 
-## Styles
-Link or copy the `styles` folder to `~/.config/shell/styles`.
-
 ## Window names
 
 | Window name         | Layer namespace     |
