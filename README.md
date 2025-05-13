@@ -2,18 +2,18 @@
 A gtk shell for my dots
 
 ## Installation
-##### Meson:
+#### Meson:
 ```bash
 meson setup build
 meson install -C build
 ```
-##### Pip
+#### Pip
 Install the project in pip only if you want autocompletions<br>
 Execute this in the root directory of the repo:
 ```bash
 pip install .
 ```
-##### NixOS
+#### NixOS
 Add this repository to your flake inputs
 ```nix
 # flake.nix
