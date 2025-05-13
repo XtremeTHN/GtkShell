@@ -14,7 +14,7 @@ Execute this in the root directory of the repo:
 pip install .
 ```
 ##### NixOS
-Add this repository to your inputs in your nix flake
+Add this repository to your flake inputs
 ```nix
 # flake.nix
 inputs.xtremeShell = {
