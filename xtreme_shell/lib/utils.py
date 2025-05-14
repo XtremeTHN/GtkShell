@@ -4,6 +4,7 @@ from gi.repository import Gio, GLib, GObject, Gtk
 from inotify.adapters import Inotify
 from inotify.constants import IN_MODIFY
 
+from subprocess import Popen, PIPE
 from .logger import getLogger
 from .task import Task
 
@@ -78,7 +79,7 @@ def notify(title, message, log=True):
     GLib.spawn_command_line_async(f"notify-send '{title}' '{message}'")
 
 
-def get_signal_args(flags, args=()):
+def get_signal_args(flags="run-first", args=()):
     return (
         getattr(GObject.SignalFlags, flags.replace("-", "_").upper()),
         None,
@@ -88,3 +89,31 @@ def get_signal_args(flags, args=()):
 
 def lookup_icon(name: str):
     return Gtk.IconTheme().has_icon(name)
+
+class ExecAsync(GObject.GObject, Task):
+    __gsignals__ = {
+        "completed": get_signal_args(args=(str,)),
+        "error": get_signal_args(args=(str, int))
+    }
+    def __init__(self, args):
+        """
+        Execs a shell command in another thread, you need to start manually this thread
+        """
+        GObject.GObject.__init__(self)
+        Task.__init__(self, self.run)
+        self.proc = None
+        self.args = args
+
+    def stop(self):
+        self.proc.kill()
+
+    def run(self):
+        print(self.args)
+        self.proc = Popen(self.args, stdin=PIPE, stderr=PIPE)
+        print(self.args)
+
+        stdin, stderr = self.proc.communicate()
+        if self.proc.returncode > 0:
+            self.emit("error", stderr, self.proc.returncode)
+        else:
+            self.emit("completed", stdin)
