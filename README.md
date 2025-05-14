@@ -65,3 +65,4 @@ Maybe i'll add more things to this list
 | Fix wifi connect prompt                              |      |
 | Add wifi qr support                                  |      |
 | Create an utility for sharing data between devices   |      |
+| Fix double free when setting weather icon            |      |
