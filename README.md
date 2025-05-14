@@ -66,3 +66,5 @@ Maybe i'll add more things to this list
 | Add wifi qr support                                  |      |
 | Create an utility for sharing data between devices   |      |
 | Fix double free when setting weather icon (issue #1) |      |
+| Implement external modules                           |      |
+| Add a module that joins pdfs                         |      |
