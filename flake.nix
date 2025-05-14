@@ -10,49 +10,58 @@
   outputs = { self, nixpkgs, astal }: let
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
+
+    nativeBuildInputs = with pkgs; [
+      meson
+      ninja
+      wrapGAppsHook
+    ];
+
+    buildInputs = with astal.packages.${system}; [
+      io
+      astal4
+      battery
+      hyprland
+      wireplumber
+      mpris
+      tray
+      bluetooth
+      apps
+      notifd
+      network
+      
+      pkgs.coreutils
+      pkgs.dart-sass  
+      pkgs.gobject-introspection
+      pkgs.networkmanager
+      pkgs.gtk4
+      pkgs.gtk4-layer-shell
+      pkgs.libadwaita
+    ];
+
+    propagatedBuildInputs = [
+      (pkgs.python3.withPackages (ps: with ps; [
+        requests
+        inotify
+        pygobject3
+      ]))
+    ];
   in {
+    devShells.${system}.default = pkgs.mkShell {
+      venvDir = ".venv";
+      packages = nativeBuildInputs ++ buildInputs ++ propagatedBuildInputs ++ [
+        pkgs.python311.pkgs.venvShellHook
+        pkgs.pkg-config
+      ];
+    };
     packages.${system}.default = pkgs.python311Packages.buildPythonApplication rec {
       version = "0.1.0";
       pname = "xtreme_shell";
       name = "${pname}-${version}";
       pyproject = false;
       src = ./.;
-
-      nativeBuildInputs = with pkgs; [
-        meson
-        ninja
-        wrapGAppsHook
-      ];
-
-      propagatedBuildInputs = [
-        (pkgs.python3.withPackages (ps: with ps; [
-          requests
-          inotify
-          pygobject3
-        ]))
-      ];
-
-      buildInputs = with astal.packages.${system}; [
-        io
-        astal4
-        battery
-        hyprland
-        wireplumber
-        mpris
-        tray
-        bluetooth
-        apps
-        notifd
-        network
-        
-        pkgs.coreutils
-        pkgs.dart-sass  
-        pkgs.gobject-introspection
-        pkgs.networkmanager
-        pkgs.gtk4
-        pkgs.gtk4-layer-shell
-        pkgs.libadwaita
-      ];
+      
+      inherit nativeBuildInputs buildInputs propagatedBuildInputs;
 
       strictDeps = false;
       doCheck = false;
