@@ -6,6 +6,7 @@ modules_sources = [
     'network.py',
     'logger.py',
     'task.py',
+    'loader.py',
     'bluetooth.py',
     'variable.py',
     'utils.py',

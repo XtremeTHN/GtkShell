@@ -143,4 +143,6 @@ class Config(Object):
         self.quicksettings = QuickSettingsConfig(self.conf)
         self.weather = WeatherConfig(self.conf)
 
+        self.modules = self.conf.get_opt("modules", default=[])
+
         self.wallpaper = self.conf.get_opt("background.wallpaper")

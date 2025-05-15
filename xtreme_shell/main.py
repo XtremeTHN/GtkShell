@@ -1,12 +1,12 @@
 import argparse
 
 from .lib.versions import init
-
 init()
 
 from gi.repository import Astal, Gio  # noqa: E402
 
 from .lib.config import Config  # noqa: E402
+from .lib.loader import ModuleLoader
 from .lib.constants import SOURCE_DIR  # noqa: E402
 from .lib.logger import getLogger  # noqa: E402
 from .lib.style import Style  # noqa: E402
@@ -23,11 +23,12 @@ def get_from_list(index: int, _list):
 
 
 class ShellApp(Astal.Application):
-    def __init__(self, instance_name):
+    def __init__(self, instance_name, start_only_modules):
         super().__init__(instance_name=instance_name)
         self.logger = getLogger("ShellApp")
         self.conf = Config.get_default()
         self.add_icons(str(SOURCE_DIR / "icons"))
+        self.start_only_modules = start_only_modules
 
     def do_astal_application_request(
         self, msg: str, conn: Gio.SocketConnection
@@ -46,31 +47,48 @@ class ShellApp(Astal.Application):
             return
         if window_class.is_enabled() is True:
             self.add_window(window_class())
+    
+    def add_module_windows(self):
+        # Modules
+        loader = ModuleLoader()
+        modules = loader.load_from_config()
+        for mod in modules:
+            windows = mod.init(self)
+            if windows is None or len(windows) == 0:
+                self.logger.debug(f"Module {mod} didn't return any windows")
+                continue
+            else:
+                for win in windows:
+                    self.add_window(win)
 
     def do_activate(self) -> None:
         self.hold()
         self.reload()
         Style.watcher(self.reload)
 
-        # Multi-monitor windows
-        for m in self.get_monitors():
-            self.add_window(Bar(m))
+        if self.start_only_modules is False:
+            # Multi-monitor windows
+            for m in self.get_monitors():
+                self.add_window(Bar(m))
 
-        # Single-monitor windows
-        self.add_if_enabled(NotificationsWindow)
-        self.add_if_enabled(NotificationCenter)
-        self.add_if_enabled(ApplicationLauncher)
-        self.add_if_enabled(QuickSettings)
-        self.reload()
+            # Single-monitor windows
+            self.add_if_enabled(NotificationsWindow)
+            self.add_if_enabled(NotificationCenter)
+            self.add_if_enabled(ApplicationLauncher)
+            self.add_if_enabled(QuickSettings)
+            self.reload()
+
+        self.add_module_windows()
 
 
 def run(args):
-    parser = argparse.ArgumentParser(prog="gtk-shell", description="Astal Gtk Shell")
+    parser = argparse.ArgumentParser(prog="shell", description="Astal Gtk Shell")
     parser.add_argument("-i", "--instance", help="Instance name", default="astal")
     parser.add_argument("-p", "--procname", help="Process name", default="astal")
+    parser.add_argument("-m", "--start-only-modules", action="store_true", help="Only start modules windows", default=False)
     args = parser.parse_args(args)
 
-    app = ShellApp(args.instance)
+    app = ShellApp(args.instance, args.start_only_modules)
     if args.procname:
         from .lib.debug import set_proc_name
 

@@ -10,6 +10,11 @@
   outputs = { self, nixpkgs, astal }: let
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
+    python = (pkgs.python3.withPackages (ps: with ps; [
+      requests
+      inotify
+      pygobject3
+    ]));
 
     nativeBuildInputs = with pkgs; [
       meson
@@ -29,7 +34,8 @@
       apps
       notifd
       network
-      
+
+      python
       pkgs.coreutils
       pkgs.dart-sass  
       pkgs.gobject-introspection
@@ -39,18 +45,11 @@
       pkgs.libadwaita
     ];
 
-    propagatedBuildInputs = [
-      (pkgs.python3.withPackages (ps: with ps; [
-        requests
-        inotify
-        pygobject3
-      ]))
-    ];
   in {
     devShells.${system}.default = pkgs.mkShell {
       venvDir = ".venv";
-      packages = nativeBuildInputs ++ buildInputs ++ propagatedBuildInputs ++ [
-        pkgs.python311.pkgs.venvShellHook
+      packages = nativeBuildInputs ++ buildInputs ++ [
+        python.pkgs.venvShellHook
         pkgs.pkg-config
       ];
     };
@@ -61,7 +60,7 @@
       pyproject = false;
       src = ./.;
       
-      inherit nativeBuildInputs buildInputs propagatedBuildInputs;
+      inherit nativeBuildInputs buildInputs;
 
       strictDeps = false;
       doCheck = false;
@@ -81,6 +80,7 @@
       preFixup = ''
         makeWrapperArgs+=(--prefix LD_LIBRARY_PATH : "${pkgs.gtk4-layer-shell}/lib")
         makeWrapperArgs+=(--prefix PATH : "${pkgs.dart-sass}/bin")
+        makeWrapperArgs+=(--prefix PYTHONPATH : "${self}/${python.sitePackages}:$PYTHONPATH")
         makeWrapperArgs+=("''${gappsWrapperArgs[@]}")
       '';
     };
