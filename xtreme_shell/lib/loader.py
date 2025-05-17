@@ -2,10 +2,9 @@ import importlib.util
 import os
 
 from xtreme_shell.lib.config import Config
-from xtreme_shell.lib.constants import CONFIG_DIR
+from xtreme_shell.lib.constants import MODULES_DIR
 from xtreme_shell.lib.logger import getLogger
 
-MODULES_DIR = CONFIG_DIR / "modules"
 class ModuleLoader():
     def __init__(self):
         self.logger = getLogger("ModuleLoader")

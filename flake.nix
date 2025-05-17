@@ -14,6 +14,7 @@
       requests
       inotify
       pygobject3
+      pypdf
     ]));
 
     nativeBuildInputs = with pkgs; [
@@ -36,6 +37,7 @@
       network
 
       python
+      pkgs.poppler_gi
       pkgs.coreutils
       pkgs.dart-sass  
       pkgs.gobject-introspection
@@ -50,6 +52,7 @@
       venvDir = ".venv";
       packages = nativeBuildInputs ++ buildInputs ++ [
         python.pkgs.venvShellHook
+        python.pkgs.pygobject-stubs
         pkgs.pkg-config
       ];
     };

@@ -7,7 +7,7 @@ from gi.repository import Astal, Gio  # noqa: E402
 
 from .lib.config import Config  # noqa: E402
 from .lib.loader import ModuleLoader
-from .lib.constants import SOURCE_DIR  # noqa: E402
+from .lib.constants import SOURCE_DIR, MODULES_DIR  # noqa: E402
 from .lib.logger import getLogger  # noqa: E402
 from .lib.style import Style  # noqa: E402
 from .lib.task import Task  # noqa: E402
@@ -28,6 +28,7 @@ class ShellApp(Astal.Application):
         self.logger = getLogger("ShellApp")
         self.conf = Config.get_default()
         self.add_icons(str(SOURCE_DIR / "icons"))
+        self.add_icons(str(MODULES_DIR / "icons"))
         self.start_only_modules = start_only_modules
 
     def do_astal_application_request(
