@@ -1,5 +1,5 @@
 # GtkShell
-A gtk shell for my dots
+A gtk shell for my dots. This project is not finished, expect crashes.
 
 ## Installation
 #### Meson:
