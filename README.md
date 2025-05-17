@@ -2,6 +2,14 @@
 A gtk shell for my dots. This project is not finished, expect crashes.
 
 ## Installation
+You need the following packages (archlinux packages names):
+- `python`
+- `python-pygobject`
+- `python-inotify`
+- `python-requests`
+- `astal-meta (aur)`
+- `gtk4-layer-shell`
+
 #### Meson:
 ```bash
 meson setup build
