@@ -10,8 +10,11 @@ class ModuleLoader():
         self.logger = getLogger("ModuleLoader")
 
     def load_from_config(self):
-        m = Config.get_default().modules
-        return [self.load(x) for x in m.value]
+        m = Config.get_default().modules.value
+        if isinstance(m, dict) is False:
+            self.logger.error(f"Expected dictionary, got {type(m).__name__}. Refusing to load modules...")
+            return []
+        return [self.load(x) for x in m["files"]]
 
     def load(self, module_name):
         path = (MODULES_DIR / module_name / "main.py")

@@ -50,9 +50,9 @@
   in {
     devShells.${system}.default = pkgs.mkShell {
       venvDir = ".venv";
+      PYTHONPATH = ''${python}/${python.sitePackages}:$PYTHONPATH'';
       packages = nativeBuildInputs ++ buildInputs ++ [
         python.pkgs.venvShellHook
-        python.pkgs.pygobject-stubs
         pkgs.pkg-config
       ];
     };

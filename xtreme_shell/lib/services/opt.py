@@ -39,7 +39,10 @@ class opt(GObject.GObject):
         for key in self.keys:
             if key not in self._dict:
                 return
-            self._dict = self._dict[key]
+            try:
+                self._dict = self._dict[key]
+            except TypeError:
+                self.logger.error(f"Expected a dictionary, got '{type(self._dict).__name__}' while getting '{'.'.join(self.keys)}'")  
 
         return self._dict
 
@@ -51,7 +54,7 @@ class opt(GObject.GObject):
         )
         try:
             exec(python_line)
-        except:
+        except Exception:
             self.logger.exception("Failed to set value")
             self.logger.debug("formatted python line: %s", python_line)
 
