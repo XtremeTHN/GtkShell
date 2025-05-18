@@ -1,6 +1,7 @@
 import argparse
 
 from .lib.versions import init
+
 init()
 
 from gi.repository import Astal, Gio  # noqa: E402
@@ -48,7 +49,7 @@ class ShellApp(Astal.Application):
             return
         if window_class.is_enabled() is True:
             self.add_window(window_class())
-    
+
     def add_module_windows(self):
         # Modules
         loader = ModuleLoader()
@@ -86,7 +87,13 @@ def run(args):
     parser = argparse.ArgumentParser(prog="shell", description="Astal Gtk Shell")
     parser.add_argument("-i", "--instance", help="Instance name", default="astal")
     parser.add_argument("-p", "--procname", help="Process name", default="astal")
-    parser.add_argument("-m", "--start-only-modules", action="store_true", help="Only start modules windows", default=False)
+    parser.add_argument(
+        "-m",
+        "--start-only-modules",
+        action="store_true",
+        help="Only start modules windows",
+        default=False,
+    )
     args = parser.parse_args(args)
 
     app = ShellApp(args.instance, args.start_only_modules)

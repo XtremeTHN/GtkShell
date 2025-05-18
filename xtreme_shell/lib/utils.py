@@ -90,11 +90,13 @@ def get_signal_args(flags="run-first", args=()):
 def lookup_icon(name: str):
     return Gtk.IconTheme().has_icon(name)
 
+
 class ExecAsync(GObject.GObject, Task):
     __gsignals__ = {
         "completed": get_signal_args(args=(str,)),
-        "error": get_signal_args(args=(str, int))
+        "error": get_signal_args(args=(str, int)),
     }
+
     def __init__(self, args):
         """
         Execs a shell command in another thread, you need to start manually this thread

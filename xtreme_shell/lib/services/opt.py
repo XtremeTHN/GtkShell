@@ -42,7 +42,9 @@ class opt(GObject.GObject):
             try:
                 self._dict = self._dict[key]
             except TypeError:
-                self.logger.error(f"Expected a dictionary, got '{type(self._dict).__name__}' while getting '{'.'.join(self.keys)}'")  
+                self.logger.error(
+                    f"Expected a dictionary, got '{type(self._dict).__name__}' while getting '{'.'.join(self.keys)}'"
+                )
 
         return self._dict
 
