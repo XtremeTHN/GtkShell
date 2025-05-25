@@ -2,6 +2,7 @@ from gi.repository import AstalMpris, Gtk, Pango
 from xtreme_shell.lib.config import Config
 from xtreme_shell.lib.logger import getLogger
 from xtreme_shell.widgets.custom.box import Box, ColoredBox
+from xtreme_shell.widgets.custom.icons import BlurryImage
 
 
 def to_minutes(seconds):
@@ -23,7 +24,8 @@ class MusicPopover(Gtk.Popover):
         self.set_offset(0, 8)
 
         overlay = Gtk.Overlay()
-        self.background = Gtk.Picture(
+        self.background = BlurryImage(
+            blur=20,
             content_fit=Gtk.ContentFit.COVER, vexpand=False, hexpand=False
         )
         frame = Gtk.Frame(child=self.background)

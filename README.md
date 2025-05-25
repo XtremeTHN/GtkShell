@@ -77,4 +77,4 @@ Maybe i'll add more things to this list
 | Implement external modules                           | ✓    |
 | Add a module that joins pdfs                         |      |
 | Add blur to music art with GtkSnapshot.push_blur()   |      |
-| *Rewrite*                                            |     |
+| *Rewrite*                                            |      |

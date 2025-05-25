@@ -106,9 +106,6 @@ class BatteryIndicator(Gtk.Image):
         )
 
 
-# class BluetoothIndicator(Gtk.Image)
-
-
 class FramedImage(Gtk.Frame):
     def __init__(self, size: int, _class=[]):
         super().__init__(css_classes=["quickframe"])
@@ -124,3 +121,14 @@ class FramedImage(Gtk.Frame):
 
     def set_from_icon_name(self, icon_name):
         self.image.set_from_icon_name(icon_name)
+
+
+class BlurryImage(Gtk.Picture):
+    def __init__(self, blur=0, **kwargs):
+        super().__init__(**kwargs)
+        self.blur = blur
+
+    def do_snapshot(self, snapshot):
+        snapshot.push_blur(self.blur)
+        Gtk.Picture.do_snapshot(self, snapshot)
+        snapshot.pop()
