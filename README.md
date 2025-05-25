@@ -62,7 +62,7 @@ Maybe i'll add more things to this list
 | Task                                                              | Done |
 |-------------------------------------------------------------------|------|
 | Greeter                                                           |      |
-| GcrPrompter for gnome keyring unlocking ([GPrompter](https://github.com/XtremeTHN/GPrompt)| ✓    |
+| GcrPrompter for gnome keyring unlocking ([GPrompt](https://github.com/XtremeTHN/GPrompt))| ✓    |
 | To-do list                                                        |      |
 | Notifications                                                     | ✓    |
 | Add card, bordered and box 10 to box in quicksliders              | ✓    |
