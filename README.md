@@ -7,8 +7,8 @@ You need the following packages (archlinux packages names):
 - `python-pygobject`
 - `python-requests`
 - `gtk4-layer-shell`
-- `astal-meta (aur)`
-- `python-inotify (aur)`
+- `astal-meta`
+- `python-inotify`
 
 ### Meson:
 ```bash
@@ -75,6 +75,6 @@ Maybe i'll add more things to this list
 | Create an utility for sharing data between devices                |      |
 | Fix double free when setting weather icon (issue #1)              |      |
 | Implement external modules                                        | ✓    |
-| Add a module that joins pdfs ([ShellPlugins](XtremeTHN/GtkShell)) | ✓    |
+| Add a module that joins pdfs ([ShellPlugins](https://github.com/XtremeTHN/GtkShell)) | ✓    |
 | Add blur to music art with GtkSnapshot.push_blur()                | ✓    |
 | *Rewrite*                                                         |      |
