@@ -6,11 +6,13 @@ from xtreme_shell.widgets.custom.buttons import QuickUtilButton
 class QuickAppTray(Box):
     def __init__(self, item):
         super().__init__(spacing=10, css_classes=["false-button"])
+        icon = item.props.icon_name or "application-x-executable-symbolic"
+        name = item.props.title.title() or "Unknown Application"
         self.item = item
 
-        self.icon = Gtk.Image(icon_name=self.item.props.icon_name, pixel_size=24)
+        self.icon = Gtk.Image(icon_name=icon, pixel_size=24)
         self.menu = Gtk.PopoverMenu()
-        self.description = Gtk.Label(label=self.item.props.title.title())
+        self.description = Gtk.Label(label=name)
         self.gesture = Gtk.GestureSingle(button=0)
 
         self.item.connect("notify::menu-model", self.__new_menu)
