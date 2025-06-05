@@ -47,6 +47,9 @@ class QuickSettingsConfig(DefaultWindowConfig):
             "bluetooth.show-no-name", default=False
         )
 
+        # TODO: change this to a independent config class if more options are added
+        self.mixer_name_filter = self.get_opt("mixer.filter-names", default=["Audio Stream"])
+
 
 class NotificationCenterConfig(DefaultWindowConfig):
     def __init__(self, conf):

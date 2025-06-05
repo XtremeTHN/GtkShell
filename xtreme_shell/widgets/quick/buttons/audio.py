@@ -1,6 +1,7 @@
 from gi.repository import AstalWp, Gtk, Pango
 from xtreme_shell.widgets.custom.box import Box, QuickMenu
 from xtreme_shell.widgets.custom.buttons import QuickUtilButton
+from xtreme_shell.lib.config import Config
 
 
 class AppMixer(Box):
@@ -12,12 +13,16 @@ class AppMixer(Box):
             css_classes=["false-button", "box-10"],
         )
         self.stream = stream
+        conf = Config.get_default()
 
         app_box = Box(spacing=10, halign=Gtk.Align.CENTER)
         icon = Gtk.Image(icon_name=stream.get_icon(), pixel_size=24)
-        label = Gtk.Label(
-            label=stream.get_name(), wrap=True, ellipsize=Pango.EllipsizeMode.MIDDLE
-        )
+        label = Gtk.Label(wrap=True, ellipsize=Pango.EllipsizeMode.MIDDLE)
+
+        if stream.get_name() in conf.quicksettings.mixer_name_filter.value:
+            label.set_label(stream.get_description().title())
+        else:
+            label.set_label(stream.get_name())
 
         app_box.append_all([icon, label])
 
