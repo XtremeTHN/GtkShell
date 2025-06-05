@@ -58,23 +58,20 @@ Create a file named `config.json` in `~/.config/shell`. And add this:
 
 ## TODO
 Maybe i'll add more things to this list
-
-| Task                                                              | Done |
-|-------------------------------------------------------------------|------|
-| Greeter                                                           |      |
-| GcrPrompter for gnome keyring unlocking ([GPrompt](https://github.com/XtremeTHN/GPrompt))| ✓    |
-| To-do list                                                        |      |
-| Notifications                                                     | ✓    |
-| Add card, bordered and box 10 to box in quicksliders              | ✓    |
-| Fix all devices active in QuickBluetoothMenu                      |      |
-| Weather in bar or quicksettings                                   | ✓    |
-| Shell and hyprland config manager                                 |      |
-| Notification center                                               | ✓    |
-| Fix wifi connect prompt                                           |      |
-| Add wifi qr support                                               |      |
-| Create an utility for sharing data between devices                |      |
-| Fix double free when setting weather icon (issue #1)              |      |
-| Implement external modules                                        | ✓    |
-| Add a module that joins pdfs ([ShellPlugins](https://github.com/XtremeTHN/ShellPlugins)) | ✓    |
-| Add blur to music art with GtkSnapshot.push_blur()                | ✓    |
-| *Rewrite*                                                         |      |
+- [] Greeter
+- [x] GcrPrompter for gnome keyring unlocking ([GPrompt](https://github.com/XtremeTHN/GPrompt))
+- [] To-do list
+- [x] Notifications
+- [x] Add card, bordered and box 10 to box in quicksliders
+- [] Fix all devices active in QuickBluetoothMenu
+- [x] Weather in bar or quicksettings
+- [] Shell and hyprland config manager
+- [x] Notification center
+- [] Fix wifi connect prompt
+- [] Add wifi qr support
+- [] Create an utility for sharing data between devices
+- [] Fix double free when setting weather icon (issue #1)
+- [x] Implement external modules
+- [x] Add a module that joins pdfs ([ShellPlugins](https://github.com/XtremeTHN/ShellPlugins))
+- [x] Add blur to music art with GtkSnapshot.push_blur()
+- [] *Rewrite*
