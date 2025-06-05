@@ -58,20 +58,20 @@ Create a file named `config.json` in `~/.config/shell`. And add this:
 
 ## TODO
 Maybe i'll add more things to this list
-- [] Greeter
+- [ ] Greeter
 - [x] GcrPrompter for gnome keyring unlocking ([GPrompt](https://github.com/XtremeTHN/GPrompt))
-- [] To-do list
+- [ ] To-do list
 - [x] Notifications
 - [x] Add card, bordered and box 10 to box in quicksliders
-- [] Fix all devices active in QuickBluetoothMenu
+- [ ] Fix all devices active in QuickBluetoothMenu
 - [x] Weather in bar or quicksettings
-- [] Shell and hyprland config manager
+- [ ] Shell and hyprland config manager
 - [x] Notification center
-- [] Fix wifi connect prompt
-- [] Add wifi qr support
-- [] Create an utility for sharing data between devices
-- [] Fix double free when setting weather icon (issue #1)
+- [ ] Fix wifi connect prompt
+- [ ] Add wifi qr support
+- [ ] Create an utility for sharing data between devices
+- [ ] Fix double free when setting weather icon (issue #1)
 - [x] Implement external modules
 - [x] Add a module that joins pdfs ([ShellPlugins](https://github.com/XtremeTHN/ShellPlugins))
 - [x] Add blur to music art with GtkSnapshot.push_blur()
-- [] *Rewrite*
+- [ ] *Rewrite*
