@@ -10,17 +10,18 @@
   outputs = { self, nixpkgs, astal }: let
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
-    python = (pkgs.python3.withPackages (ps: with ps; [
-      requests
-      inotify
+    python = (pkgs.python311.withPackages (ps: with ps; [
       pygobject3
-      pypdf
+      rich
+      setproctitle
     ]));
 
     nativeBuildInputs = with pkgs; [
       meson
       ninja
       wrapGAppsHook
+      python
+      pkg-config
     ];
 
     buildInputs = with astal.packages.${system}; [
@@ -36,12 +37,9 @@
       notifd
       network
 
-      python
-      pkgs.poppler_gi
       pkgs.coreutils
-      pkgs.dart-sass  
+      pkgs.dart-sass
       pkgs.gobject-introspection
-      pkgs.networkmanager
       pkgs.gtk4
       pkgs.gtk4-layer-shell
       pkgs.libadwaita
@@ -50,35 +48,24 @@
   in {
     devShells.${system}.default = pkgs.mkShell {
       venvDir = ".venv";
-      PYTHONPATH = ''${python}/${python.sitePackages}:$PYTHONPATH'';
       packages = nativeBuildInputs ++ buildInputs ++ [
         python.pkgs.venvShellHook
         pkgs.pkg-config
+        pkgs.ruff
       ];
     };
     packages.${system}.default = pkgs.python311Packages.buildPythonApplication rec {
       version = "0.1.0";
-      pname = "xtreme_shell";
+      pname = "xtreme-shell";
       name = "${pname}-${version}";
       pyproject = false;
       src = ./.;
       
       inherit nativeBuildInputs buildInputs;
 
-      strictDeps = false;
+      strictDeps = true;
       doCheck = false;
       dontWrapGApps = true;
-      mesonFlags = [
-        "-Dudevrules=etc/udev/rules.d"
-      ];
-
-      patches = [
-        (pkgs.replaceVars ./nix/fixUdevRules.patch {
-          chgrp = "${pkgs.coreutils}/bin/chgrp";
-          chmod = "${pkgs.coreutils}/bin/chmod";
-         })
-        ./nix/fixPythonModules.patch
-      ];
 
       preFixup = ''
         makeWrapperArgs+=(--prefix LD_LIBRARY_PATH : "${pkgs.gtk4-layer-shell}/lib")

@@ -1,12 +1,24 @@
-from gi.repository import Astal, AstalIO, Gtk
-from modules.logger import init_logger
+from .modules.versions import init_libraries
+
+init_libraries()  # TODO: read __ini/t__.py todo msg
+
 from setproctitle import setproctitle
+
+setproctitle("shell")
+
+from .modules.logger import init_logger
+from .components.bar import Bar
+
 import argparse
+import logging
+
+from gi.repository import Astal, Adw
 
 
 class GtkShellApp(Astal.Application):
     def __init__(self):
-        super().__init__(application_id="com.github.XtremeTHN.GtkShell")
+        super().__init__()
+        self.logger = logging.getLogger("GtkShellApp")
 
     def parse_args(self, args=None):
         parser = argparse.ArgumentParser(
@@ -31,12 +43,23 @@ class GtkShellApp(Astal.Application):
 
         flags = parser.parse_args(args)
 
-        self.set_instance_name(flags.instance_name)
         setproctitle(flags.process_name)
 
+    def add_if_enabled(self, window_class):
+        if hasattr(window_class, "is_enabled") is False:
+            self.logger.warning(
+                f"{window_class.__name__} does not have a 'is_enabled()' method"
+            )
+            return
+
+        if window_class.is_enabled():
+            self.add_window(window_class())
+
     def do_activate(self):
-        self.hold()
+        Adw.init()
         init_logger()
+
+        self.add_if_enabled(Bar)
 
 
 def run(args):

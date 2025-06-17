@@ -1,5 +1,5 @@
 from gi.repository import GObject, AstalIO
-from modules.gobject import get_signal_args
+from xtreme_shell.modules.gobject import get_signal_args
 from pathlib import Path
 import logging
 import json
@@ -86,6 +86,8 @@ class Json(GObject.GObject):
             path (Path): Path to the JSON config file.
         """
         super().__init__()
+        if not isinstance(path, Path):
+            raise ValueError("Expected pathlib.Path")
         self.opts: list[opt] = []
         self.logger = logging.getLogger(f"Json({os.path.basename(path)})")
 
