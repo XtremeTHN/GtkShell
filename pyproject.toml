@@ -26,7 +26,5 @@ dependencies = [
 Homepage = "https://example.com/GtkShell"
 Repository = "https://github.com/axel/GtkShell"
 
-[tool.setuptools]
-packages = ["xtreme_shell"]
-packages.find.where = ["."]
-
+[tool.setuptools.packages.find]
+where = ["."]
