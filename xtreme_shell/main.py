@@ -1,11 +1,4 @@
-from .modules.versions import init_libraries
-
-init_libraries()  # TODO: read __ini/t__.py todo msg
-
 from setproctitle import setproctitle
-
-setproctitle("shell")
-
 from .modules.logger import init_logger
 from .components.bar import Bar
 
