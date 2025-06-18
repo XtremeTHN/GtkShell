@@ -1,5 +1,6 @@
+from xtreme_shell.modules.gobject import ReusableObject, get_signal_args
+from xtreme_shell.modules.constants import CONFIG_DIR
 from gi.repository import GObject, AstalIO
-from xtreme_shell.modules.gobject import get_signal_args
 from pathlib import Path
 import logging
 import json
@@ -57,10 +58,12 @@ class opt(GObject.GObject):
     def value(self, value):
         """
         Set the value of the option, enforcing type and default value.
+        If the new value equals the old value, the changed signal will not be emited
 
         Args:
             value: The new value to set.
         """
+        should_emit = value != self.__value 
         if value is None:
             if self.default is not None:
                 self.__value = self.default
@@ -75,9 +78,11 @@ class opt(GObject.GObject):
             return
 
         self.__value = value
+        if should_emit:
+            self.emit("changed")
+            self.notify("value")
 
-
-class Json(GObject.GObject):
+class Json(ReusableObject):
     __gsignals__ = {"changed": get_signal_args()}
 
     def __init__(self, path: Path):
@@ -123,7 +128,14 @@ class Json(GObject.GObject):
         self.__update_value(o)
         return o
 
-    def __get_nested_value(self, data, keys):
+    @classmethod
+    def get_default(cls):
+        if cls._instance is None:
+            cls._instance = cls(CONFIG_DIR / "config.json")
+        
+        return cls._instance
+
+    def _get_nested_value(self, data, keys):
         """
         Retrieve a nested value from a dictionary using a list of keys.
         """
@@ -139,7 +151,7 @@ class Json(GObject.GObject):
         value = None
         content = content or self.read()
         try:
-            value = self.__get_nested_value(content, opt.key.split("."))
+            value = self._get_nested_value(content, opt.key.split("."))
         except KeyError:
             opt.is_set = False
         opt.value = value

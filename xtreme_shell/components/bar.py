@@ -1,6 +1,6 @@
 from gi.repository import Gtk, Astal, AstalHyprland, GLib
 from xtreme_shell.widgets.window import XtremeWindow
-from xtreme_shell.modules.config import Config
+from xtreme_shell.modules.config import BarConfig
 from xtreme_shell.widgets.box import Box
 
 
@@ -30,12 +30,11 @@ class HyprWindow(Gtk.Label):
 class DateTime(Gtk.Label):
     def __init__(self):
         super().__init__(css_classes=["card"])
-        self.conf = Config.get_default().bar
 
         GLib.timeout_add(1000, self.__change_date)
 
     def __change_date(self):
-        time = GLib.DateTime.new_now_local().format(self.conf.date_format.value)
+        time = GLib.DateTime.new_now_local().format(BarConfig.date_format.value)
         self.set_label(f"{time}")
 
 
