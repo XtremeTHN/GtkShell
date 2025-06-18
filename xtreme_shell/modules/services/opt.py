@@ -22,7 +22,7 @@ class opt(GObject.GObject):
         self.key = key
         self._type = _type
         self.default = default
-        self.strict = default == None
+        self.strict = default is None
 
         self.__value = None
         self.is_set = False
