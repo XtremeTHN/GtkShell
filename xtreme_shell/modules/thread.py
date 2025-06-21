@@ -1,7 +1,6 @@
-from threading import Thread as t
+import threading
 
-
-class Thread(t):
+class Thread(threading.Thread):
     unfinished_threads = []
 
     def __init__(self, function, *args, **kwargs):
@@ -11,12 +10,9 @@ class Thread(t):
         self.args = args
         self.kwargs = kwargs
 
-    def __call__(self, func):
-        def wrapper(*args, **kwargs):
-            (th := Thread(func, *args, **kwargs)).start()
-            return th
-
-        return wrapper
+    def __call__(self, *args, **kwargs):
+        (th := Thread(self.func, *args, **kwargs)).start()
+        return th
 
     def run(self):
         Thread.unfinished_threads.append(self)
