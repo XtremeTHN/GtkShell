@@ -49,13 +49,17 @@ class GtkShellApp(Astal.Application):
         if window_class.is_enabled():
             self.add_window(window_class())
     
-    def __on_color_change(self, *_):
-        compile_scss(lambda css: GLib.idle_add(self.apply_css(css)))
+    def __on_color_change(self):
+        def finished(css):
+            GLib.idle_add(self.apply_css, css, True)
+            self.logger.info("Styles compiled")
+
+        compile_scss(finished)
 
     def do_activate(self):
         Adw.init()
         init_logger()
-        get_colors_watcher().connect("changed", self.__on_color_change)
+        get_colors_watcher(self.__on_color_change)
         self.__on_color_change()
 
         self.add_if_enabled(Bar)
