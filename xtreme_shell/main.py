@@ -58,6 +58,7 @@ class GtkShellApp(Astal.Application):
 def run(args):
     app = GtkShellApp()
     app.parse_args(args)
+    app.acquire_socket()
 
     app.run()
 
