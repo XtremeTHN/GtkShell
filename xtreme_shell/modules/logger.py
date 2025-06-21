@@ -29,6 +29,7 @@ def g_log_writer(log_level: Flags, log_fields: list[GLib.LogField], size: int):
 
 
 def init_logger():
+    install(show_locals=True)
     log_file: Path = LOG_DIR / "shell-logs.txt"
     logging.basicConfig(
         level=logging.DEBUG,

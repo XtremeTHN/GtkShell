@@ -1,4 +1,5 @@
 from gi.repository import Astal, Gtk, Gtk4LayerShell
+from xtreme_shell.modules.services.opt import opt
 from . import Widget
 from typing import Literal
 
@@ -24,7 +25,15 @@ class XtremeWindow(Astal.Window, Widget):
             layer=getattr(Astal.Layer, layer.upper()),
             **kwargs,
         )
+
+        self.__change_opacity(1)
         self.set_anchor(anchors)
+
+    def __change_opacity(self, opacity):
+        self.set_css(f"background-opacity: rgba(c.$background, {opacity};")
+    
+    def set_opacity_option(self, option: opt):
+        option.on_change(self.__change_opacity)
 
     def set_anchor(self, anchors: list[str]):
         length = len(anchors)
@@ -34,6 +43,5 @@ class XtremeWindow(Astal.Window, Widget):
             anchor_obj = getattr(Gtk4LayerShell.Edge, anchor.upper(), None)
             if anchor_obj is not None:
                 Gtk4LayerShell.set_anchor(self, anchor_obj, True)
-                # super().set_anchor(anchor_obj)
             else:
                 self.logger.warning(f"Invalid anchor: '{anchor}'")

@@ -39,10 +39,10 @@ class opt(GObject.GObject):
             *args: Additional arguments to pass to the callback.
         """
 
-        def cb(*args):
-            callback(self.__value, *args[1:])
+        def cb(_):
+            callback(self.__value, *args)
 
-        self.connect("changed", cb, args)
+        self.connect("changed", cb)
 
     @GObject.Property()
     def value(self):

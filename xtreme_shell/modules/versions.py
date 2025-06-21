@@ -1,4 +1,3 @@
-from rich.traceback import install
 from ctypes import CDLL
 
 
@@ -6,7 +5,6 @@ def init_libraries():
     CDLL("libgtk4-layer-shell.so")
     import gi
 
-    install()
     gi.require_versions(
         {"Gtk4LayerShell": "1.0", "Astal": "4.0", "Gtk": "4.0", "Adw": "1"}
     )

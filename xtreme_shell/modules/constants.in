@@ -2,6 +2,7 @@ from pathlib import Path
 
 LOG_DIR = Path.home() / ".local" / "state" / "xtreme-shell"
 CONFIG_DIR = Path.home() / ".config" / "xtreme-shell"
+SOURCE_DIR = Path("@pkgdatadir@") / "xtreme_shell"
 
 # Creation of paths
 LOG_DIR.mkdir(parents=True, exist_ok=True)

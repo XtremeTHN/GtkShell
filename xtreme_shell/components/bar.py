@@ -1,12 +1,12 @@
 from gi.repository import Gtk, Astal, AstalHyprland, GLib
 from xtreme_shell.widgets.window import XtremeWindow
-from xtreme_shell.modules.config import BarConfig
+from xtreme_shell.modules.config import Bar as BarConfig
 from xtreme_shell.widgets.box import Box
 
 
 class HyprWorkspaces(Gtk.Label):
     def __init__(self):
-        super().__init__(css_classes=["card"])
+        super().__init__(css_classes=["container"])
         hypr = AstalHyprland.Hyprland.get_default()
         hypr.connect("notify::focused-workspace", self.__on_workspace)
 
@@ -16,7 +16,7 @@ class HyprWorkspaces(Gtk.Label):
 
 class HyprWindow(Gtk.Label):
     def __init__(self):
-        super().__init__(css_classes=["card"])
+        super().__init__(css_classes=["container"])
         hypr = AstalHyprland.Hyprland.get_default()
         hypr.connect("notify::focused-client", self.__on_client)
 
@@ -29,7 +29,7 @@ class HyprWindow(Gtk.Label):
 
 class DateTime(Gtk.Label):
     def __init__(self):
-        super().__init__(css_classes=["card"])
+        super().__init__(css_classes=["container"])
 
         GLib.timeout_add(1000, self.__change_date)
 
@@ -46,13 +46,12 @@ class Bar(XtremeWindow):
             "top",
             ["top", "left", "right"],
             exclusivity=Astal.Exclusivity.EXCLUSIVE,
+            css_classes=["bar"]
         )
 
-        self.set_css("""
-            background-color: colors.$background;
-            padding: 0px 5;
-        """)
+        self.logger.info("Initializing...")
 
+        self.set_opacity_option(BarConfig.opacity)
         self.setup_widgets()
         self.present()
 

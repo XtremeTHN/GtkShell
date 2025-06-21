@@ -5,7 +5,7 @@ from gi.repository import Gtk
 
 class Widget(Gtk.Widget):
     def __init__(self):
-        self.logger = logging.getLogger(self.__class__.__name__)
+        self.logger = logging.getLogger(self.__class__.__name__)    
 
     def set_css(self, css, no_heading=False, no_curly_braces=False):
         try:

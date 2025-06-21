@@ -1,6 +1,7 @@
+from gi.repository import AstalIO
 from subprocess import PIPE, Popen
-from .constants import CONFIG_DIR
-
+from .constants import CONFIG_DIR, SOURCE_DIR
+from xtreme_shell.modules.thread import Thread
 
 def compile_scss_string(string, no_curly_braces=False, no_heading=False, ignoreErrors=False):
     def is_deprecation_warn(err: bytes):
@@ -29,3 +30,14 @@ def compile_scss_string(string, no_curly_braces=False, no_heading=False, ignoreE
         return out.decode()
     else:
         raise RuntimeError(err.decode())
+
+@Thread
+def compile_scss(callback=None):
+    main = SOURCE_DIR / "styles" / "main.scss"
+    css = compile_scss_string(main.read_text())
+    
+    if callback:
+        callback(css)
+
+def get_colors_watcher():
+    return AstalIO.monitor_file(str(CONFIG_DIR / "colors.scss"))
