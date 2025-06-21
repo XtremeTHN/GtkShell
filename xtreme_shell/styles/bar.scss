@@ -1,4 +1,11 @@
-.container {
-    background-color: $surface_container;
+@use "colors" as c;
+
+.bar-container {
+    background-color: c.$surface_container;
     border-radius: 4px;
+    padding: 5px;
+}
+
+.bar-box {
+    padding: 5px 10px;
 }
