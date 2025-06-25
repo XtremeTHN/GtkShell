@@ -63,7 +63,7 @@ class opt(GObject.GObject):
         Args:
             value: The new value to set.
         """
-        should_emit = value != self.__value 
+        should_emit = value != self.__value
         if value is None:
             if self.default is not None:
                 self.__value = self.default
@@ -81,6 +81,7 @@ class opt(GObject.GObject):
         if should_emit:
             self.emit("changed")
             self.notify("value")
+
 
 class Json(ReusableObject):
     __gsignals__ = {"changed": get_signal_args()}
@@ -132,7 +133,7 @@ class Json(ReusableObject):
     def get_default(cls):
         if cls._instance is None:
             cls._instance = cls(CONFIG_DIR / "config.json")
-        
+
         return cls._instance
 
     def _get_nested_value(self, data, keys):

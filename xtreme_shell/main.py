@@ -48,7 +48,7 @@ class GtkShellApp(Astal.Application):
 
         if window_class.is_enabled():
             self.add_window(window_class())
-    
+
     def __on_color_change(self):
         def finished(css):
             GLib.idle_add(self.apply_css, css, True)

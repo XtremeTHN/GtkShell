@@ -7,6 +7,7 @@ SignalFlags = Literal[
     "run-last",
 ]
 
+
 class ReusableObject(GObject.GObject):
     _instance = None
 
@@ -15,7 +16,8 @@ class ReusableObject(GObject.GObject):
         if cls._instance is None:
             cls._instance = cls()
         return cls._instance
-    
+
+
 def get_signal_args(flags: SignalFlags = "run-first", args=()):
     return (
         getattr(GObject.SignalFlags, flags.replace("-", "_").upper()),

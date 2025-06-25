@@ -3,13 +3,14 @@ from xtreme_shell.widgets.window import XtremeWindow
 from xtreme_shell.modules.config import Bar as BarConfig
 from xtreme_shell.widgets.box import Box
 
+
 class HyprProp(Gtk.Label):
     def __init__(self, prop: str, func, **kwargs):
         super().__init__(css_classes=["bar-container"], **kwargs)
         hypr = AstalHyprland.Hyprland.get_default()
         hypr.connect(f"notify::{prop}", func)
         func(hypr)
-    
+
 
 class HyprWorkspaces(HyprProp):
     def __init__(self):
@@ -22,10 +23,11 @@ class HyprWorkspaces(HyprProp):
 class HyprWindow(HyprProp):
     def __init__(self):
         super().__init__(
-            "focused-client", 
+            "focused-client",
             self.__on_client,
             max_width_chars=30,
-            ellipsize=Pango.EllipsizeMode.END)
+            ellipsize=Pango.EllipsizeMode.END,
+        )
 
     def __on_client(self, hypr, *_):
         if hypr.props.focused_client is None:

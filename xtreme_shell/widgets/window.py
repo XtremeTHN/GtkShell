@@ -31,7 +31,7 @@ class XtremeWindow(Astal.Window, Widget):
 
     def __change_opacity(self, opacity):
         self.set_css(f"background-opacity: rgba(c.$background, {opacity};")
-    
+
     def set_opacity_option(self, option: opt):
         option.on_change(self.__change_opacity)
 
