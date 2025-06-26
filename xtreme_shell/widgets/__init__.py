@@ -21,7 +21,6 @@ class Widget(Gtk.Widget):
             self.logger.exception("Error while trying to compile css string")
             return
         else:
-            self.logger.debug(compiled_css)
             ctx = getattr(self, "ctx", None) or self.get_style_context()
 
             if (n := getattr(self, "_provider", None)) is not None:
