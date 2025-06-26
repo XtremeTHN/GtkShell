@@ -27,7 +27,7 @@ class opt(GObject.GObject):
         self.__value = None
         self.is_set = False
 
-    def on_change(self, callback, *args):
+    def on_change(self, callback, *args, once=False):
         """
         Connect a callback to the 'changed' signal.
 
@@ -41,6 +41,9 @@ class opt(GObject.GObject):
 
         def cb(_):
             callback(self.__value, *args)
+
+        if once:
+            cb(None)
 
         self.connect("changed", cb)
 
