@@ -1,6 +1,7 @@
 from gi.repository import Gtk, Astal
 from xtreme_shell.modules.config import Corners as CornerConfig
 from xtreme_shell.widgets.window import XtremeWindow
+from xtreme_shell.widgets import Widget
 from enum import Enum
 import logging
 import cairo
@@ -21,6 +22,11 @@ class Corner(Gtk.DrawingArea):
         self.size = size
         self.position = position
         self.set_draw_func(self.do_draw)
+
+        CornerConfig.opacity.on_change(self.__change_opacity, once=True)
+
+    def __change_opacity(self, opacity):
+        Widget.set_css(self, f"color: rgba(colors.$background, {opacity});")
 
     def do_draw(self, _, cr: cairo.Context, width: int, height: int):
         size = self.size or min(width, height)
@@ -48,7 +54,7 @@ class Corner(Gtk.DrawingArea):
 class CornerWindow(XtremeWindow):
     def __init__(self, placement: Placement):
         super().__init__(
-            "corner",
+            "astal-corner",
             "corner-" + placement.name,
             "top",
             placement.name.split("_"),
@@ -60,12 +66,7 @@ class CornerWindow(XtremeWindow):
         self.set_size_request(20, 20)
         self.set_child(Corner(placement, size=20))
 
-        CornerConfig.opacity.on_change(self.__change_opacity)
-
         self.present()
-
-    def __change_opacity(self, opacity):
-        self.set_css(f"color: rgba(colors.$background, {opacity});")
 
     @staticmethod
     def is_enabled():
