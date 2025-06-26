@@ -33,9 +33,9 @@ class Option:
         def replace(string):
             return string.replace("_", "-")
 
-        parent_keys = re.findall(
-            r"[A-Z][a-z0-9]*", owner.__name__
-        )  # splits by capital letters
+        parent_keys = [
+            x.lower() for x in re.findall(r"[A-Z][a-z0-9]*", owner.__name__)
+        ]  # splits by capital letters
         self.key = ".".join([".".join(parent_keys), replace(key)])
 
     def __get__(self, obj, objtype=None):
