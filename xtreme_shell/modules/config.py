@@ -44,9 +44,3 @@ class Bar:
     fallback_title = Option(str, default="NixOS")
     opacity = Option(float, default=1.0)
     enabled = Option(bool, default=True)
-
-
-class Corners:
-    opacity = Option(float, default=1.0)
-    enabled_corners = Option(list, default=[])
-    enabled = Option(bool, default=True)

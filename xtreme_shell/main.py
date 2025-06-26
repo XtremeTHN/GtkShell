@@ -2,7 +2,6 @@ from .modules.style import compile_scss, get_colors_watcher
 from .modules.logger import init_logger
 from setproctitle import setproctitle
 from .components.bar import Bar
-from .widgets.corners import CornerWindow
 
 import argparse
 import logging
@@ -64,7 +63,6 @@ class GtkShellApp(Astal.Application):
         self.__on_color_change()
 
         self.add_if_enabled(Bar)
-        CornerWindow.for_placements(lambda cls, x: self.add_if_enabled(cls, x))
 
 
 def run(args):
