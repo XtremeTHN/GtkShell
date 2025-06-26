@@ -60,6 +60,8 @@ class Bar(XtremeWindow):
         self.logger.info("Initializing...")
 
         self.set_opacity_option(BarConfig.opacity)
+
+        self.logger.info(f"Opacity: {BarConfig.opacity.value}")
         self.setup_widgets()
         self.present()
 

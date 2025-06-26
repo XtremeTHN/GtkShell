@@ -1,7 +1,12 @@
 @use "bar";
+@use "colors";
 
 * {
     font-family: 'JetBrains Mono Nerd Font';
     font-weight: 600;
     font-size: 0.780rem;
+}
+
+.corner {
+    color: colors.$background;
 }

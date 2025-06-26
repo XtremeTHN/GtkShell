@@ -15,7 +15,13 @@ Anchors = Literal["top", "right", "bottom", "left"]
 
 class XtremeWindow(Astal.Window, Widget):
     def __init__(
-        self, namespace, name, layer: Layers, anchors: list[Anchors], **kwargs
+        self,
+        namespace,
+        name,
+        layer: Layers,
+        anchors: list[Anchors],
+        with_background=True,
+        **kwargs,
     ):
         Widget.__init__(self)
         Astal.Window.__init__(
@@ -25,12 +31,13 @@ class XtremeWindow(Astal.Window, Widget):
             layer=getattr(Astal.Layer, layer.upper()),
             **kwargs,
         )
+        if with_background:
+            self.__change_opacity(1)
 
-        self.__change_opacity(1)
         self.set_anchor(anchors)
 
     def __change_opacity(self, opacity):
-        self.set_css(f"background-opacity: rgba(c.$background, {opacity};")
+        self.set_css(f"background-color: rgba(colors.$background, {opacity});")
 
     def set_opacity_option(self, option: opt):
         option.on_change(self.__change_opacity)

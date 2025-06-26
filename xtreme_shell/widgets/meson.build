@@ -3,6 +3,7 @@ moduledir = pkgdatadir / meson.project_name() / 'widgets'
 modules_sources = [
     '__init__.py',
     'window.py',
+    'corners.py',
     'box.py',
 ]
 

@@ -29,7 +29,7 @@ class Option:
         def replace(string):
             return string.replace("_", "-")
 
-        self.key = ".".join([replace(owner.__class__.__name__), replace(key)])
+        self.key = ".".join([replace(owner.__name__.lower()), replace(key)])
 
     def __get__(self, obj, objtype=None):
         return _conf.get_opt(self.key, self._type, default=self.default)
@@ -39,4 +39,10 @@ class Bar:
     date_format = Option(str, default="%I:%M %p %b %Y")
     fallback_title = Option(str, default="NixOS")
     opacity = Option(float, default=1.0)
+    enabled = Option(bool, default=True)
+
+
+class Corners:
+    opacity = Option(float, default=1.0)
+    enabled_corners = Option(list, default=[])
     enabled = Option(bool, default=True)

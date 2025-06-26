@@ -16,17 +16,21 @@ def compile_scss_string(
     include_paths=[],
 ):
     str_paths = " ".join([f"-I {x}" for x in include_paths])
-    string = (
-        '@use "sass:string"; @use "colors";'
-        if no_heading is False
-        else "" + "* { STRING }".replace("STRING", string)
+
+    scss = [
+        '@use "sass:string"; @use "colors";',
+        "* { STRING }".replace("STRING", string)
         if no_curly_braces is False
-        else string
-    )
+        else string,
+    ]
+
+    if no_heading:
+        scss.pop(0)
+
     args = [
         "bash",
         "-c",
-        f"echo '{string}' | sass --stdin -I {CONFIG_DIR} {str_paths}",
+        f"echo '{' '.join(scss)}' | sass --stdin -I {CONFIG_DIR} {str_paths}",
     ]
 
     proc = Popen(
@@ -36,10 +40,11 @@ def compile_scss_string(
     )
 
     out, err = proc.communicate()
-    if err == b"" or ignoreErrors is True or is_deprecation_warn(err):
+    if ignoreErrors or out != b"":
         return out.decode()
     else:
-        raise RuntimeError(err.decode())
+        msg = err.decode() or "sass didn't return anything"
+        raise RuntimeError(msg + f"\nExecuted command: {args}")
 
 
 @Thread
