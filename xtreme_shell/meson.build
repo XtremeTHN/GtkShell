@@ -29,6 +29,5 @@ xtreme_shell_sources = [
 install_data(xtreme_shell_sources, install_dir: moduledir)
 install_subdir('styles', install_dir: moduledir)
 
-subdir('components')
 subdir('modules')
 subdir('widgets')

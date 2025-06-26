@@ -1,7 +1,7 @@
 from .modules.style import compile_scss, get_colors_watcher
 from .modules.logger import init_logger
 from setproctitle import setproctitle
-from .components.bar import Bar
+from .widgets.bar import Bar
 
 import argparse
 import logging
@@ -57,6 +57,8 @@ class GtkShellApp(Astal.Application):
         compile_scss(finished)
 
     def do_activate(self):
+        self.hold()
+
         Adw.init()
         init_logger()
         get_colors_watcher(self.__on_color_change)

@@ -33,7 +33,9 @@ class Option:
         def replace(string):
             return string.replace("_", "-")
 
-        parent_keys = re.findall(r"[A-Z][a-z0-9]*")  # splits by capital letters
+        parent_keys = re.findall(
+            r"[A-Z][a-z0-9]*", owner.__name__
+        )  # splits by capital letters
         self.key = ".".join([".".join(parent_keys), replace(key)])
 
     def __get__(self, obj, objtype=None):
@@ -45,3 +47,9 @@ class Bar:
     fallback_title = Option(str, default="NixOS")
     opacity = Option(float, default=1.0)
     enabled = Option(bool, default=True)
+
+
+class BarMusic:
+    player = Option(str, default="spotify")
+    opacity = Option(float, default=0.4)
+    blur = Option(float, default=20.0)
