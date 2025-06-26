@@ -25,7 +25,7 @@ class opt(GObject.GObject):
         self.strict = default is None
 
         self.__value = None
-        self.is_set = False
+        self.is_set = True
 
     def on_change(self, callback, *args, once=False):
         """
@@ -148,18 +148,17 @@ class Json(ReusableObject):
             value = value[key]
         return value
 
-    def __update_value(self, opt, content=None):
+    def __update_value(self, _opt: opt, content=None):
         """
         Update the value of an opt instance from the JSON content.
         """
-        value = None
+        value = _opt.default
         content = content or self.read()
         try:
-            value = self._get_nested_value(content, opt.key.split("."))
+            value = self._get_nested_value(content, _opt.key.split("."))
         except KeyError:
-            opt.is_set = False
-        opt.value = value
-        opt.emit("changed")
+            _opt.is_set = False
+        _opt.value = value
 
     # FIXME: use Task if this blocks too much
     def __on_event(self, *_) -> None:
