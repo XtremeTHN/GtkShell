@@ -1,7 +1,8 @@
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk
+from . import Widget
 
 
-class Box(Gtk.Box):
+class Box(Gtk.Box, Widget):
     def __init__(
         self, vertical=False, spacing=0, children=[], css_classes=[], **kwargs
     ):
@@ -13,7 +14,9 @@ class Box(Gtk.Box):
         :param children: An iterable of :class:`Gtk.Widget` to append to the box.
         :param css_classes: A list of CSS classes to apply to the box.
         """
-        super().__init__(
+
+        Gtk.Box.__init__(
+            self,
             orientation=Gtk.Orientation.VERTICAL
             if vertical
             else Gtk.Orientation.HORIZONTAL,
@@ -21,6 +24,7 @@ class Box(Gtk.Box):
             css_classes=css_classes,
             **kwargs,
         )
+        Widget.__init__(self)
 
         if len(children) > 0:
             self.append(*children)
@@ -33,4 +37,3 @@ class Box(Gtk.Box):
         """
         for x in child:
             super().append(x)
-        # super().append(child)
