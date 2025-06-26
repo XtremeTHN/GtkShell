@@ -1,4 +1,5 @@
 from .services.opt import Json, opt
+import logging
 
 _conf = Json.get_default()
 
@@ -16,6 +17,8 @@ class Option:
         default (Any, optional): The default value to return if the key is not defined.
     """
 
+    logger = logging.getLogger("Option")
+
     def __init__(self, _type: type, default=None):
         if not isinstance(default, _type):
             raise TypeError(
@@ -29,7 +32,8 @@ class Option:
         def replace(string):
             return string.replace("_", "-")
 
-        self.key = ".".join([replace(owner.__name__.lower()), replace(key)])
+        parent_keys = owner.__name__.lower().split("_")
+        self.key = ".".join([".".join(parent_keys), replace(key)])
 
     def __get__(self, obj, objtype=None):
         return _conf.get_opt(self.key, self._type, default=self.default)
