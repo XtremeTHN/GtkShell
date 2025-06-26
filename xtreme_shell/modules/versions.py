@@ -12,6 +12,7 @@ def init_libraries():
     gi.require_versions(
         {
             "AstalIO": "0.1",
+            "AstalCava": "0.1",
             "AstalHyprland": "0.1",
             "AstalNetwork": "0.1",
             "AstalWp": "0.1",
