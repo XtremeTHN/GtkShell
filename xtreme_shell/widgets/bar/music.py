@@ -2,7 +2,6 @@ from gi.repository import AstalMpris, Gtk, GLib
 from xtreme_shell.modules.config import BarMusic
 from xtreme_shell.widgets import Widget
 import logging
-import inspect
 
 
 def to_minutes(seconds):
