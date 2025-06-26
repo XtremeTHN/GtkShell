@@ -1,5 +1,6 @@
 from .services.opt import Json, opt
 import logging
+import re
 
 _conf = Json.get_default()
 
@@ -32,7 +33,7 @@ class Option:
         def replace(string):
             return string.replace("_", "-")
 
-        parent_keys = owner.__name__.lower().split("_")
+        parent_keys = re.findall(r"[A-Z][a-z0-9]*")  # splits by capital letters
         self.key = ".".join([".".join(parent_keys), replace(key)])
 
     def __get__(self, obj, objtype=None):

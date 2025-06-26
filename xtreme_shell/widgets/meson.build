@@ -7,3 +7,5 @@ modules_sources = [
 ]
 
 install_data(modules_sources, install_dir: moduledir)
+
+subdir('bar')

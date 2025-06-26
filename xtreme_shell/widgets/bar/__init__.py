@@ -61,7 +61,6 @@ class Bar(XtremeWindow):
 
         self.set_opacity_option(BarConfig.opacity)
 
-        self.logger.info(f"Opacity: {BarConfig.opacity.value}")
         self.setup_widgets()
         self.present()
 
@@ -85,4 +84,5 @@ class Bar(XtremeWindow):
 
     @staticmethod
     def is_enabled():
-        return True  # TODO: change this
+        print(BarConfig.enabled.value)
+        return BarConfig.enabled.value  # TODO: change this
