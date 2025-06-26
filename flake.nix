@@ -26,6 +26,7 @@
 
     buildInputs = with astal.packages.${system}; [
       io
+      cava
       astal4
       battery
       hyprland
