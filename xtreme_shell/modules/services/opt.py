@@ -27,6 +27,17 @@ class opt(GObject.GObject):
         self.__value = None
         self.is_set = True
 
+    def bind(self, target, target_property, **kwargs):
+        func = kwargs.pop("transform_to", lambda _, x: self._type(x))
+        return super().bind_property(
+            "value",
+            target,
+            target_property,
+            GObject.BindingFlags.SYNC_CREATE,
+            transform_to=func,
+            **kwargs,
+        )
+
     def on_change(self, callback, *args, once=False):
         """
         Connect a callback to the 'changed' signal.
