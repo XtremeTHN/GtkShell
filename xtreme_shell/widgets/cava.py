@@ -1,16 +1,19 @@
 from gi.repository import Gtk, Gsk, AstalCava, AstalWp, GLib
+from . import Widget
 
 
 # from https://github.com/kotontrion/kompass/blob/main/libkompass/src/cava.vala
-class Cava(Gtk.Widget):
+class Cava(Widget, Gtk.Widget):
     def __init__(self, active=False):
-        super().__init__()
+        Gtk.Widget.__init__(self)
+        Widget.__init__(self)
 
         self.cava = AstalCava.Cava.get_default()
         self.speaker = AstalWp.get_default().get_default_speaker()
         self.speaker.connect("notify::serial", self.__change_source)
         self.speaker.connect("notify::values", self.queue_draw)
 
+        self.connect("notify::visible", self.__on_visible_change)
         self.set_active(active)
 
     def set_active(self, active):
@@ -18,9 +21,15 @@ class Cava(Gtk.Widget):
             GLib.idle_add(self.__queue)
         self.cava.set_active(active)
 
+    def __on_visible_change(self, *_):
+        self.set_active(self.get_visible())
+
     def __queue(self):
-        self.queue_draw()
-        return self.cava.get_active()
+        if self.get_visible():
+            self.queue_draw()
+            return True
+        else:
+            return False
 
     def __change_source(self, *_):
         self.cava.set_source(str(self.speaker.get_serial()))

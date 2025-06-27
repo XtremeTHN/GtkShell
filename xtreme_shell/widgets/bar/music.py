@@ -47,6 +47,7 @@ class MusicPopover(Gtk.Popover):
         )
 
         self.cava = Cava()
+        self.cava.set_css("color: colors.$tertiary")
 
         self.opacity_box = Box(hexpand=True, vexpand=True)
         self.opacity_box.set_css("background-color: colors.$surface-container")
@@ -83,6 +84,9 @@ class MusicPopover(Gtk.Popover):
 
         BarMusic.blur.bind(self.background, "blur")
         BarMusic.opacity.bind(self.opacity_box, "opacity")
+        self.bind_property(
+            "visible", self.cava, "visible", flags=GObject.BindingFlags.SYNC_CREATE
+        )
 
         frame.set_child(overlay)
         self.set_child(frame)
@@ -107,7 +111,12 @@ class MusicPopover(Gtk.Popover):
     def set_player(self, player):
         self.player = player
         self.player.connect("notify::playback-status", self.__update_playback_status)
+        self.player.connect("notify::available", self.__toggle_cava)
+        self.__toggle_cava()
         self.__update_playback_status()
+
+    def __toggle_cava(self, *_):
+        self.cava.set_active(self.player.get_available())
 
     def __update_playback_status(self, *_):
         if self.player.get_playback_status() == AstalMpris.PlaybackStatus.PLAYING:
