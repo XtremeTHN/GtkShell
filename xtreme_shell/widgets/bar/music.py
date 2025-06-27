@@ -47,7 +47,7 @@ class MusicPopover(Gtk.Popover):
         )
 
         self.cava = Cava()
-        self.cava.set_css("color: colors.$tertiary")
+        self.cava.set_css("color: colors.$secondary")
 
         self.opacity_box = Box(hexpand=True, vexpand=True)
         self.opacity_box.set_css("background-color: colors.$surface-container")
