@@ -1,4 +1,4 @@
-from gi.repository import AstalMpris, Gtk, GLib, Pango, GObject
+from gi.repository import AstalMpris, AstalWp, Gtk, GLib, Pango, GObject
 from xtreme_shell.modules.config import BarMusic
 from xtreme_shell.widgets.box import Box
 from xtreme_shell.widgets.cava import Cava
@@ -40,6 +40,10 @@ class MusicPopover(Gtk.Popover):
         self.set_offset(0, 10)
         frame = Gtk.Frame.new()
         overlay = Gtk.Overlay.new()
+
+        self.logger = logging.getLogger("MusicPopover")
+        self.wp = AstalWp.get_default()
+        self.audio = self.wp.get_audio()
 
         self.background = BlurryImage(
             blur=20,
@@ -88,6 +92,8 @@ class MusicPopover(Gtk.Popover):
             "visible", self.cava, "visible", flags=GObject.BindingFlags.SYNC_CREATE
         )
 
+        self.audio.connect("notify::streams", self.__find_stream)
+
         frame.set_child(overlay)
         self.set_child(frame)
 
@@ -108,14 +114,32 @@ class MusicPopover(Gtk.Popover):
     def __next(self, _):
         self.player.next()
 
+    def __find_stream(self, *_):
+        name = self.player.get_bus_name().split(".")[-1]
+
+        if self.audio is None:
+            self.logger.warning("No audio")
+            return
+
+        stream = None
+        for x in self.audio.get_streams():
+            if x.get_name().lower() == name.lower():
+                stream = x
+                break
+
+        if not stream:
+            return
+
+        self.cava.set_stream(stream)
+
     def set_player(self, player):
         self.player = player
         self.player.connect("notify::playback-status", self.__update_playback_status)
-        self.player.connect("notify::available", self.__toggle_cava)
-        self.__toggle_cava()
+        self.player.connect("notify::available", self.__on_available_changed)
+        self.__on_available_changed()
         self.__update_playback_status()
 
-    def __toggle_cava(self, *_):
+    def __on_available_changed(self, *_):
         self.cava.set_active(self.player.get_available())
 
     def __update_playback_status(self, *_):
@@ -126,8 +150,8 @@ class MusicPopover(Gtk.Popover):
 
     def update(self):
         self.background.set_filename(self.player.get_cover_art())
-        self.title.set_label(self.player.get_title())
-        self.artist.set_label(self.player.get_artist())
+        self.title.set_label(self.player.get_title() or "Unknown song")
+        self.artist.set_label(self.player.get_artist() or "Unknown artist")
 
 
 class MusicLabel(Gtk.Overlay):
@@ -184,6 +208,8 @@ class MusicLabel(Gtk.Overlay):
 
         self.player.connect("notify::available", self.__change_visible)
         self.player.connect("notify", self.__update)
+
+        self.__change_visible()
 
     def __update(self, *_):
         self.__change_visible()
