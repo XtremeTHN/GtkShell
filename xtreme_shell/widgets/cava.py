@@ -7,7 +7,7 @@ class Cava(Widget, Gtk.Widget):
     blur = GObject.Property(type=float)
 
     def __init__(self, active=False):
-        Gtk.Widget.__init__(self)
+        Gtk.Widget.__init__(self, css_classes=["cava"])
         Widget.__init__(self)
 
         self.cava = AstalCava.Cava.get_default()
