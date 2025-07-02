@@ -113,10 +113,6 @@ class MusicViewer(Astal.Window):
             lambda _, x: Gio.File.new_for_path(x) if x else None,
         )
 
-        # self.__player.bind_property(
-        #     "available", self.cava.cava, "active", GObject.BindingFlags.SYNC_CREATE
-        # )
-
         self.__player.connect("notify::available", self.__on_available_change)
 
         self.overlay.add_overlay(background)
