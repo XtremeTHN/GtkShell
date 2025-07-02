@@ -28,7 +28,7 @@ class opt(GObject.GObject):
         self.is_set = True
 
     def __repr__(self):
-        return f"<opt.opt(key={self.key}, value={self.value}, type={self._type})>"
+        return f'<opt.opt(key="{self.key}", value={self.value}, type={self._type})>'
 
     def bind(self, target, target_property, **kwargs):
         func = kwargs.pop("transform_to", lambda _, x: self._type(x))
