@@ -49,7 +49,29 @@ class Bar:
     enabled = Option(bool, default=True)
 
 
-class BarMusic:
+class Music:
     player = Option(str, default="spotify")
     opacity = Option(float, default=0.4)
-    blur = Option(float, default=20.0)
+    background_blur = Option(float, default=20.0)
+    enabled = Option(bool, default=True)
+
+
+class MusicCava:
+    enabled = Option(bool, default=True)
+    bars = Option(int, default=13)
+    blur = Option(float, default=0.0)
+    framerate = Option(int, default=60)
+
+    @classmethod
+    def bind_all(cls, obj, exclude=[]):
+        for x in dir(cls):
+            prop = getattr(cls, x, None)
+            if isinstance(prop, opt):
+                name = prop.key.split(".")[-1]
+                if name in exclude:
+                    continue
+                prop.bind(obj, name)
+
+
+class AI:
+    api_key = Option(str, default="")

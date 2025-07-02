@@ -1,6 +1,8 @@
 from .modules.style import compile_scss, get_colors_watcher
 from .modules.logger import init_logger
 from setproctitle import setproctitle
+
+from .widgets.music import MusicViewer
 from .widgets.bar import Bar
 
 import argparse
@@ -65,6 +67,8 @@ class GtkShellApp(Astal.Application):
         self.__on_color_change()
 
         self.add_if_enabled(Bar)
+        self.add_if_enabled(MusicViewer)
+        # self.add_window(MusicViewer())
 
 
 def run(args):

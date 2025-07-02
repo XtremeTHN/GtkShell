@@ -1,9 +1,9 @@
-from gi.repository import Gtk, Astal, GLib
-from xtreme_shell.widgets.window import XtremeWindow
+from xtreme_shell.widgets.music.current import MusicLabel
 from xtreme_shell.modules.config import Bar as BarConfig
-from xtreme_shell.widgets.box import Box
+from xtreme_shell.widgets.window import XtremeWindow
+from gi.repository import Gtk, Astal, GLib
 from .wm import HyprWindow, HyprWorkspaces
-from .music import MusicLabel
+from xtreme_shell.widgets.box import Box
 
 
 class DateTime(Gtk.Label):
