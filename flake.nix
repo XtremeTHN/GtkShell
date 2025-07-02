@@ -12,6 +12,7 @@
     pkgs = nixpkgs.legacyPackages.${system};
     python = (pkgs.python311.withPackages (ps: with ps; [
       pygobject3
+      google-genai
       rich
       setproctitle
     ]));

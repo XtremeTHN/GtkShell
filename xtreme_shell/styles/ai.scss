@@ -1,0 +1,7 @@
+@use "colors";
+
+.message {
+    padding: 10px;
+    border-radius: 8px;
+    background-color: colors.$surface_container;
+}

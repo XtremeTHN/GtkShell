@@ -1,10 +1,11 @@
+@use "ai";
 @use "bar";
 @use "colors";
 
 * {
-    font-family: 'JetBrains Mono Nerd Font';
-    font-weight: 600;
-    font-size: 0.780rem;
+  font-family: 'JetBrains Mono Nerd Font';
+  font-weight: 600;
+  font-size: 0.780rem;
 }
 
 .title-1 {
