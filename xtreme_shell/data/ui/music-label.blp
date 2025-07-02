@@ -1,0 +1,14 @@
+using Gtk 4.0;
+
+template $MusicLabelTop : Gtk.Overlay {
+    Box opacity_box {
+        styles ["bar-opacity-box"]
+        hexpand: true;
+        vexpand: true;
+    }
+
+    Gtk.Label music_label {
+        margin-start: 5;
+        margin-end: 5;
+    }
+}

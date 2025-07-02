@@ -2,5 +2,7 @@
     "[python]": {
         "editor.formatOnSave": true,
         "editor.wordBasedSuggestions": "off"
-    }
+    },
+    "C_Cpp.default.compileCommands": "/home/axel/Projects/GtkShell/builddir/compile_commands.json",
+    "C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild"
 }

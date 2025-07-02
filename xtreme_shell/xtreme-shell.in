@@ -3,15 +3,24 @@
 # You can move this file to your ~/.local/bin or another path
 
 import sys
+import os
 
-SHELL_CODE_PATH = "@pkgdatadir@"
+PKG_DATA_DIR = "@pkgdatadir@"
 VERSION = "@VERSION@"
 
-sys.path.insert(1, SHELL_CODE_PATH)
+sys.path.insert(1, PKG_DATA_DIR)
 
-from xtreme_shell.main import run
 
 if __name__ == "__main__":
+    from gi.repository import Gio
+
+    resource = Gio.Resource.load(
+        os.path.join(PKG_DATA_DIR, "xtreme_shell", "data", "xtreme-shell.gresource")
+    )
+    resource._register()
     argv = sys.argv
+
+    from xtreme_shell.main import run
+
     argv.pop(0)
     run(argv)

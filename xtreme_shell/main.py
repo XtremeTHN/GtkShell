@@ -1,5 +1,6 @@
 from .modules.style import compile_scss, get_colors_watcher
 from .modules.logger import init_logger
+from .modules.constants import DATA_DIR
 from setproctitle import setproctitle
 
 from .widgets.music import MusicViewer
@@ -8,7 +9,7 @@ from .widgets.bar import Bar
 import argparse
 import logging
 
-from gi.repository import Astal, Adw, GLib
+from gi.repository import Astal, Adw, GLib, Gio
 
 
 class GtkShellApp(Astal.Application):

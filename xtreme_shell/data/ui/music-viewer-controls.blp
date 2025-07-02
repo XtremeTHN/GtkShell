@@ -1,0 +1,50 @@
+using Gtk 4.0;
+
+template $Controls : Gtk.Overlay {
+    Gtk.Box opacity_box {
+        styles [
+            "surface-container"
+        ]
+        hexpand: true;
+        vexpand: true;
+    }
+
+    Gtk.Box {
+        spacing: 10;
+        orientation: vertical;
+        Gtk.Box {
+            orientation: vertical;
+            Gtk.Label title {
+                styles ["title-1"]
+                max-width-chars: 45;
+                justify: center;
+                ellipsize: middle;
+
+                margin-start: 5;
+                margin-end: 5;
+            }
+
+            Gtk.Label artist {
+                styles ["title-4"]
+            }
+        }
+
+        Gtk.Box {
+            orientation: horizontal;
+            spacing: 5;
+
+            Gtk.Button previous_btt {
+                icon-name: "media-skip-backward-symbolic";
+                clicked => $previous_song();
+            }
+            Gtk.Button play_pause_btt {
+                icon-name: "media-playback-start-symbolic";
+                clicked => $play_pause_song();
+            }
+            Gtk.Button next_btt {
+                icon-name: "media-skip-forward-symbolic";
+                clicked => $next_song();
+            }
+        }
+    }
+}

@@ -1,0 +1,24 @@
+using Gtk 4.0;
+using Astal 4.0;
+
+template $MusicViewer : Astal.Window {
+    namespace: "astal-music";
+    name: "music";
+    layer: overlay;
+    anchor: bottom | right;
+
+    width-request: 280;
+    height-request: 350;
+    margin-end: 10;
+    margin-bottom: 10;
+
+    styles [
+        "music"
+    ]
+
+    Gtk.Frame {
+        Gtk.Overlay overlay {
+            
+        }
+    }
+}

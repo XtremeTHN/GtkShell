@@ -19,6 +19,7 @@
     nativeBuildInputs = with pkgs; [
       meson
       ninja
+      blueprint-compiler
       wrapGAppsHook
       python
       pkg-config

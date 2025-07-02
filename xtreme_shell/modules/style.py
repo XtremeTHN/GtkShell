@@ -3,6 +3,8 @@ from subprocess import PIPE, Popen
 from .constants import CONFIG_DIR, SOURCE_DIR
 from xtreme_shell.modules.thread import Thread
 
+STYLE_DIR = SOURCE_DIR / "data" / "styles"
+
 
 def is_deprecation_warn(err: bytes):
     return True if err.decode().find("DEPRECATION WARNING") > -1 else False
@@ -49,12 +51,12 @@ def compile_scss_string(
 
 @Thread
 def compile_scss(callback=None):
-    main = SOURCE_DIR / "styles" / "main.scss"
+    main = STYLE_DIR / "main.scss"
     css = compile_scss_string(
         main.read_text(),
         no_heading=True,
         no_curly_braces=True,
-        include_paths=[str(SOURCE_DIR / "styles")],
+        include_paths=[str(STYLE_DIR)],
     )
 
     if callback is not None:

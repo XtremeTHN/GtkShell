@@ -1,0 +1,8 @@
+<gresources>
+    <gresource prefix="/com/github/XtremeTHN/XtremeShell/">
+        <file preprocess="xml-stripblanks">bar.ui</file>
+        <file preprocess="xml-stripblanks">music-label.ui</file>
+        <file preprocess="xml-stripblanks">music-viewer-controls.ui</file>
+        <file preprocess="xml-stripblanks">music-viewer.ui</file>
+    </gresource>
+</gresources>

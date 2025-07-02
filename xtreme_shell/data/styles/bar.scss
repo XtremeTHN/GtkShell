@@ -1,13 +1,21 @@
 @use "colors" as c;
 
-.bar-container {
+@mixin container {
     background-color: c.$surface_container;
     border-radius: 4px;
+}
+
+.bar-container {
+    @include container;
     padding: 5px;
 }
 
 .bar-box {
     padding: 5px 10px;
+}
+
+.bar-opacity-box {
+    @include container;
 }
 
 .cava {

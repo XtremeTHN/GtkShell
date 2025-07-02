@@ -36,11 +36,14 @@ class XtremeWindow(Astal.Window, Widget):
 
         self.set_anchor(anchors)
 
-    def __change_opacity(self, opacity):
-        self.set_css(f"background-color: rgba(colors.$background, {opacity});")
+    def __change_opacity(widget, opacity):
+        Widget.set_css(
+            widget, f"background-color: rgba(colors.$background, {opacity});"
+        )
 
-    def set_opacity_option(self, option: opt):
-        option.on_change(self.__change_opacity, once=True)
+    @classmethod
+    def set_opacity_option(cls, widget, option: opt):
+        option.on_change(lambda o: cls.__change_opacity(widget, o), once=True)
 
     def set_anchor(self, anchors: list[str]):
         length = len(anchors)

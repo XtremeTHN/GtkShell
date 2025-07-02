@@ -1,58 +1,58 @@
-from xtreme_shell.widgets.music.current import MusicLabel
-from xtreme_shell.modules.config import Bar as BarConfig
+from xtreme_shell.modules.gobject import BlpTemplate
 from xtreme_shell.widgets.window import XtremeWindow
-from gi.repository import Gtk, Astal, GLib
-from .wm import HyprWindow, HyprWorkspaces
-from xtreme_shell.widgets.box import Box
+from xtreme_shell.modules.config import Bar as BarConfig
+from xtreme_shell.widgets.music.current import MusicLabel
+from gi.repository import Gtk, Astal, AstalHyprland, GObject, GLib
+
+a = Astal.WindowAnchor
 
 
-class DateTime(Gtk.Label):
+@BlpTemplate("bar")
+class Bar(Astal.Window):
+    __gtype_name__ = "Bar"
+
+    center_box = Gtk.Template.Child()
+    start_box = Gtk.Template.Child()
+    hypr_workspaces = Gtk.Template.Child()
+    hypr_window = Gtk.Template.Child()
+    end_box: Gtk.Box = Gtk.Template.Child()
+    date_time = Gtk.Template.Child()
+
     def __init__(self):
-        super().__init__(css_classes=["bar-container"])
+        super().__init__(anchor=a.TOP | a.LEFT | a.RIGHT)
 
-        GLib.timeout_add(1000, self.__change_date)
-
-    def __change_date(self):
-        time = GLib.DateTime.new_now_local().format(BarConfig.date_format.value)
-        self.set_label(f"{time}")
-
-
-class Bar(XtremeWindow):
-    def __init__(self):
-        super().__init__(
-            "astal-topbar",
-            "topbar",
-            "top",
-            ["top", "left", "right"],
-            exclusivity=Astal.Exclusivity.EXCLUSIVE,
+        hypr = AstalHyprland.get_default()
+        hypr.bind_property(
+            "focused-workspace",
+            self.hypr_workspaces,
+            "label",
+            GObject.BindingFlags.SYNC_CREATE,
+            transform_to=lambda _, x: f"Workspace {x.props.id}",
         )
 
-        self.logger.info("Initializing...")
+        hypr.bind_property(
+            "focused-client",
+            self.hypr_window,
+            "label",
+            GObject.BindingFlags.SYNC_CREATE,
+            transform_to=lambda _, x: str(
+                BarConfig.fallback_title.value if not x else x.props.title
+            ),
+        )
 
-        self.set_opacity_option(BarConfig.opacity)
+        music = MusicLabel()
+        self.center_box.set_center_widget(music)
 
-        self.setup_widgets()
+        GLib.timeout_add_seconds(1, self.__update_datetime)
+
+        XtremeWindow.set_opacity_option(self, BarConfig.opacity)
+
         self.present()
 
-    def setup_widgets(self):
-        content = Gtk.CenterBox(css_classes=["bar-box"])
-
-        left_box = Box(spacing=10)
-        workspaces = HyprWorkspaces()
-        window = HyprWindow()
-        left_box.append(workspaces, window)
-
-        end_box = Box(spacing=10)
-        music = MusicLabel()
-        date = DateTime()
-
-        end_box.append(music, date)
-
-        content.set_start_widget(left_box)
-        content.set_end_widget(end_box)
-
-        self.set_child(content)
+    def __update_datetime(self):
+        time = GLib.DateTime.new_now_local().format(BarConfig.date_format.value)
+        self.date_time.set_label(f"{time}")
 
     @staticmethod
     def is_enabled():
-        return BarConfig.enabled.value  # TODO: change this
+        return True

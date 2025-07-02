@@ -1,0 +1,32 @@
+using Gtk 4.0;
+using Astal 4.0;
+
+
+template $Bar : Astal.Window {
+    namespace: "astal-topbar";
+    exclusivity: exclusive;
+    name: "topbar";
+
+    child: Gtk.CenterBox center_box {
+      styles [
+        "bar-box"
+      ]
+
+      start-widget: Gtk.Box start_box {
+        spacing: 10;
+
+        Gtk.Label hypr_workspaces {
+            styles ["bar-container"]
+        }
+        Gtk.Label hypr_window {
+            styles ["bar-container"]
+        }
+      };
+
+      end-widget: Gtk.Box end_box {
+        Gtk.Label date_time {
+            styles ["bar-container"]
+        }
+      };
+    };
+}

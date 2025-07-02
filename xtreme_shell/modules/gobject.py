@@ -1,4 +1,4 @@
-from gi.repository import GObject
+from gi.repository import GObject, Gtk
 from typing import Literal
 
 SignalFlags = Literal[
@@ -16,6 +16,13 @@ class ReusableObject(GObject.GObject):
         if cls._instance is None:
             cls._instance = cls()
         return cls._instance
+
+
+class BlpTemplate(Gtk.Template):
+    def __init__(self, blp_name):
+        super().__init__(
+            resource_path=f"/com/github/XtremeTHN/XtremeShell/{blp_name}.ui"
+        )
 
 
 def get_signal_args(flags: SignalFlags = "run-first", args=()):
