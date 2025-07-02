@@ -18,7 +18,7 @@ class MusicViewer(XtremeWindow):
             "overlay",
             ["bottom", "right"],
             css_classes=["music"],
-            width_request=250,
+            width_request=280,
             height_request=350,
             margin_end=10,
             margin_bottom=10,
