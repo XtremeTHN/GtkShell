@@ -2,7 +2,7 @@ from xtreme_shell.widgets.cava import Cava
 from xtreme_shell.widgets.images import BlurryImage
 from xtreme_shell.modules.gobject import BlpTemplate
 from xtreme_shell.modules.config import Music, MusicViewer as MVConf, MusicViewerCava
-from gi.repository import Gtk, Astal, AstalMpris, AstalWp, GObject, GLib, Gio
+from gi.repository import Gtk, Astal, AstalMpris, AstalWp, GObject, Gio
 from xtreme_shell.widgets import Widget
 import logging
 
