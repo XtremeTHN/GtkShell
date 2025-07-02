@@ -1,8 +1,8 @@
 from xtreme_shell.modules.gobject import BlpTemplate
-from xtreme_shell.widgets.window import XtremeWindow
 from xtreme_shell.modules.config import Bar as BarConfig
 from xtreme_shell.widgets.music.current import MusicLabel
 from gi.repository import Gtk, Astal, AstalHyprland, GObject, GLib
+from xtreme_shell.widgets import Widget
 
 a = Astal.WindowAnchor
 
@@ -45,7 +45,7 @@ class Bar(Astal.Window):
 
         GLib.timeout_add_seconds(1, self.__update_datetime)
 
-        XtremeWindow.set_opacity_option(self, BarConfig.opacity)
+        Widget.set_opacity_option(self, BarConfig.opacity)
 
         self.present()
 

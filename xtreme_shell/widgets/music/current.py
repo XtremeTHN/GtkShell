@@ -2,6 +2,7 @@ from xtreme_shell.widgets.images import BlurryImage
 from gi.repository import AstalMpris, Gtk, GLib
 from xtreme_shell.modules.config import Music
 from xtreme_shell.widgets.box import Box
+from xtreme_shell.widgets import Widget
 import logging
 
 
@@ -29,8 +30,9 @@ class MusicLabel(Gtk.Overlay):
 
         self.label = Gtk.Label(margin_start=5, margin_end=5)
         self.opacity_box = Box(hexpand=True, vexpand=True)
-        self.opacity_box.set_css(
-            "border-radius: 4px; background-color: colors.$surface-container"
+        Widget.set_css(
+            self.opacity_box,
+            "border-radius: 4px; background-color: colors.$surface-container",
         )
 
         Music.background_blur.bind(self.background, "blur")

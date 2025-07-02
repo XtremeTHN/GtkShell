@@ -53,22 +53,25 @@ class Music:
     player = Option(str, default="spotify")
     opacity = Option(float, default=0.4)
     background_blur = Option(float, default=20.0)
+
+
+class MusicViewer:
     enabled = Option(bool, default=True)
 
 
-class MusicCava:
-    enabled = Option(bool, default=True)
+class MusicViewerCava:
     bars = Option(int, default=13)
     blur = Option(float, default=0.0)
     framerate = Option(int, default=60)
+    show_with_player = Option(bool, default=True)
 
     @classmethod
-    def bind_all(cls, obj, exclude=[]):
+    def bind_all(cls, obj):
         for x in dir(cls):
             prop = getattr(cls, x, None)
             if isinstance(prop, opt):
                 name = prop.key.split(".")[-1]
-                if name in exclude:
+                if name in ["blur", "show-with-player"]:
                     continue
                 prop.bind(obj, name)
 

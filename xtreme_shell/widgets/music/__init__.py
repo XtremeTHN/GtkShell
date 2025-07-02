@@ -1,163 +1,160 @@
-from gi.repository import AstalMpris, AstalWp, GObject, Pango, Gtk
-from xtreme_shell.modules.config import Music, MusicCava
-from xtreme_shell.widgets.window import XtremeWindow
-from xtreme_shell.widgets.images import BlurryImage
 from xtreme_shell.widgets.cava import Cava
-from xtreme_shell.widgets.box import Box
-
+from xtreme_shell.widgets.images import BlurryImage
+from xtreme_shell.modules.gobject import BlpTemplate
+from xtreme_shell.modules.config import Music, MusicViewer as MVConf, MusicViewerCava
+from gi.repository import Gtk, Astal, AstalMpris, AstalWp, GObject, GLib, Gio
+from xtreme_shell.widgets import Widget
 import logging
 
+C = Gtk.Template.Child
+CB = Gtk.Template.Callback
+Player = AstalMpris.Player
+Status = AstalMpris.PlaybackStatus
+a = Astal.WindowAnchor
 
-class MusicViewer(XtremeWindow):
-    player: AstalMpris.Player = GObject.Property(type=AstalMpris.Player)
+
+@BlpTemplate("music-viewer-controls")
+class MusicControls(Gtk.Box):
+    __gtype_name__ = "Controls"
+
+    title: Gtk.Label = C()
+    artist: Gtk.Label = C()
+
+    previous_btt: Gtk.Button = C()
+    play_pause_btt: Gtk.Button = C()
+    next_btt: Gtk.Button = C()
+
+    def __init__(self):
+        super().__init__()
+        self.__player: Player = None
+
+        self.set_default_texts()
+
+    @GObject.Property()
+    def player(self):
+        return self.__player
+
+    @player.setter
+    def player(self, player):
+        self.__player = player
+        player.connect("notify::playback-status", self.__update_playback_status)
+        player.connect("notify::title", self.__update_texts)
+
+        self.__update_texts()
+        self.__update_playback_status()
+
+    def __update_texts(self, *_):
+        if self.__player.props.available:
+            self.title.set_label(self.__player.props.title or "Unknown song")
+            self.artist.set_label(self.__player.props.artist or "Unknown artist")
+        else:
+            self.set_default_texts()
+
+    def __update_playback_status(self, *_):
+        match self.__player.get_playback_status():
+            case Status.PLAYING:
+                self.play_pause_btt.set_icon_name("media-playback-pause-symbolic")
+            case _:
+                self.play_pause_btt.set_icon_name("media-playback-start-symbolic")
+
+    @CB()
+    def previous_song(self, _):
+        self.player.previous()
+
+    @CB()
+    def play_pause_song(self, _):
+        self.player.play_pause()
+
+    @CB()
+    def next_song(self, _):
+        self.player.next()
+
+    def set_default_texts(self):
+        self.title.set_label("No song")
+        self.artist.set_label("Play some music")
+
+
+@BlpTemplate("music-viewer")
+class MusicViewer(Astal.Window):
+    __gtype_name__ = "MusicViewer"
+
+    overlay: Gtk.Overlay = C()
 
     def __init__(self):
         super().__init__(
-            "music",
-            "music",
-            "overlay",
-            ["bottom", "right"],
-            css_classes=["music"],
-            width_request=280,
-            height_request=350,
-            margin_end=10,
-            margin_bottom=10,
+            anchor=a.BOTTOM | a.RIGHT, width_request=280, height_request=350
         )
-
-        frame = Gtk.Frame.new()
-        overlay = Gtk.Overlay.new()
-
-        self.player = AstalMpris.Player.new("spotify")
+        self.__player: Player = None
         self.logger = logging.getLogger("MusicViewer")
-        self.wp = AstalWp.get_default()
-        self.audio = self.wp.get_audio()
 
-        self.background = BlurryImage(
-            blur=20,
-            content_fit=Gtk.ContentFit.COVER,
-        )
-
+        background = BlurryImage(content_fit=Gtk.ContentFit.COVER)
         self.cava = Cava()
-        self.cava.set_css("color: colors.$secondary")
-
-        self.opacity_box = Box(hexpand=True, vexpand=True)
-        self.opacity_box.set_css("background-color: colors.$surface-container")
-
-        controls = self.__create_box(vertical=True, spacing=10)
-        label_box = self.__create_box(vertical=True)
-
-        self.title = Gtk.Label(
-            css_classes=["title-1"],
-            max_width_chars=45,
-            justify=Gtk.Justification.CENTER,
-            ellipsize=Pango.EllipsizeMode.MIDDLE,
+        opacity_box = Gtk.Box(
+            css_classes=["surface-container"], hexpand=True, vexpand=True
         )
-        self.artist = Gtk.Label(css_classes=["title-4"])
+        self.controls = MusicControls()
 
-        label_box.append(self.title, self.artist)
+        Music.background_blur.bind(background, "blur")
+        Music.opacity.bind(opacity_box, "opacity")
+        Music.player.bind(self, "player", transform_to=lambda _, x: Player.new(x))
 
-        button_box = self.__create_box(spacing=5)
-
-        previous = self.__create_button("media-skip-backward-symbolic", self.__prev)
-        self.play_button = self.__create_button(
-            "media-playback-start-symbolic", self.__play_pause
-        )
-        next = self.__create_button("media-skip-forward-symbolic", self.__next)
-
-        button_box.append(previous, self.play_button, next)
-
-        controls.append(label_box, button_box)
-
-        overlay.add_overlay(self.background)
-        overlay.add_overlay(self.cava)
-        overlay.add_overlay(self.opacity_box)
-        overlay.add_overlay(controls)
-
-        Music.background_blur.bind(self.background, "blur")
-        Music.opacity.bind(self.opacity_box, "opacity")
-
-        MusicCava.bind_all(self.cava.cava, exclude=["blur", "enabled"])
-        MusicCava.blur.bind(self.cava, "blur")
+        MusicViewerCava.blur.bind(self.cava, "blur")
+        MusicViewerCava.bind_all(self.cava.cava)
 
         self.bind_property(
-            "visible", self.cava, "visible", flags=GObject.BindingFlags.SYNC_CREATE
+            "player", self.controls, "player", GObject.BindingFlags.SYNC_CREATE
         )
 
-        self.audio.connect("notify::streams", self.__find_stream)
+        self.__player.bind_property(
+            "cover-art",
+            background,
+            "file",
+            GObject.BindingFlags.SYNC_CREATE,
+            lambda _, x: Gio.File.new_for_path(x) if x else None,
+        )
 
-        self.update()
+        # self.__player.bind_property(
+        #     "available", self.cava.cava, "active", GObject.BindingFlags.SYNC_CREATE
+        # )
 
-        frame.set_child(overlay)
-        self.set_child(frame)
+        self.__player.connect("notify::available", self.__on_available_change)
+
+        self.overlay.add_overlay(background)
+        self.overlay.add_overlay(self.cava)
+        self.overlay.add_overlay(opacity_box)
+        self.overlay.add_overlay(self.controls)
 
         self.present()
 
-        self.set_player(self.player)
+        wp = AstalWp.get_default()
+        if not wp:
+            self.logger.warning("AstalWp returned None. No cava available")
+        else:
+            audio = wp.get_audio()
+            audio.connect("notify::streams", self.__find_stream)
 
-        self.player.bind_property(
-            "available",
-            self,
-            "visible",
-            flags=GObject.BindingFlags.SYNC_CREATE,
-        )
-        self.player.connect("notify", lambda *_: self.update())
+    def __on_available_change(self, *_):
+        avail = self.__player.get_available()
+        self.set_visible(avail)
+        self.cava.set_active(avail)
+        self.controls.set_default_texts()
 
-    def __create_box(self, **kwargs):
-        return Box(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER, **kwargs)
+    def __find_stream(self, audio, _):
+        name = self.__player.get_bus_name().split(".")[-1]
 
-    def __create_button(self, icon, func):
-        b = Gtk.Button(icon_name=icon)
-        b.connect("clicked", func)
-        return b
-
-    def __prev(self, _):
-        self.player.previous()
-
-    def __play_pause(self, _):
-        self.player.play_pause()
-
-    def __next(self, _):
-        self.player.next()
-
-    def __find_stream(self, *_):
-        name = self.player.get_bus_name().split(".")[-1]
-
-        if self.audio is None:
-            self.logger.warning("No audio")
-            return
-
-        stream = None
-        for x in self.audio.get_streams():
+        for x in audio.get_streams():
             if x.get_name().lower() == name.lower():
-                stream = x
+                self.cava.set_stream(x)
                 break
 
-        if not stream:
-            return
+    @GObject.Property()
+    def player(self):
+        return self.__player
 
-        self.cava.set_stream(stream)
-
-    def set_player(self, player):
-        self.player = player
-        self.player.connect("notify::playback-status", self.__update_playback_status)
-        self.player.connect("notify::available", self.__on_available_changed)
-        self.__on_available_changed()
-        self.__update_playback_status()
-
-    def __on_available_changed(self, *_):
-        self.cava.set_active(self.player.get_available())
-
-    def __update_playback_status(self, *_):
-        if self.player.get_playback_status() == AstalMpris.PlaybackStatus.PLAYING:
-            self.play_button.set_icon_name("media-playback-pause-symbolic")
-        elif self.player.get_playback_status() == AstalMpris.PlaybackStatus.PAUSED:
-            self.play_button.set_icon_name("media-playback-start-symbolic")
-
-    def update(self):
-        self.background.set_filename(self.player.get_cover_art())
-        self.title.set_label(self.player.get_title() or "Unknown song")
-        self.artist.set_label(self.player.get_artist() or "Unknown artist")
+    @player.setter
+    def player(self, player):
+        self.__player = player
 
     @staticmethod
     def is_enabled():
-        return Music.enabled.value
+        return MVConf.enabled.value
