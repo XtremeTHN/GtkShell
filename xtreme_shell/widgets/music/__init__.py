@@ -3,6 +3,7 @@ from xtreme_shell.widgets.images import BlurryImage
 from xtreme_shell.modules.gobject import BlpTemplate
 from xtreme_shell.modules.config import Music, MusicViewer as MVConf, MusicViewerCava
 from gi.repository import Gtk, Astal, AstalMpris, AstalWp, GObject, Gio
+from xtreme_shell.widgets import Widget
 import logging
 
 C = Gtk.Template.Child
@@ -99,6 +100,8 @@ class MusicViewer(Astal.Window):
 
         MusicViewerCava.blur.bind(self.cava, "blur")
         MusicViewerCava.bind_all(self.cava.cava)
+
+        Widget.set_opacity_option(self, MVConf.opacity)
 
         self.bind_property(
             "player", self.controls, "player", GObject.BindingFlags.SYNC_CREATE

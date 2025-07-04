@@ -57,6 +57,7 @@ class Music:
 
 class MusicViewer:
     enabled = Option(bool, default=True)
+    opacity = Option(float, default=1.0)
 
 
 class MusicViewerCava:
