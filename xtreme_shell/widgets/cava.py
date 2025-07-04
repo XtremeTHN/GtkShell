@@ -10,6 +10,7 @@ class Cava(Widget, Gtk.Widget):
         Gtk.Widget.__init__(self, css_classes=["cava"])
         Widget.__init__(self)
 
+        self.__stream = None
         self.cava = AstalCava.Cava.get_default()
 
         self.cava.connect("notify::values", lambda *_: self.queue_draw())
@@ -20,7 +21,15 @@ class Cava(Widget, Gtk.Widget):
     def set_active(self, active):
         self.cava.set_active(active)
 
-    def set_stream(self, stream: AstalWp.Stream):
+    @GObject.Property
+    def stream(self):
+        return self.__stream
+
+    @stream.setter
+    def stream(self, stream: AstalWp.Stream):
+        self.__stream = stream
+
+        self.logger.info("Using stream from %s", stream.get_name())
         self.cava.set_source(f"{stream.get_serial()}")
 
     def __on_visible_change(self, *_):

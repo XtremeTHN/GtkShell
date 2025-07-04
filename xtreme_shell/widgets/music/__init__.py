@@ -142,7 +142,7 @@ class MusicViewer(Astal.Window):
 
         for x in audio.get_streams():
             if x.get_name().lower() == name.lower():
-                self.cava.set_stream(x)
+                self.cava.stream = x
                 break
 
     @GObject.Property()
