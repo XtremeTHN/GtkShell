@@ -5,6 +5,7 @@ from xtreme_shell.modules.config import Music, MusicViewer as MVConf, MusicViewe
 from gi.repository import Gtk, Astal, AstalMpris, AstalWp, GObject, Gio
 from xtreme_shell.widgets import Widget
 import logging
+import re
 
 C = Gtk.Template.Child
 CB = Gtk.Template.Callback
@@ -82,21 +83,26 @@ class MusicViewer(Astal.Window):
 
     def __init__(self):
         super().__init__(
-            anchor=a.BOTTOM | a.RIGHT, width_request=280, height_request=350
+            anchor=a.BOTTOM | a.RIGHT, width_request=480, height_request=250
         )
         self.__player: Player = None
+        self.__mpris_player_id = 0
+
+        self.mpris = AstalMpris.get_default()
         self.logger = logging.getLogger("MusicViewer")
 
-        background = BlurryImage(content_fit=Gtk.ContentFit.COVER)
+        self.background = BlurryImage(content_fit=Gtk.ContentFit.COVER)
         self.cava = Cava()
         opacity_box = Gtk.Box(
             css_classes=["surface-container"], hexpand=True, vexpand=True
         )
         self.controls = MusicControls()
 
-        Music.background_blur.bind(background, "blur")
+        Music.background_blur.bind(self.background, "blur")
         Music.opacity.bind(opacity_box, "opacity")
-        Music.player.bind(self, "player", transform_to=lambda _, x: Player.new(x))
+
+        # sets the self.__player variable and connects functions to it
+        Music.player.on_change(self.__change_player, once=True)
 
         MusicViewerCava.blur.bind(self.cava, "blur")
         MusicViewerCava.bind_all(self.cava.cava)
@@ -107,17 +113,7 @@ class MusicViewer(Astal.Window):
             "player", self.controls, "player", GObject.BindingFlags.SYNC_CREATE
         )
 
-        self.__player.bind_property(
-            "cover-art",
-            background,
-            "file",
-            GObject.BindingFlags.SYNC_CREATE,
-            lambda _, x: Gio.File.new_for_path(x) if x else None,
-        )
-
-        self.__player.connect("notify::available", self.__on_available_change)
-
-        self.overlay.add_overlay(background)
+        self.overlay.add_overlay(self.background)
         self.overlay.add_overlay(self.cava)
         self.overlay.add_overlay(opacity_box)
         self.overlay.add_overlay(self.controls)
@@ -137,13 +133,55 @@ class MusicViewer(Astal.Window):
         self.cava.set_active(avail)
         self.controls.set_default_texts()
 
-    def __find_stream(self, audio, _):
-        name = self.__player.get_bus_name().split(".")[-1]
+    def __change_player(self, player):
+        if player != "last":
+            if self.__mpris_player_id != 0:
+                self.mpris.disconnect(self.__mpris_player_id)
+
+            self.logger.info(f"Changing player to {player}")
+            self.__player = Player.new(player)
+
+            self.logger.debug("Connecting functions...")
+            self.__player.bind_property(
+                "cover-art",
+                self.background,
+                "file",
+                GObject.BindingFlags.SYNC_CREATE,
+                lambda _, x: Gio.File.new_for_path(x) if x else None,
+            )
+
+            self.__player.connect("notify::available", self.__on_available_change)
+            self.__on_available_change()
+        else:
+            self.logger.info("Choosing the last player from the mpris list...")
+            self.__mpris_player_id = self.mpris.connect(
+                "player-added", self.__set_player_from_mpris
+            )
+            self.__set_player_from_mpris(None, None)
+
+    def __set_player_from_mpris(self, _, player: Player | None):
+        if not player:
+            players = self.mpris.get_players()
+            if len(players) == 0:
+                self.logger.info("No player available")
+                return
+            else:
+                player = players[-1]
+
+        self.logger.info(f"Changing player to {player.get_bus_name()}...")
+        self.__player = player
+        self.notify("player")
+
+    def __find_stream(self, audio: AstalWp.Audio, _):
+        name = self.__player.get_identity()
+        self.logger.info(f"Trying to find the stream of {name}...")
+        pattern = re.compile(re.escape(name), re.IGNORECASE)
 
         for x in audio.get_streams():
-            if x.get_name().lower() == name.lower():
+            if pattern.search(x.get_name()) or pattern.search(x.get_description()):
                 self.cava.stream = x
-                break
+                return
+        self.logger.warning("Stream not found")
 
     @GObject.Property()
     def player(self):

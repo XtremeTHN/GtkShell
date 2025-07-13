@@ -1,5 +1,6 @@
 from gi.repository import Gtk, Gsk, AstalCava, AstalWp, GObject
 from . import Widget
+import logging
 
 
 # ported from https://github.com/kotontrion/kompass/blob/main/libkompass/src/cava.vala
@@ -8,9 +9,9 @@ class Cava(Widget, Gtk.Widget):
 
     def __init__(self, active=False):
         Gtk.Widget.__init__(self, css_classes=["cava"])
-        Widget.__init__(self)
 
         self.__stream = None
+        self.logger = logging.getLogger("Cava")
         self.cava = AstalCava.Cava.get_default()
 
         self.cava.connect("notify::values", lambda *_: self.queue_draw())
@@ -27,20 +28,17 @@ class Cava(Widget, Gtk.Widget):
 
     @stream.setter
     def stream(self, stream: AstalWp.Stream):
+        serial = str(stream.get_serial())
+        if self.__stream and self.__stream.get_serial() == serial:
+            return
+
         self.__stream = stream
 
-        self.logger.info("Using stream from %s", stream.get_name())
-        self.cava.set_source(f"{stream.get_serial()}")
+        self.logger.info("Using stream with serial %s", serial)
+        self.cava.set_source(f"{serial}")
 
     def __on_visible_change(self, *_):
         self.set_active(self.get_visible())
-
-    def __queue(self):
-        if self.get_visible():
-            self.queue_draw()
-            return True
-        else:
-            return False
 
     def do_snapshot(self, snapshot):
         snapshot.push_blur(self.blur)
