@@ -33,7 +33,8 @@ class App(Adw.Application):
 
         if command_line.get_is_remote():
             # app already running
-            command_line.print_literal("Already running")
+            command_line.print_literal("Exiting...")
+            self.quit()
         else:
             self.apply_css()
             self.add_window(Bar)

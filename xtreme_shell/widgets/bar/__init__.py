@@ -1,4 +1,6 @@
-from gi.repository import Gtk, Astal, AstalHyprland, GLib, Pango, GObject
+from gi.repository import Gtk, Astal, AstalHyprland, GLib, Pango, GObject, Astal
+
+from .tray import Tray
 
 from ..icons.network import NetworkIcon
 from ..icons.audio import AudioIcon
@@ -89,12 +91,18 @@ class Bar(Astal.Window):
         clock = Gtk.Label()
         GLib.timeout_add_seconds(1, self.update_time, clock)
 
+        right = Gtk.Box(spacing=10)
+
+        tray = Tray()
+        right.append(tray)
+
         indicators = Gtk.Box(spacing=10)
         indicators.append(NetworkIcon(16))
         indicators.append(AudioIcon(16))
+        right.append(indicators)
 
         root.set_start_widget(left)
         root.set_center_widget(clock)
-        root.set_end_widget(indicators)
+        root.set_end_widget(right)
 
         self.set_child(root)
