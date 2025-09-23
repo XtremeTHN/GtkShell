@@ -96,6 +96,9 @@ class Bar(Astal.Window):
         tray = Tray()
         right.append(tray)
 
+        sep = Gtk.Separator(orientation=Gtk.Orientation.VERTICAL)
+        right.append(sep)
+
         indicators = Gtk.Box(spacing=10)
         indicators.append(NetworkIcon(16))
         indicators.append(AudioIcon(16))
