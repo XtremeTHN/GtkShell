@@ -13,5 +13,6 @@ def init_libraries():
         {
             "AstalIO": "0.1",
             "AstalHyprland": "0.1",
+            "AstalNetwork": "0.1"
         }
     )

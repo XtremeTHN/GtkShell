@@ -1,5 +1,8 @@
 from gi.repository import Gtk, Astal, AstalHyprland, GLib, Pango, GObject
 
+from ..icons.network import NetworkIcon
+from ..icons.audio import AudioIcon
+
 class Workspaces(Gtk.Box):
     def __init__(self, workspaces: int = 5):
         super().__init__(spacing=10)
@@ -17,6 +20,7 @@ class Workspaces(Gtk.Box):
         wkspc = Gtk.Label(label=str(id))
         wkspc.id = id
 
+        on_focus_change(None, None, wkspc)
         self.hypr.connect('notify::focused-workspace', on_focus_change, wkspc)
         self.append(wkspc)
 
@@ -38,7 +42,7 @@ class ActiveWindow(Gtk.Label):
         c = self.hypr.get_focused_client()
 
         if not c:
-            print("client is none")
+            self.set_label("ArchLinux")
             return           
          
         c.bind_property(
@@ -78,14 +82,19 @@ class Bar(Astal.Window):
 
         sep = Gtk.Separator(orientation=Gtk.Orientation.VERTICAL)
         left.append(sep)
+
         client = ActiveWindow()
         left.append(client)
 
         clock = Gtk.Label()
         GLib.timeout_add_seconds(1, self.update_time, clock)
 
+        indicators = Gtk.Box(spacing=10)
+        indicators.append(NetworkIcon(16))
+        indicators.append(AudioIcon(16))
+
         root.set_start_widget(left)
         root.set_center_widget(clock)
-        root.set_end_widget(Gtk.Box(hexpand=True))
+        root.set_end_widget(indicators)
 
         self.set_child(root)
