@@ -1,10 +1,10 @@
-import versions
-versions.init_libraries()
+from .modules.versions import init_libraries
+init_libraries()
 
 from gi.repository import Adw, GLib, Gio, Gdk, Gtk
 
-from modules.style import compile_scss
-from widgets.bar import Bar
+from .modules.style import compile_scss
+from .widgets.bar import Bar
 
 class App(Adw.Application):
     instance = None
@@ -40,11 +40,11 @@ class App(Adw.Application):
         
         return 0
 
+def run():
+    GLib.set_prgname("shell")
+    App.instance = App()
 
-GLib.set_prgname("shell")
-App.instance = App()
-
-try:
-    App.instance.run()
-except KeyboardInterrupt:
-    pass
+    try:
+        App.instance.run()
+    except KeyboardInterrupt:
+        pass
