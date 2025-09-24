@@ -1,5 +1,14 @@
 @import "./widgets/bar.scss";
+@import "./widgets/notifications.scss";
 
 .box-10 {
     padding: 10px;
+}
+
+.noback-widget {
+    background-color: transparent;
+}
+
+.cava {
+    color: var(--accent-color);
 }

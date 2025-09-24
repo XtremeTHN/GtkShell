@@ -1,6 +1,11 @@
 import pathlib
 
+LOG_DIR = pathlib.Path.home() / ".local" / "state" / "xtreme-shell"
 CONFIG_DIR = pathlib.Path.home() / ".config/shell"
 JSON_CONFIG_PATH = CONFIG_DIR / "config.json"
 SOURCE_DIR = pathlib.Path("@pkgdatadir@") / "xtreme_shell"
 MODULES_DIR = CONFIG_DIR / "modules"
+
+# Creation of paths
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+CONFIG_DIR.mkdir(parents=True, exist_ok=True)

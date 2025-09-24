@@ -2,7 +2,9 @@ moduledir = pkgdatadir / meson.project_name() / 'modules'
 
 modules_sources = [
     '__init__.py',
+    'utils.py',
     'style.py',
+    'logger.py',
     'versions.py',
 ]
 

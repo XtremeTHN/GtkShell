@@ -1,9 +1,11 @@
 from gi.repository import Gtk, Astal, AstalHyprland, GLib, Pango, GObject, Astal
 
 from .tray import Tray
+# from .music import Background
 
 from ..icons.network import NetworkIcon
 from ..icons.audio import AudioIcon
+
 
 class Workspaces(Gtk.Box):
     def __init__(self, workspaces: int = 5):
@@ -13,22 +15,25 @@ class Workspaces(Gtk.Box):
         self.widgets = []
         self.max_workspaces = workspaces
 
-        self.setup_widgets()    
-    
+        self.setup_widgets()
+
     def wk(self, id):
         def on_focus_change(_, __, lbl):
-            lbl.set_opacity(1 if self.hypr.get_focused_workspace().get_id() == lbl.id else 0.5)
+            lbl.set_opacity(
+                1 if self.hypr.get_focused_workspace().get_id() == lbl.id else 0.5
+            )
 
         wkspc = Gtk.Label(label=str(id))
         wkspc.id = id
 
         on_focus_change(None, None, wkspc)
-        self.hypr.connect('notify::focused-workspace', on_focus_change, wkspc)
+        self.hypr.connect("notify::focused-workspace", on_focus_change, wkspc)
         self.append(wkspc)
 
     def setup_widgets(self):
         for x in range(1, self.max_workspaces + 1):
             self.wk(x)
+
 
 class ActiveWindow(Gtk.Label):
     def __init__(self):
@@ -39,20 +44,21 @@ class ActiveWindow(Gtk.Label):
 
         self.hypr = AstalHyprland.get_default()
         self.hypr.connect("notify::focused-client", self.on_focus_change)
-    
+
     def on_focus_change(self, *_):
         c = self.hypr.get_focused_client()
 
         if not c:
             self.set_label("ArchLinux")
-            return           
-         
+            return
+
         c.bind_property(
             "title",
             self,
             "label",
             GObject.BindingFlags.SYNC_CREATE,
         )
+
 
 class Bar(Astal.Window):
     def __init__(self):
@@ -62,21 +68,20 @@ class Bar(Astal.Window):
             exclusivity=Astal.Exclusivity.EXCLUSIVE,
             anchor=Astal.WindowAnchor.TOP,
             width_request=800,
-            margin_top=10
+            margin_top=10,
         )
 
         self.setup_widgets()
 
         self.add_css_class("bar-window")
         self.present()
-    
+
     def update_time(self, clock):
         clock.set_label(GLib.DateTime.new_now_local().format("%I:%M %p %b %Y"))
         return True
 
     def setup_widgets(self):
-        root = Gtk.CenterBox()
-        
+        center_box = Gtk.CenterBox(css_classes=["box-10"])
         left = Gtk.Box(spacing=15)
 
         workspaces = Workspaces()
@@ -104,8 +109,14 @@ class Bar(Astal.Window):
         indicators.append(AudioIcon(16))
         right.append(indicators)
 
-        root.set_start_widget(left)
-        root.set_center_widget(clock)
-        root.set_end_widget(right)
+        center_box.set_start_widget(left)
+        center_box.set_center_widget(clock)
+        center_box.set_end_widget(right)
 
-        self.set_child(root)
+        # cava = Background()
+
+        # ovr = Gtk.Overlay(child=cava)
+        # ovr.add_overlay(center_box)
+        # ovr.set_measure_overlay(center_box, True)
+
+        self.set_child(center_box)

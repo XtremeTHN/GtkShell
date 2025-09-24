@@ -1,9 +1,7 @@
-moduledir = pkgdatadir / meson.project_name() / 'widgets' / 'bar'
+moduledir = pkgdatadir / meson.project_name() / 'widgets' / 'notifications'
 
 modules_sources = [
     '__init__.py',
-    'tray.py',
-    'music.py'
 ]
 
 install_data(modules_sources, install_dir: moduledir)

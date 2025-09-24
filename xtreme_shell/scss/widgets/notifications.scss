@@ -1,0 +1,9 @@
+.notif-list {
+    > row {
+        background-color: var(--window-bg-color);
+        box-shadow: 2px 3px 8px 0 gtkalpha(black, .4);
+        border: 1pt solid gtkalpha(var(--window-fg-color), .03);
+        margin: .5rem 1rem .5rem 1rem;
+        padding: 10px;
+    }
+}

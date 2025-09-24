@@ -1,5 +1,6 @@
 from gi.repository import AstalTray, Gtk, GObject
 
+
 class Item(Gtk.Image):
     def __init__(self, item: AstalTray.TrayItem):
         super().__init__()
@@ -10,12 +11,7 @@ class Item(Gtk.Image):
         cont.set_button(3)
         cont.connect("released", self.show_menu)
 
-        item.bind_property(
-            "gicon",
-            self,
-            "gicon",
-            GObject.BindingFlags.SYNC_CREATE
-        )
+        item.bind_property("gicon", self, "gicon", GObject.BindingFlags.SYNC_CREATE)
 
         item.connect(
             "notify::action-group",
@@ -26,9 +22,10 @@ class Item(Gtk.Image):
 
         self.popover.set_parent(self)
         self.add_controller(cont)
-    
+
     def show_menu(self, controller: Gtk.GestureClick, *_):
         self.popover.popup()
+
 
 class Tray(Gtk.Box):
     def __init__(self):
