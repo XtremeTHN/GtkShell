@@ -1,5 +1,27 @@
-from gi.repository import Gdk
+from gi.repository import Gdk, Gtk
 import logging
+
+
+def to_button(widget, on_clicked):
+    c = Gtk.GestureClick.new()
+    c.set_button(0)
+    c.connect("pressed", lambda *_: on_clicked(widget))
+
+    widget.add_controller(c)
+
+
+def box(vertical: bool, children=[], **kwargs):
+    b = Gtk.Box(
+        orientation=Gtk.Orientation.VERTICAL
+        if vertical
+        else Gtk.Orientation.HORIZONTAL,
+        **kwargs,
+    )
+
+    for x in children:
+        b.append(x)
+
+    return b
 
 
 def get_paintable_from_path(path) -> Gdk.Paintable | None:

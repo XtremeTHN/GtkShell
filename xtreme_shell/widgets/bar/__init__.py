@@ -1,7 +1,9 @@
 from gi.repository import Gtk, Astal, AstalHyprland, GLib, Pango, GObject, Astal
 
+from xtreme_shell.modules.utils import to_button
+
 from .tray import Tray
-# from .music import Background
+from .audio import AudioPopover
 
 from ..icons.network import NetworkIcon
 from ..icons.audio import AudioIcon
@@ -81,6 +83,8 @@ class Bar(Astal.Window):
         return True
 
     def setup_widgets(self):
+        self.audio_popover = AudioPopover()
+
         center_box = Gtk.CenterBox(css_classes=["box-10"])
         left = Gtk.Box(spacing=15)
 
@@ -105,8 +109,14 @@ class Bar(Astal.Window):
         right.append(sep)
 
         indicators = Gtk.Box(spacing=10)
-        indicators.append(NetworkIcon(16))
-        indicators.append(AudioIcon(16))
+        audio = AudioIcon(16)
+        net = NetworkIcon(16)
+
+        self.audio_popover.set_parent(audio)
+        to_button(audio, lambda _: self.audio_popover.popup())
+
+        indicators.append(net)
+        indicators.append(audio)
         right.append(indicators)
 
         center_box.set_start_widget(left)

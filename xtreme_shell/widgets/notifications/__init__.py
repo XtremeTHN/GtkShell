@@ -1,28 +1,6 @@
 from gi.repository import AstalNotifd, Astal, Gtk, Pango, GLib
-from xtreme_shell.modules.utils import get_paintable_from_path
+from xtreme_shell.modules.utils import get_paintable_from_path, to_button, box
 import logging
-
-
-def box(vertical: bool, children=[], **kwargs):
-    b = Gtk.Box(
-        orientation=Gtk.Orientation.VERTICAL
-        if vertical
-        else Gtk.Orientation.HORIZONTAL,
-        **kwargs,
-    )
-
-    for x in children:
-        b.append(x)
-
-    return b
-
-
-def toButton(widget, on_clicked):
-    c = Gtk.GestureClick.new()
-    c.set_button(0)
-    c.connect("pressed", lambda *_: on_clicked(widget))
-
-    widget.add_controller(c)
 
 
 class Notification(Gtk.ListBoxRow):
@@ -74,7 +52,7 @@ class Notification(Gtk.ListBoxRow):
             icon_name="window-close-symbolic", opacity=0.6, css_classes=["false-button"]
         )
 
-        toButton(end, lambda _: self.remove_func(self.notif.get_id()))
+        to_button(end, lambda _: self.remove_func(self.notif.get_id()))
 
         header.set_start_widget(left)
         header.set_end_widget(end)
