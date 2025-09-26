@@ -9,4 +9,5 @@ install_data(modules_sources, install_dir: moduledir)
 
 subdir('bar')
 subdir('icons')
+subdir('control')
 subdir('notifications')

@@ -12,3 +12,10 @@
 .cava {
     color: var(--accent-color);
 }
+
+.adwaita-window {
+    box-shadow: 2px 3px 8px 0 gtkalpha(black, .4);
+    border: 1px solid gtkalpha(var(--window-fg-color), .2);
+    margin: .5rem 1rem .5rem 1rem;
+    border-radius: 16px;
+}

@@ -12,7 +12,7 @@ class AudioPopover(Gtk.Popover):
 
         wp = AstalWp.get_default()
         if not wp:
-            self.logging.error("Could'nt get wayplumber instance")
+            self.logging.error("Couldn't get wayplumber instance")
             return
 
         self.audio = wp.get_audio()

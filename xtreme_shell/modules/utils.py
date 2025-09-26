@@ -1,5 +1,20 @@
-from gi.repository import Gdk, Gtk
+from gi.repository import Gdk, Gtk, GObject
 import logging
+
+
+def get_signal_args(flags="run-first", args=()):
+    return (
+        getattr(GObject.SignalFlags, flags.replace("-", "_").upper()),
+        None,
+        tuple(args),
+    )
+
+
+class Blp(Gtk.Template):
+    def __init__(self, blp_name):
+        super().__init__(
+            resource_path=f"/com/github/XtremeTHN/XtremeShell/{blp_name}.ui"
+        )
 
 
 def to_button(widget, on_clicked):

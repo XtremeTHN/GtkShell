@@ -1,0 +1,6 @@
+<gresources>
+    <gresource prefix="/com/github/XtremeTHN/XtremeShell/">
+        <file preprocess="xml-stripblanks">control.ui</file>
+        <file preprocess="xml-stripblanks">script-item.ui</file>
+    </gresource>
+</gresources>

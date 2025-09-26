@@ -1,0 +1,30 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $ScriptItem: Adw.ActionRow {
+    [suffix]
+    Gtk.Button run_button {
+        clicked => $start_script();
+        halign: center;
+        valign: center;
+
+        child: Stack stack {
+            StackPage {
+                name: "icon";
+
+                child: Image {
+                    icon-name: "media-playback-start";
+                };
+            }
+
+            StackPage {
+                name: "running";
+
+                child: Adw.Spinner {
+                    width-request: 12;
+                    height-request: 12;
+                };
+            }
+        };
+    }
+}

@@ -1,0 +1,86 @@
+using Gtk 4.0;
+using Adw 1;
+using Astal 4.0;
+
+template $ControlCenter: Astal.Window {
+    Adw.NavigationSplitView {
+        sidebar: Adw.NavigationPage {
+            title: _("Control Center");
+
+            child: Adw.ToolbarView {
+                [top]
+                Adw.HeaderBar {}
+
+                content: Gtk.ListBox {
+                    styles [
+                        "navigation-sidebar",
+                    ]
+
+                    Box {
+                        spacing: 10;
+
+                        Image {
+                            icon-name: "code-symbolic";
+                            pixel-size: 24;
+                        }
+
+                        Label {
+                            label: _("Scripts");
+                        }
+                    }
+                };
+            };
+        };
+
+        content: Adw.NavigationPage {
+            title: "";
+
+            child: Stack stack {
+                StackPage {
+                    name: "scripts";
+
+                    child: Adw.ToolbarView {
+                        [top]
+                        Adw.HeaderBar {}
+
+                        content: Box {
+                            styles [
+                                "box-10",
+                            ]
+
+                            orientation: vertical;
+
+                            Label {
+                                styles [
+                                    "heading",
+                                ]
+
+                                xalign: 0;
+                                label: "Scripts";
+                            }
+
+                            Label {
+                                styles [
+                                    "caption",
+                                ]
+
+                                xalign: 0;
+                                label: "Some useful scripts";
+                                opacity: 0.6;
+                            }
+
+                            ListBox scripts_box {
+                                styles [
+                                    "boxed-list-separate",
+                                ]
+
+                                selection-mode: none;
+                                margin-top: 10;
+                            }
+                        };
+                    };
+                }
+            };
+        };
+    }
+}

@@ -5,5 +5,8 @@
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.wordBasedSuggestions": "off"
+    },
+    "[blueprint-gtk]": {
+        "editor.formatOnSave": true
     }
 }
