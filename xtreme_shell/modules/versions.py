@@ -18,5 +18,6 @@ def init_libraries():
             "AstalMpris": "0.1",
             "AstalWp": "0.1",
             "AstalCava": "0.1",
+            "AstalNotifd": "0.1",
         }
     )

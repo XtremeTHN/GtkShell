@@ -25,6 +25,7 @@ class App(Adw.Application):
         )
 
         self.logger = logging.getLogger("App")
+        self.windows: list[Adw.Window] = []
 
     @property
     def display(self) -> Gdk.Display | None:
@@ -34,7 +35,10 @@ class App(Adw.Application):
             self.logger.fatal("Gdk.Display is None")
 
     def add_window(self, window, *args, **kwargs):
-        super().add_window(window(*args, **kwargs))
+        win = window(*args, **kwargs)
+        super().add_window(win)
+
+        self.windows.append(win)
 
     def apply_css(self):
         css = compile_scss()
@@ -49,20 +53,47 @@ class App(Adw.Application):
     def parse_args(self, argv):
         parser = argparse.ArgumentParser(exit_on_error=False, add_help=False)
         parser.add_argument(
+            "-h",
+            "--help",
+            action="store_true",
+        )
+        parser.add_argument(
             "-q",
             "--quit",
             action="store_true",
             help="Quit the running instance of the application",
         )
 
-        return parser.parse_args(argv)
+        parser.add_argument(
+            "-t", "--toggle", action="store", help="Toggle the visibility of a window"
+        )
+
+        return parser.parse_args(argv), parser
 
     def do_command_line(self, command_line):
-        argv = self.parse_args(command_line.get_arguments())
-
         if command_line.get_is_remote():
-            if argv.quit:
-                self.quit()
+            try:
+                argv, parser = self.parse_args(command_line.get_arguments())
+
+                if argv.quit:
+                    self.quit()
+                if argv.help:
+                    command_line.print_literal(parser.format_help())
+                if argv.toggle:
+                    for x in self.windows:
+                        if x.get_name() != argv.toggle:
+                            continue
+                        x.set_visible(not x.get_visible())
+                        break
+                    else:
+                        command_line.printerr_literal("Window not found")
+
+            except argparse.ArgumentError as e:
+                command_line.printerr_literal(
+                    f"<{e.__class__.__name__}>: error on argument {e.args[0].option_strings}. Check -h"
+                )
+            finally:
+                del command_line  # releases the caller process
         else:
             init_logger()
             self.apply_css()
