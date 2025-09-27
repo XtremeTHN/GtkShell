@@ -1,27 +1,7 @@
-from gi.repository import Adw, Gtk, Gio, GLib, Astal, GObject
-from xtreme_shell.modules.utils import Blp, get_signal_args
-from .scripts import Scripts, ScriptItem
-
-import threading
+from gi.repository import Gtk, GLib, Astal
+from xtreme_shell.modules.utils import Blp
+from .scripts import Scripts, ScriptItem, SimpleShellScript
 import logging
-
-
-class SimpleShellScript(GObject.Object):
-    __gsignals__ = {"finish": get_signal_args(args=[bool, GLib.Bytes, GLib.Bytes])}
-
-    def __init__(self, args):
-        super().__init__()
-
-        self.cancellable = Gio.Cancellable.new()
-        self.proc = Gio.Subprocess.new(args, Gio.SubprocessFlags.NONE)
-
-        self.proc.communicate_async(
-            stdin_buf=None, cancellable=self.cancellable, callback=self.on_proc_finish
-        )
-
-    def on_proc_finish(self, _, res):
-        no_error, stdout, stderr = self.proc.communicate_finish(res)
-        self.emit("finish", no_error, stdout, stderr)
 
 
 @Blp("control")
@@ -33,6 +13,7 @@ class ControlCenter(Astal.Window):
     def __init__(self):
         super().__init__(
             name="control",
+            namespace="shell-control",
             width_request=600,
             height_request=600,
             layer=Astal.Layer.OVERLAY,

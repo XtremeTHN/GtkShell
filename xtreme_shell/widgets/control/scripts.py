@@ -1,4 +1,4 @@
-from gi.repository import Gtk, Adw, GObject, Gio
+from gi.repository import Gtk, Adw, GObject, Gio, GLib
 from xtreme_shell.modules.utils import Blp, get_signal_args
 import logging
 
@@ -24,6 +24,24 @@ class Scripts(GObject.Object):
     def check_if_running(self, proc: str):
         p = Gio.Subprocess.new(["pgrep", proc], Gio.SubprocessFlags.STDOUT_SILENCE)
         return p.wait_check(None)
+
+
+class SimpleShellScript(GObject.Object):
+    __gsignals__ = {"finish": get_signal_args(args=[bool, GLib.Bytes, GLib.Bytes])}
+
+    def __init__(self, args):
+        super().__init__()
+
+        self.cancellable = Gio.Cancellable.new()
+        self.proc = Gio.Subprocess.new(args, Gio.SubprocessFlags.NONE)
+
+        self.proc.communicate_async(
+            stdin_buf=None, cancellable=self.cancellable, callback=self.on_proc_finish
+        )
+
+    def on_proc_finish(self, _, res):
+        no_error, stdout, stderr = self.proc.communicate_finish(res)
+        self.emit("finish", no_error, stdout, stderr)
 
 
 @Blp("script-item")
