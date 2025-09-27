@@ -1,36 +1,55 @@
 using Gtk 4.0;
 using Astal 4.0;
 
-template $Content: CenterBox {
-    styles [
-        "box-10",
-    ]
+template $Bar: Astal.Window {
+    Overlay {
+        child: $Background {
+            styles [
+                "cava",
+            ]
+        };
 
-    start-widget: Box {
-        spacing: 15;
+        [overlay]
+        CenterBox center_box {
+            styles [
+                "box-10",
+            ]
 
-        $Workspaces {}
+            start-widget: Box {
+                spacing: 15;
 
-        Separator {}
+                $Workspaces {
+                    spacing: 10;
+                    homogeneous: true;
+                }
 
-        $ActiveWindow {}
-    };
+                Separator {}
 
-    center-widget: Label clock {};
+                $ActiveWindow {
+                    ellipsize: end;
+                    max_width_chars: 15;
+                }
+            };
 
-    end-widget: Box {
-        spacing: 15;
+            center-widget: Label clock {};
 
-        $Tray {}
+            end-widget: Box {
+                spacing: 15;
 
-        Separator {}
+                $ActiveMusic {}
 
-        Box {
-            spacing: 10;
+                $Tray {}
 
-            $AudioIcon audio {}
+                Separator {}
 
-            $NetworkIcon {}
+                Box {
+                    spacing: 10;
+
+                    $AudioIcon audio {}
+
+                    $NetworkIcon {}
+                }
+            };
         }
-    };
+    }
 }

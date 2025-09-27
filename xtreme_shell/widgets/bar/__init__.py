@@ -15,7 +15,7 @@ class Workspaces(Gtk.Box):
     __gtype_name__ = "Workspaces"
 
     def __init__(self, workspaces: int = 5):
-        super().__init__(spacing=10)
+        super().__init__()
         self.hypr = AstalHyprland.get_default()
 
         self.widgets = []
@@ -45,13 +45,11 @@ class ActiveWindow(Gtk.Label):
     __gtype_name__ = "ActiveWindow"
 
     def __init__(self):
-        super().__init__(
-            ellipsize=Pango.EllipsizeMode.END,
-            max_width_chars=15,
-        )
+        super().__init__()
 
         self.hypr = AstalHyprland.get_default()
         self.hypr.connect("notify::focused-client", self.on_focus_change)
+        self.on_focus_change()
 
     def on_focus_change(self, *_):
         c = self.hypr.get_focused_client()
@@ -69,18 +67,30 @@ class ActiveWindow(Gtk.Label):
 
 
 @Blp("bar")
-class Content(Gtk.CenterBox):
-    __gtype_name__ = "Content"
+class Bar(Astal.Window):
+    __gtype_name__ = "Bar"
 
     clock: Gtk.Label = Gtk.Template.Child()
     audio: AudioIcon = Gtk.Template.Child()
+    center_box: Gtk.CenterBox = Gtk.Template.Child()
 
     def __init__(self):
-        super().__init__()
+        super().__init__(
+            name="bar",
+            namespace="shell-bar",
+            exclusivity=Astal.Exclusivity.EXCLUSIVE,
+            anchor=Astal.WindowAnchor.TOP,
+            width_request=800,
+            margin_top=10,
+        )
+
         self.setup_widgets()
 
+        self.add_css_class("adwaita-window-no-shadow")
+        self.present()
+
     def update_time(self, clock):
-        clock.set_label(GLib.DateTime.new_now_local().format("%I:%M %p %b %Y"))
+        clock.set_label(GLib.DateTime.new_now_local().format("%I:%M %p %a %b %Y"))
         return True
 
     def setup_widgets(self):
@@ -96,27 +106,4 @@ class Content(Gtk.CenterBox):
         self.audio_popover.set_parent(self.audio)
         to_button(self.audio, lambda _: self.audio_popover.popup())
 
-
-class Bar(Astal.Window):
-    def __init__(self):
-        super().__init__(
-            name="bar",
-            namespace="shell-bar",
-            exclusivity=Astal.Exclusivity.EXCLUSIVE,
-            anchor=Astal.WindowAnchor.TOP,
-            width_request=800,
-            margin_top=10,
-        )
-
-        self.setup_widgets()
-
-        self.add_css_class("bar-window")
-        self.present()
-
-    def setup_widgets(self):
-        c = Content()
-        ovr = Gtk.Overlay(child=Background())
-        ovr.add_overlay(c)
-        ovr.set_measure_overlay(c, True)
-
-        self.set_child(ovr)
+        self.get_child().set_measure_overlay(self.center_box, True)
