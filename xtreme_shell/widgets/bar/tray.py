@@ -28,6 +28,8 @@ class Item(Gtk.Image):
 
 
 class Tray(Gtk.Box):
+    __gtype_name__ = "Tray"
+
     def __init__(self):
         super().__init__(spacing=10)
 

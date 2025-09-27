@@ -1,4 +1,4 @@
-from gi.repository import Gtk, Adw, GObject
+from gi.repository import Gtk, Adw, GObject, Gio
 from xtreme_shell.modules.utils import Blp, get_signal_args
 import logging
 
@@ -21,6 +21,10 @@ class Scripts(GObject.Object):
         self.scripts[nickname] = data
         self.emit("script-added", nickname)
 
+    def check_if_running(self, proc: str):
+        p = Gio.Subprocess.new(["pgrep", proc], Gio.SubprocessFlags.STDOUT_SILENCE)
+        return p.wait_check(None)
+
 
 @Blp("script-item")
 class ScriptItem(Adw.ActionRow):
@@ -42,8 +46,15 @@ class ScriptItem(Adw.ActionRow):
             self.run_button.set_sensitive(True)
             self.stack.set_visible_child_name("icon")
 
-        func = self.scripts.scripts[self.script_target]["function"]
+        data = self.scripts.scripts[self.script_target]
+
+        if self.scripts.check_if_running("windows"):
+            notification = Gio.Notification.new("Scripts")
+            notification.set_body(f"{data['title']} is already running")
+            a: Adw.Application = self.get_root().get_application()
+            a.send_notification("script", notification)
+            return
 
         self.run_button.set_sensitive(False)
         self.stack.set_visible_child_name("running")
-        func().connect("finish", on_finish)
+        data["function"]().connect("finish", on_finish)

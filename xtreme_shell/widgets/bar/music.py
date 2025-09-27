@@ -1,5 +1,6 @@
 from gi.repository import Gtk, AstalMpris, GObject, Gio, AstalWp
 from ..cava import Cava
+
 import logging
 import re
 
@@ -7,6 +8,8 @@ Player = AstalMpris.Player
 
 
 class Background(Cava):
+    __gtype_name__ = "Background"
+
     def __init__(self):
         super().__init__()
 
@@ -28,13 +31,10 @@ class Background(Cava):
         self.__change_player("last")
 
     def __on_available_change(self, *_):
-        # avail = self.__player.get_available()
-        # self.set_visible(avail)
-        # self.set_active(avail)
         self.queue_draw()
 
     def __find_stream(self, audio: AstalWp.Audio, _):
-        name = "Zen"
+        name = "spotify"
         self.logger.info(f"Trying to find the stream of {name}...")
         pattern = re.compile(re.escape(name), re.IGNORECASE)
 

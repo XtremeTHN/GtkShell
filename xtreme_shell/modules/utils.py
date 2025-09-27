@@ -1,4 +1,4 @@
-from gi.repository import Gdk, Gtk, GObject
+from gi.repository import Gdk, Gtk, GObject, GLib
 import logging
 
 

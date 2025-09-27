@@ -4,6 +4,7 @@ modules_sources = [
     '__init__.py',
     'tray.py',
     'music.py',
+    'center.py',
     'audio.py'
 ]
 

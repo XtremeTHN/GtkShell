@@ -1,6 +1,8 @@
 blueprints = custom_target('blueprints',
   input: files(
+    'bar.blp',
     'control.blp',
+    'center.blp',
     'script-item.blp'
   ),
   output: '.',

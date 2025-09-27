@@ -2,6 +2,8 @@ moduledir = pkgdatadir / meson.project_name() / 'widgets' / 'notifications'
 
 modules_sources = [
     '__init__.py',
+    'item.py',
+    'list.py'
 ]
 
 install_data(modules_sources, install_dir: moduledir)

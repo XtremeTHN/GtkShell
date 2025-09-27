@@ -1,0 +1,36 @@
+using Gtk 4.0;
+using Astal 4.0;
+
+template $Content: CenterBox {
+    styles [
+        "box-10",
+    ]
+
+    start-widget: Box {
+        spacing: 15;
+
+        $Workspaces {}
+
+        Separator {}
+
+        $ActiveWindow {}
+    };
+
+    center-widget: Label clock {};
+
+    end-widget: Box {
+        spacing: 15;
+
+        $Tray {}
+
+        Separator {}
+
+        Box {
+            spacing: 10;
+
+            $AudioIcon audio {}
+
+            $NetworkIcon {}
+        }
+    };
+}

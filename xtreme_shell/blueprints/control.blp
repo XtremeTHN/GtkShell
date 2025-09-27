@@ -3,6 +3,8 @@ using Adw 1;
 using Astal 4.0;
 
 template $ControlCenter: Astal.Window {
+    visible: false;
+
     Adw.NavigationSplitView {
         sidebar: Adw.NavigationPage {
             title: _("Control Center");
@@ -33,7 +35,7 @@ template $ControlCenter: Astal.Window {
         };
 
         content: Adw.NavigationPage {
-            title: "";
+            title: "Settings";
 
             child: Stack stack {
                 StackPage {
@@ -41,7 +43,9 @@ template $ControlCenter: Astal.Window {
 
                     child: Adw.ToolbarView {
                         [top]
-                        Adw.HeaderBar {}
+                        Adw.HeaderBar {
+                            show-title: false;
+                        }
 
                         content: Box {
                             styles [

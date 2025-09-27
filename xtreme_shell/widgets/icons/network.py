@@ -2,7 +2,9 @@ from gi.repository import AstalNetwork, Gtk, GObject
 
 
 class NetworkIcon(Gtk.Image):
-    def __init__(self, size):
+    __gtype_name__ = "NetworkIcon"
+
+    def __init__(self, size=16):
         super().__init__(pixel_size=size)
 
         self.net = AstalNetwork.get_default()

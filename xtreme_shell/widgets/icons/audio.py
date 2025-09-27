@@ -6,7 +6,9 @@ def to_percentage(_, value):
 
 
 class AudioIcon(Gtk.Image):
-    def __init__(self, size):
+    __gtype_name__ = "AudioIcon"
+
+    def __init__(self, size=16):
         super().__init__(pixel_size=size)
 
         self.audio = AstalWp.get_default()

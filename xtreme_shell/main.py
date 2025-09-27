@@ -3,7 +3,7 @@ from .modules.versions import init_libraries
 init_libraries()
 
 from .modules.logger import init_logger
-from gi.repository import Adw, GLib, Gio, Gdk, Gtk
+from gi.repository import Adw, GLib, Gio, Gdk, Gtk, AstalCava
 
 from .modules.constants import SOURCE_DIR
 from .modules.style import compile_scss
@@ -116,3 +116,6 @@ def run(argv):
         App.instance.run(argv)
     except KeyboardInterrupt:
         pass
+    finally:
+        if c := AstalCava.get_default():
+            c.set_active(False)

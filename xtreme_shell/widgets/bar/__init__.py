@@ -1,15 +1,19 @@
 from gi.repository import Gtk, Astal, AstalHyprland, GLib, Pango, GObject, Astal
 
-from xtreme_shell.modules.utils import to_button
+from xtreme_shell.modules.utils import Blp, to_button
 
 from .tray import Tray
 from .audio import AudioPopover
+from .center import Center
+from .music import Background
 
 from ..icons.network import NetworkIcon
 from ..icons.audio import AudioIcon
 
 
 class Workspaces(Gtk.Box):
+    __gtype_name__ = "Workspaces"
+
     def __init__(self, workspaces: int = 5):
         super().__init__(spacing=10)
         self.hypr = AstalHyprland.get_default()
@@ -38,6 +42,8 @@ class Workspaces(Gtk.Box):
 
 
 class ActiveWindow(Gtk.Label):
+    __gtype_name__ = "ActiveWindow"
+
     def __init__(self):
         super().__init__(
             ellipsize=Pango.EllipsizeMode.END,
@@ -62,6 +68,35 @@ class ActiveWindow(Gtk.Label):
         )
 
 
+@Blp("bar")
+class Content(Gtk.CenterBox):
+    __gtype_name__ = "Content"
+
+    clock: Gtk.Label = Gtk.Template.Child()
+    audio: AudioIcon = Gtk.Template.Child()
+
+    def __init__(self):
+        super().__init__()
+        self.setup_widgets()
+
+    def update_time(self, clock):
+        clock.set_label(GLib.DateTime.new_now_local().format("%I:%M %p %b %Y"))
+        return True
+
+    def setup_widgets(self):
+        self.audio_popover = AudioPopover()
+        self.center = Center()
+
+        GLib.timeout_add_seconds(1, self.update_time, self.clock)
+
+        to_button(
+            self.clock, lambda _: self.center.set_visible(not self.center.get_visible())
+        )
+
+        self.audio_popover.set_parent(self.audio)
+        to_button(self.audio, lambda _: self.audio_popover.popup())
+
+
 class Bar(Astal.Window):
     def __init__(self):
         super().__init__(
@@ -78,55 +113,10 @@ class Bar(Astal.Window):
         self.add_css_class("bar-window")
         self.present()
 
-    def update_time(self, clock):
-        clock.set_label(GLib.DateTime.new_now_local().format("%I:%M %p %b %Y"))
-        return True
-
     def setup_widgets(self):
-        self.audio_popover = AudioPopover()
+        c = Content()
+        ovr = Gtk.Overlay(child=Background())
+        ovr.add_overlay(c)
+        ovr.set_measure_overlay(c, True)
 
-        center_box = Gtk.CenterBox(css_classes=["box-10"])
-        left = Gtk.Box(spacing=15)
-
-        workspaces = Workspaces()
-        left.append(workspaces)
-
-        sep = Gtk.Separator(orientation=Gtk.Orientation.VERTICAL)
-        left.append(sep)
-
-        client = ActiveWindow()
-        left.append(client)
-
-        clock = Gtk.Label()
-        GLib.timeout_add_seconds(1, self.update_time, clock)
-
-        right = Gtk.Box(spacing=10)
-
-        tray = Tray()
-        right.append(tray)
-
-        sep = Gtk.Separator(orientation=Gtk.Orientation.VERTICAL)
-        right.append(sep)
-
-        indicators = Gtk.Box(spacing=10)
-        audio = AudioIcon(16)
-        net = NetworkIcon(16)
-
-        self.audio_popover.set_parent(audio)
-        to_button(audio, lambda _: self.audio_popover.popup())
-
-        indicators.append(net)
-        indicators.append(audio)
-        right.append(indicators)
-
-        center_box.set_start_widget(left)
-        center_box.set_center_widget(clock)
-        center_box.set_end_widget(right)
-
-        # cava = Background()
-
-        # ovr = Gtk.Overlay(child=cava)
-        # ovr.add_overlay(center_box)
-        # ovr.set_measure_overlay(center_box, True)
-
-        self.set_child(center_box)
+        self.set_child(ovr)

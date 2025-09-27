@@ -32,9 +32,11 @@ class ControlCenter(Astal.Window):
 
     def __init__(self):
         super().__init__(
+            name="control",
             width_request=600,
             height_request=600,
             layer=Astal.Layer.OVERLAY,
+            hide_on_close=True,
         )
         self.logging = logging.getLogger("ControlCenter")
         self.scripts = Scripts()
@@ -44,6 +46,8 @@ class ControlCenter(Astal.Window):
 
         self.add_default_scripts()
         self.present()
+
+        self.set_visible(False)
 
     def on_script_added(self, _, nick):
         script_info = self.scripts.scripts[nick]
@@ -62,6 +66,7 @@ class ControlCenter(Astal.Window):
             {
                 "title": "Start winapps",
                 "description": "Starts the winapps container",
+                "process": "windows",
                 "function": lambda: SimpleShellScript(
                     [
                         "podman-compose",

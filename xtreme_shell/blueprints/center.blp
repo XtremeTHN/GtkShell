@@ -1,0 +1,69 @@
+using Gtk 4.0;
+using Adw 1;
+using Astal 4.0;
+
+template $Center: Astal.Window {
+    styles [
+        "adwaita-window",
+    ]
+
+    child: Box {
+        styles [
+            "box-10",
+        ]
+
+        orientation: horizontal;
+        spacing: 10;
+
+        Box {
+            orientation: vertical;
+            spacing: 10;
+
+            Stack stack {
+                vexpand: true;
+                hexpand: true;
+
+                StackPage {
+                    name: "placeholder";
+
+                    child: Adw.StatusPage {
+                        styles [
+                            "compact",
+                        ]
+
+                        vexpand: true;
+                        hexpand: true;
+                        icon-name: "bell-outline-symbolic";
+                        title: _("No notifications");
+                    };
+                }
+
+                StackPage {
+                    name: "list";
+
+                    child: ScrolledWindow {
+                        hscrollbar-policy: never;
+
+                        child: ListBox notif_list {
+                            css-classes: [
+                                "boxed-list-separate",
+                                "notif-list",
+                            ];
+
+                            selection-mode: none;
+                        };
+                    };
+                }
+            }
+
+            Button clear_btt {
+                clicked => $clear_notifs();
+
+                child: Adw.ButtonContent {
+                    icon-name: "user-trash-symbolic";
+                    label: "Clear";
+                };
+            }
+        }
+    };
+}
