@@ -7,12 +7,13 @@ python = import('python')
 python_i = python.find_installation('python3', modules: ['gi'])
 
 subdir('blueprints')
+subdir('scss')
 
 gnome.compile_resources(
     'xtreme-shell',
     'xtreme-shell.gresource.xml',
     gresource_bundle: true,
-    dependencies: blueprints,
+    dependencies: [blueprints, scss],
     install: true,
     install_dir: moduledir
 )

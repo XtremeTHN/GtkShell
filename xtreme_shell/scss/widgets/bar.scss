@@ -1,11 +1,7 @@
-@use "sass:string";
-
-@function gtkalpha($c, $a) {
-    @return string.unquote("alpha(#{$c},#{$a})");
-}
+@use "../utils.scss";
 
 .bar-window {
-    border: 1px solid gtkalpha(var(--window-fg-color), .1);
+    border: 1px solid utils.gtkalpha(var(--window-fg-color), .1);
     border-radius: 12px;
     // background-color: gtkalpha(var(--window-bg-color), .7);
 }

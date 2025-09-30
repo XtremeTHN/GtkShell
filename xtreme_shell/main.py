@@ -21,7 +21,7 @@ class App(Adw.Application):
 
     def __init__(self):
         super().__init__(
-            application_id="com.github.XtremeTHN.Shell",
+            application_id="com.github.XtremeTHN.XtremeShell",
             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE,
         )
 
@@ -83,40 +83,45 @@ class App(Adw.Application):
                 continue
             return x
 
+    def handle_args(self, command_line):
+        try:
+            argv, parser = self.parse_args(command_line.get_arguments())
+
+            if argv.quit:
+                self.quit()
+
+            if argv.help:
+                command_line.print_literal(parser.format_help())
+
+            if argv.toggle:
+                if not (w := self.get_window(argv.toggle)):
+                    command_line.printerr_literal("Window not found")
+                else:
+                    w.set_visible(not w.get_visible())
+
+            if argv.launch_prefix:
+                self.get_window("app-runner").cmd_prefix = argv.launch_prefix
+
+        except argparse.ArgumentError as e:
+            print(e)
+            command_line.printerr_literal(
+                f"<{e.__class__.__name__}>: error on argument {e.args[0].option_strings}. Check -h"
+            )
+
+    def init_windows(self):
+        self.add_window(Bar)
+        self.add_window(AppRunner)
+        self.add_window(Notifications)
+        self.add_window(ControlCenter)
+
     def do_command_line(self, command_line):
         if command_line.get_is_remote():
-            try:
-                argv, parser = self.parse_args(command_line.get_arguments())
-
-                if argv.quit:
-                    self.quit()
-
-                if argv.help:
-                    command_line.print_literal(parser.format_help())
-
-                if argv.toggle:
-                    if not (w := self.get_window(argv.toggle)):
-                        command_line.printerr_literal("Window not found")
-                    else:
-                        w.set_visible(not w.get_visible())
-
-                if argv.launch_prefix:
-                    app = self.get_window("app-runner")
-                    app.cmd_prefix = argv.launch_prefix
-
-            except argparse.ArgumentError as e:
-                command_line.printerr_literal(
-                    f"<{e.__class__.__name__}>: error on argument {e.args[0].option_strings}. Check -h"
-                )
-            finally:
-                del command_line  # releases the caller process
+            self.handle_args(command_line)
+            del command_line  # releases the caller process
         else:
             init_logger()
-            self.apply_css()
-            self.add_window(Bar)
-            self.add_window(AppRunner)
-            self.add_window(Notifications)
-            self.add_window(ControlCenter)
+            # self.apply_css()
+            self.init_windows()
 
             Gtk.IconTheme.get_for_display(self.display).add_search_path(
                 str(SOURCE_DIR / "icons")
