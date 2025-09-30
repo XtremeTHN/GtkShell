@@ -10,6 +10,7 @@ from .modules.style import compile_scss
 from .widgets.bar import Bar
 from .widgets.notifications import Notifications
 from .widgets.control import ControlCenter
+from .widgets.applications import AppRunner
 
 import logging
 import argparse
@@ -98,6 +99,7 @@ class App(Adw.Application):
             init_logger()
             self.apply_css()
             self.add_window(Bar)
+            self.add_window(AppRunner)
             self.add_window(Notifications)
             self.add_window(ControlCenter)
 

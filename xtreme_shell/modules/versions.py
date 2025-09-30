@@ -19,5 +19,6 @@ def init_libraries():
             "AstalWp": "0.1",
             "AstalCava": "0.1",
             "AstalNotifd": "0.1",
+            "AstalApps": "0.1",
         }
     )

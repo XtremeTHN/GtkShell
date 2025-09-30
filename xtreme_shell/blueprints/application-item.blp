@@ -1,0 +1,39 @@
+using Gtk 4.0;
+
+template $AppItem: ListBoxRow {
+    child: Box {
+        styles [
+            "box-5",
+        ]
+
+        spacing: 5;
+
+        Image app_icon {
+            icon-name: "bluetooth-symbolic";
+            pixel-size: 26;
+        }
+
+        Box {
+            orientation: vertical;
+            hexpand: true;
+            valign: center;
+
+            Label app_name {
+                xalign: 0;
+            }
+
+            Label app_description {
+                styles [
+                    "caption",
+                ]
+
+                xalign: 0;
+                opacity: 0.6;
+                wrap: true;
+                wrap-mode: word_char;
+            }
+        }
+
+        Image app_type_icon {}
+    };
+}

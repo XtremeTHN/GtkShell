@@ -5,6 +5,11 @@
     padding: 10px;
 }
 
+.box-5 {
+    padding: 10px;
+}
+
+
 .noback-widget {
     background-color: transparent;
 }
@@ -25,10 +30,10 @@
     border-radius: 16px;
 }
 
-.background {
-    background-color: gtkalpha(var(--window-bg-color), 0.8);
-}
+// .background {
+//     background-color: gtkalpha(var(--window-bg-color), 0);
+// }
 
-popover.background {
-    background-color: transparent;
-}
+// popover.background {
+//     background-color: transparent;
+// }
