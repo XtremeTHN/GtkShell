@@ -113,7 +113,7 @@ class AppRunner(Astal.Window):
         if self.empty:
             return
 
-        row: AppItem = self.app_box.get_first_child()
+        row: AppItem = self.app_box.get_selected_row()
 
         if not row:
             return
