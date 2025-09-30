@@ -76,6 +76,7 @@ class AppRunner(Astal.Window):
             self.search_entry.set_text("")
         else:
             self.apps.reload()
+            self.search_entry.grab_focus()
 
     @Gtk.Template.Callback()
     def launch_from_box(self, _, row: AppItem):
