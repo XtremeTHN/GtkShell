@@ -19,6 +19,9 @@ class ActiveMusic(Adw.Bin):
         self.player = AstalMpris.Player.new("spotify")
 
         self.player.connect("notify::available", self.on_available)
+        self.player.bind_property(
+            "title", self.label, "label", GObject.BindingFlags.SYNC_CREATE
+        )
         self.rev.set_child(self.label)
         self.set_child(self.rev)
 

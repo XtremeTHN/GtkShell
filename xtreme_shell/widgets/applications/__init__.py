@@ -1,5 +1,5 @@
 from xtreme_shell.modules.utils import Blp
-from gi.repository import Gtk, Adw, GioUnix, GObject, Astal, AstalApps
+from gi.repository import Gtk, Adw, Gdk, GLib, GioUnix, GObject, Astal, AstalApps
 
 import subprocess
 import logging
@@ -20,9 +20,28 @@ class AppItem(Gtk.ListBoxRow):
 
     def __init__(self, app_info: AstalApps.Application):
         super().__init__()
+        self.logger = logging.getLogger(f'AppRunner("{app_info.get_name()}")')
 
         self.app_info = app_info
-        self.app_icon.set_from_icon_name(app_info.props.icon_name)
+
+        theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
+
+        icon = theme.lookup_icon(
+            app_info.props.icon_name,
+            None,
+            32,
+            1,
+            Gtk.TextDirection.NONE,
+            Gtk.IconLookupFlags.NONE,
+        )
+
+        if icon.get_icon_name() == "image-missing":
+            try:
+                icon = Gdk.Texture.new_from_filename(app_info.props.icon_name)
+            except GLib.Error:
+                self.logger.exception("Couldn't get icon")
+
+        self.app_icon.set_from_paintable(icon)
         self.app_name.set_label(app_info.props.name)
 
         if desc := app_info.props.description:
@@ -46,9 +65,7 @@ class AppItem(Gtk.ListBoxRow):
 
     def launch(self, prefix=None):
         cmd = re.sub(r"%\S+", "", f"{prefix or ''} {self.app_info.get_commandline()}")
-        logging.getLogger(f"AppRunner({self.app_name.get_label()})").info(
-            f"Launching with cmd: {cmd}"
-        )
+        self.logger.info(f"Launching with cmd: {cmd}")
         subprocess.Popen(args=shlex.split(cmd))
 
 
