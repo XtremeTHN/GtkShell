@@ -1,5 +1,10 @@
 from xtreme_shell.modules.utils import Blp
-from gi.repository import Gtk, Adw, Gio, Astal, AstalApps
+from gi.repository import Gtk, Adw, GioUnix, GObject, Astal, AstalApps
+
+import subprocess
+import logging
+import shlex
+import re
 
 
 @Blp("application-item")
@@ -11,7 +16,7 @@ class AppItem(Gtk.ListBoxRow):
     app_description: Gtk.Label = Gtk.Template.Child()
     app_type_icon: Gtk.Image = Gtk.Template.Child()
 
-    app_info: AstalApps.Application
+    app_info: GioUnix.DesktopAppInfo
 
     def __init__(self, app_info: AstalApps.Application):
         super().__init__()
@@ -25,8 +30,8 @@ class AppItem(Gtk.ListBoxRow):
         else:
             self.app_description.set_visible(False)
 
-        app = Gio.DesktopAppInfo.new(app_info.props.entry)
-        app_type = app.get_string("Type")
+        self.app_info = GioUnix.DesktopAppInfo.new(app_info.props.entry)
+        app_type = self.app_info.get_string("Type")
         match app_type:
             case "Application":
                 self.app_type_icon.set_from_icon_name(
@@ -38,6 +43,13 @@ class AppItem(Gtk.ListBoxRow):
                 self.app_type_icon.set_from_icon_name("folder-symbolic")
             case _:
                 raise Exception(f"Unsupported desktop entry: {app_type}")
+
+    def launch(self, prefix=None):
+        cmd = re.sub(r"%\S+", "", f"{prefix or ''} {self.app_info.get_commandline()}")
+        logging.getLogger(f"AppRunner({self.app_name.get_label()})").info(
+            f"Launching with cmd: {cmd}"
+        )
+        subprocess.Popen(args=shlex.split(cmd))
 
 
 @Blp("applications")
@@ -52,7 +64,7 @@ class AppRunner(Astal.Window):
 
     empty = True
 
-    def __init__(self):
+    def __init__(self, commandPrefix=None):
         super().__init__(
             name="app-runner",
             namespace="shell-app-runner",
@@ -61,14 +73,27 @@ class AppRunner(Astal.Window):
         )
 
         self.add_css_class("adwaita-window")
+
+        self.__cmd_prefix = commandPrefix
+
+        self.logger = logging.getLogger("AppRunner")
         self.apps = AstalApps.Apps.new()
         self.vadjustment = self.scrolled.get_vadjustment()
 
         self.present()
 
-        # self.set_visible(False)
+        self.set_visible(False)
 
         self.connect("notify::visible", self.on_visible_change)
+
+    @GObject.Property(type=str)
+    def cmd_prefix(self):
+        return self.__cmd_prefix
+
+    @cmd_prefix.setter
+    def cmd_prefix(self, value):
+        self.logger.info(f"New prefix: {value}")
+        self.__cmd_prefix = value
 
     def on_visible_change(self, *_):
         if self.get_visible() is False:
@@ -80,7 +105,7 @@ class AppRunner(Astal.Window):
 
     @Gtk.Template.Callback()
     def launch_from_box(self, _, row: AppItem):
-        row.app_info.launch()
+        row.launch(prefix=self.cmd_prefix)
         self.hide_window()
 
     @Gtk.Template.Callback()
@@ -93,7 +118,7 @@ class AppRunner(Astal.Window):
         if not row:
             return
 
-        row.app_info.launch()
+        row.launch(prefix=self.cmd_prefix)
         self.hide_window()
 
     @Gtk.Template.Callback()

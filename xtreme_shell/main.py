@@ -69,7 +69,19 @@ class App(Adw.Application):
             "-t", "--toggle", action="store", help="Toggle the visibility of a window"
         )
 
+        parser.add_argument(
+            "--launch-prefix",
+            action="store",
+            help="Sets the prefix of the command to run in app launcher",
+        )
+
         return parser.parse_args(argv), parser
+
+    def get_window(self, name) -> Gtk.Window:
+        for x in self.windows:
+            if x.get_name() != name:
+                continue
+            return x
 
     def do_command_line(self, command_line):
         if command_line.get_is_remote():
@@ -78,16 +90,19 @@ class App(Adw.Application):
 
                 if argv.quit:
                     self.quit()
+
                 if argv.help:
                     command_line.print_literal(parser.format_help())
+
                 if argv.toggle:
-                    for x in self.windows:
-                        if x.get_name() != argv.toggle:
-                            continue
-                        x.set_visible(not x.get_visible())
-                        break
-                    else:
+                    if not (w := self.get_window(argv.toggle)):
                         command_line.printerr_literal("Window not found")
+                    else:
+                        w.set_visible(not w.get_visible())
+
+                if argv.launch_prefix:
+                    app = self.get_window("app-runner")
+                    app.cmd_prefix = argv.launch_prefix
 
             except argparse.ArgumentError as e:
                 command_line.printerr_literal(
