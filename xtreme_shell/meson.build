@@ -13,7 +13,10 @@ gnome.compile_resources(
     'xtreme-shell',
     'xtreme-shell.gresource.xml',
     gresource_bundle: true,
-    dependencies: [blueprints, scss],
+    dependencies: [
+        blueprints,
+        scss,
+    ],
     install: true,
     install_dir: moduledir
 )
@@ -37,8 +40,6 @@ xtreme_shell_sources = [
 ]
 
 install_data(xtreme_shell_sources, install_dir: moduledir)
-install_subdir('scss', install_dir: moduledir)
-install_subdir('icons', install_dir: moduledir)
 
 subdir('modules')
 subdir('widgets')

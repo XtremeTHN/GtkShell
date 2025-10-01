@@ -120,12 +120,7 @@ class App(Adw.Application):
             del command_line  # releases the caller process
         else:
             init_logger()
-            # self.apply_css()
             self.init_windows()
-
-            Gtk.IconTheme.get_for_display(self.display).add_search_path(
-                str(SOURCE_DIR / "icons")
-            )
 
         return 0
 
