@@ -5,8 +5,6 @@ init_libraries()
 from .modules.logger import init_logger
 from gi.repository import Adw, GLib, Gio, Gdk, Gtk, AstalCava
 
-from .modules.constants import SOURCE_DIR
-from .modules.style import compile_scss
 from .widgets.bar import Bar
 from .widgets.notifications import Notifications
 from .widgets.control import ControlCenter
@@ -40,16 +38,6 @@ class App(Adw.Application):
         super().add_window(win)
 
         self.windows.append(win)
-
-    def apply_css(self):
-        css = compile_scss()
-
-        provider = Gtk.CssProvider.new()
-        provider.load_from_string(css)
-
-        Gtk.StyleContext.add_provider_for_display(
-            self.display, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER
-        )
 
     def parse_args(self, argv):
         parser = argparse.ArgumentParser(exit_on_error=False, add_help=False)
