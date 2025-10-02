@@ -1,43 +1,44 @@
 using Gtk 4.0;
+using Adw 1;
 using Astal 4.0;
 
 template $AppRunner: Astal.Window {
-    Box {
-        styles [
-            "box-10",
-        ]
+  Box {
+    styles [
+      "box-10",
+    ]
 
-        spacing: 5;
-        orientation: vertical;
+    spacing: 5;
+    orientation: vertical;
 
-        SearchEntry search_entry {
-            margin-top: 5;
-            width-request: 500;
-            placeholder-text: _("Search applications");
-            next-match => $next_app();
-            previous-match => $prev_app();
-            search-changed => $query();
-            activate => $launch_from_search();
-            stop-search => $hide_window();
-        }
-
-        Revealer rev {
-            child: ScrolledWindow scrolled {
-                propagate-natural-height: true;
-                max-content-height: 500;
-
-                child: Gtk.Viewport viewport {
-                    child: ListBox app_box {
-                        styles [
-                            "boxed-list",
-                        ]
-
-                        row-activated => $launch_from_box();
-                        vexpand: true;
-                        selection-mode: single;
-                    };
-                };
-            };
-        }
+    SearchEntry search_entry {
+      margin-top: 5;
+      width-request: 500;
+      placeholder-text: _("Search applications");
+      next-match => $next_app();
+      previous-match => $prev_app();
+      search-changed => $query();
+      activate => $launch_from_search();
+      stop-search => $hide_window();
     }
+
+    Revealer rev {
+      child: ScrolledWindow scrolled {
+        propagate-natural-height: true;
+        max-content-height: 500;
+
+        child: Gtk.Viewport viewport {
+          child: ListBox app_box {
+            styles [
+              "boxed-list",
+            ]
+
+            row-activated => $launch_from_box();
+            vexpand: true;
+            selection-mode: single;
+          };
+        };
+      };
+    }
+  }
 }

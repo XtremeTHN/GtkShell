@@ -64,7 +64,8 @@ class AppItem(Gtk.ListBoxRow):
                 raise Exception(f"Unsupported desktop entry: {app_type}")
 
     def launch(self, prefix=None):
-        cmd = re.sub(r"%\S+", "", f"{prefix or ''} {self.app_info.get_commandline()}")
+        cmd = re.sub(
+            r"%\S+", "", f"{prefix or ''} {self.app_info.get_commandline()}")
         self.logger.info(f"Launching with cmd: {cmd}")
         subprocess.Popen(args=shlex.split(cmd))
 
@@ -180,6 +181,15 @@ class AppRunner(Astal.Window):
         for x in result:
             item = AppItem(x)
             self.app_box.append(item)
+
+        if self.empty:
+            self.app_box.append(
+                Adw.StatusPage(
+                    css_classes=["compact"],
+                    icon_name="application-x-sharedlib-symbolic",
+                    title="No results"
+                )
+            )
 
         if self.empty is False:
             self.app_box.select_row(self.app_box.get_first_child())

@@ -13,23 +13,23 @@ class ActiveMusic(Adw.Bin):
     def __init__(self):
         super().__init__()
 
-        self.rev = Gtk.Revealer(transition_type=Gtk.RevealerTransitionType.SWING_RIGHT)
+        self.rev = Gtk.Revealer(
+            transition_type=Gtk.RevealerTransitionType.SWING_RIGHT)
         self.label = Gtk.Label(label="No music")
 
         self.player = AstalMpris.Player.new("spotify")
 
-        self.player.connect("notify::available", self.on_available)
         self.player.bind_property(
             "title", self.label, "label", GObject.BindingFlags.SYNC_CREATE
         )
+        self.player.bind_property(
+            "available",
+            self.rev,
+            "reveal-child",
+            GObject.BindingFlags.SYNC_CREATE
+        )
         self.rev.set_child(self.label)
         self.set_child(self.rev)
-
-        self.on_available()
-
-    def on_available(self, *_):
-        self.rev.set_reveal_child(self.player.get_available())
-        self.label.set_label(self.player.get_title())
 
 
 class Background(Cava):
