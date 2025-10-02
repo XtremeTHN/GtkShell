@@ -64,8 +64,7 @@ class AppItem(Gtk.ListBoxRow):
                 raise Exception(f"Unsupported desktop entry: {app_type}")
 
     def launch(self, prefix=None):
-        cmd = re.sub(
-            r"%\S+", "", f"{prefix or ''} {self.app_info.get_commandline()}")
+        cmd = re.sub(r"%\S+", "", f"{prefix or ''} {self.app_info.get_commandline()}")
         self.logger.info(f"Launching with cmd: {cmd}")
         subprocess.Popen(args=shlex.split(cmd))
 
@@ -80,7 +79,11 @@ class AppRunner(Astal.Window):
     scrolled: Gtk.ScrolledWindow = Gtk.Template.Child()
     viewport: Gtk.Viewport = Gtk.Template.Child()
 
+    instance = None
+
     empty = True
+
+    __cmd_prefix: str
 
     def __init__(self, commandPrefix=None):
         super().__init__(
@@ -91,12 +94,10 @@ class AppRunner(Astal.Window):
         )
 
         self.add_css_class("adwaita-window")
-
-        self.__cmd_prefix = commandPrefix
-
         self.logger = logging.getLogger("AppRunner")
         self.apps = AstalApps.Apps.new()
         self.vadjustment = self.scrolled.get_vadjustment()
+        self.cmd_prefix = commandPrefix
 
         self.present()
 
@@ -187,7 +188,7 @@ class AppRunner(Astal.Window):
                 Adw.StatusPage(
                     css_classes=["compact"],
                     icon_name="application-x-sharedlib-symbolic",
-                    title="No results"
+                    title="No results",
                 )
             )
 

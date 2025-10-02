@@ -4,18 +4,19 @@ init_libraries()
 
 from .modules.logger import init_logger
 from gi.repository import Adw, GLib, Gio, Gdk, Gtk, AstalCava
-
 from .widgets.bar import Bar
 from .widgets.notifications import Notifications
 from .widgets.control import ControlCenter
-from .widgets.applications import AppRunner
-
-import logging
 import argparse
+import logging
+
+from .widgets.applications import AppRunner
 
 
 class App(Adw.Application):
     instance = None
+
+    cmd_prefix: str
 
     def __init__(self):
         super().__init__(
@@ -24,7 +25,6 @@ class App(Adw.Application):
         )
 
         self.logger = logging.getLogger("App")
-        self.windows: list[Adw.Window] = []
 
     @property
     def display(self) -> Gdk.Display | None:
@@ -37,10 +37,8 @@ class App(Adw.Application):
         win = window(*args, **kwargs)
         super().add_window(win)
 
-        self.windows.append(win)
-
-    def parse_args(self, argv):
-        parser = argparse.ArgumentParser(exit_on_error=False, add_help=False)
+    def parse_args(self, argv, exit=False):
+        parser = argparse.ArgumentParser(exit_on_error=exit, add_help=False)
         parser.add_argument(
             "-h",
             "--help",
@@ -51,6 +49,13 @@ class App(Adw.Application):
             "--quit",
             action="store_true",
             help="Quit the running instance of the application",
+        )
+
+        parser.add_argument(
+            "-l",
+            "--list-windows",
+            action="store_true",
+            help="List the available windows",
         )
 
         parser.add_argument(
@@ -66,45 +71,56 @@ class App(Adw.Application):
         return parser.parse_args(argv), parser
 
     def get_window(self, name) -> Gtk.Window:
-        for x in self.windows:
+        for x in self.get_windows():
             if x.get_name() != name:
                 continue
             return x
 
     def handle_args(self, command_line):
         try:
-            argv, parser = self.parse_args(command_line.get_arguments())
+            argv, parser = self.parse_args(
+                command_line.get_arguments(), exit=not command_line.get_is_remote()
+            )
 
             if argv.quit:
                 self.quit()
 
             if argv.help:
                 command_line.print_literal(parser.format_help())
-
+                return 0
             if argv.toggle:
                 if not (w := self.get_window(argv.toggle)):
                     command_line.printerr_literal("Window not found")
                 else:
                     w.set_visible(not w.get_visible())
 
+            if argv.list_windows:
+                command_line.print_literal("Available windows:\n")
+                for x in self.windows:
+                    command_line.print_literal(f"\t{x.get_name()}")
+
             if argv.launch_prefix:
-                self.get_window("app-runner").cmd_prefix = argv.launch_prefix
+                self.cmd_prefix = argv.launch_prefix
 
         except argparse.ArgumentError as e:
-            print(e)
             command_line.printerr_literal(
-                f"<{e.__class__.__name__}>: error on argument {e.args[0].option_strings}. Check -h"
+                f"<{e.__class__.__name__}>: error on argument {
+                    e.args[0].option_strings
+                }. Check -h"
             )
+            return 1
 
     def init_windows(self):
         self.add_window(Bar)
-        self.add_window(AppRunner)
+        self.add_window(AppRunner, self.cmd_prefix)
         self.add_window(Notifications)
         self.add_window(ControlCenter)
 
     def do_command_line(self, command_line):
+        if (ret := self.handle_args(command_line)) is not None:
+            return ret
+
         if command_line.get_is_remote():
-            self.handle_args(command_line)
             del command_line  # releases the caller process
         else:
             init_logger()
