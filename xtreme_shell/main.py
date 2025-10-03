@@ -16,14 +16,13 @@ from .widgets.applications import AppRunner
 class App(Adw.Application):
     instance = None
 
-    cmd_prefix: str
-
     def __init__(self):
         super().__init__(
             application_id="com.github.XtremeTHN.XtremeShell",
             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE,
         )
 
+        self.cmd_prefix = None
         self.logger = logging.getLogger("App")
 
     @property
@@ -96,8 +95,9 @@ class App(Adw.Application):
 
             if argv.list_windows:
                 command_line.print_literal("Available windows:\n")
-                for x in self.windows:
-                    command_line.print_literal(f"\t{x.get_name()}")
+
+                for x in self.get_windows():
+                    command_line.print_literal(f"\t{x.get_name()}\n")
 
             if argv.launch_prefix:
                 self.cmd_prefix = argv.launch_prefix
