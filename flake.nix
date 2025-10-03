@@ -46,11 +46,9 @@
 
   in {
     devShells.${system}.default = pkgs.mkShell {
-      venvDir = ".venv";
       inherit nativeBuildInputs buildInputs;
 
       packages =  [
-        python.pkgs.venvShellHook
         pkgs.pkg-config
       ];
     };
