@@ -50,7 +50,7 @@ class AppItem(Gtk.ListBoxRow):
             self.app_description.set_visible(False)
 
         self.app_info = GioUnix.DesktopAppInfo.new(app_info.props.entry)
-        app_type = self.app_info.get_string("Type")
+        app_type = GioUnix.DesktopAppInfo.get_string(self.app_info, "Type")
         match app_type:
             case "Application":
                 self.app_type_icon.set_from_icon_name(
