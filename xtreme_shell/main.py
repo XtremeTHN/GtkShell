@@ -7,6 +7,8 @@ from gi.repository import Adw, GLib, Gio, Gdk, Gtk, AstalCava
 from .widgets.bar import Bar
 from .widgets.notifications import Notifications
 from .widgets.control import ControlCenter
+from .widgets.quicksettings import QuickSettings
+
 import argparse
 import logging
 
@@ -115,6 +117,7 @@ class App(Adw.Application):
         self.add_window(AppRunner, self.cmd_prefix)
         self.add_window(Notifications)
         self.add_window(ControlCenter)
+        self.add_window(QuickSettings)
 
     def do_command_line(self, command_line):
         if (ret := self.handle_args(command_line)) is not None:

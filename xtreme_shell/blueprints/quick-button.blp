@@ -1,0 +1,20 @@
+using Gtk 4.0;
+
+template $QuickButton: ToggleButton {
+    hexpand: true;
+
+    child: Box {
+        spacing: 10;
+
+        Image icon {}
+
+        Box {
+            orientation: vertical;
+            valign: center;
+
+            Label text {
+                xalign: 0;
+            }
+        }
+    };
+}

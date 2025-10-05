@@ -1,0 +1,192 @@
+using Gtk 4.0;
+using Astal 4.0;
+
+template $QuickSettings: Astal.Window {
+  Box {
+    styles [
+      "card",
+    ]
+
+    orientation: vertical;
+    spacing: 10;
+
+    CenterBox {
+      start-widget: Box {
+        orientation: horizontal;
+        spacing: 10;
+
+        Image {
+          icon-name: "battery-good-symbolic";
+        }
+
+        Label {
+          label: "89%";
+        }
+      };
+
+      end-widget: Box {
+        spacing: 10;
+
+        Button {
+          styles [
+            "circular",
+          ]
+
+          icon-name: "screenshooter-symbolic";
+        }
+
+        Button {
+          styles [
+            "circular",
+          ]
+
+          icon-name: "settings-symbolic";
+        }
+
+        Button {
+          styles [
+            "circular",
+          ]
+
+          icon-name: "system-lock-screen-symbolic";
+        }
+
+        Button power_btt {
+          styles [
+            "circular",
+          ]
+
+          icon-name: "system-shutdown-symbolic";
+        }
+      };
+    }
+
+    $QuickMenu power_menu {
+      icon-name: "system-shutdown-symbolic";
+      title: "Power";
+
+      content: Box {
+        Button {
+          styles [
+            "flat",
+          ]
+
+          label: "Suspend";
+        }
+
+        Button {
+          styles [
+            "flat",
+          ]
+
+          label: "Power Off";
+        }
+
+        Button {
+          styles [
+            "flat",
+          ]
+
+          label: "Suspend";
+        }
+
+        Button {
+          styles [
+            "flat",
+          ]
+
+          label: "Log Out";
+        }
+      };
+    }
+
+    Box {
+      spacing: 5;
+      orientation: vertical;
+
+      Box {
+        orientation: horizontal;
+        spacing: 5;
+        hexpand: true;
+
+        Image {
+          icon-name: "audio-volume-low-symbolic";
+        }
+
+        Scale audio_scale {
+          hexpand: true;
+          draw-value: false;
+
+          adjustment: Gtk.Adjustment {
+            upper: 1;
+            lower: 0;
+          };
+        }
+      }
+
+      Box {
+        orientation: horizontal;
+        spacing: 5;
+        hexpand: true;
+
+        Image {
+          icon-name: "display-brightness-symbolic";
+        }
+
+        Scale brightness_scale {
+          hexpand: true;
+          draw-value: false;
+
+          adjustment: Gtk.Adjustment {
+            upper: 1;
+            lower: 0;
+          };
+        }
+      }
+    }
+
+    Box {
+      orientation: vertical;
+      homogeneous: true;
+      spacing: 5;
+
+      Box {
+        spacing: 5;
+        homogeneous: true;
+
+        styles [
+          "quick-buttons",
+        ]
+
+        $QuickButton network_btt {
+          btt-label: "Network";
+        }
+
+        $QuickButton bluetooth_btt {
+          btt-label: "Bluetooth";
+        }
+      }
+
+      $QuickMenu connections_menu {}
+
+      Box {
+        spacing: 5;
+        homogeneous: true;
+
+        styles [
+          "quick-buttons",
+        ]
+
+        $QuickButton power_mode_btt {
+          btt-label: "Power Mode";
+        }
+
+        $QuickButton night_light_btt {
+          btt-label: "Night Light";
+        }
+      }
+
+      $QuickMenu profile_menu {}
+    }
+  }
+}

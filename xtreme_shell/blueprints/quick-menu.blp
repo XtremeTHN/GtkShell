@@ -1,0 +1,36 @@
+using Gtk 4.0;
+
+template $QuickMenu: Revealer {
+    reveal-child: false;
+    visible: false;
+
+    child: Box root_box {
+        styles [
+            "quick-menu",
+            "card",
+        ]
+
+        opacity: 0;
+        orientation: vertical;
+        spacing: 10;
+
+        Box {
+            spacing: 10;
+
+            Image icon {
+                styles [
+                    "card",
+                    "quick-menu-icon",
+                ]
+
+                pixel-size: 24;
+            }
+
+            Label title_label {
+                styles [
+                    "title-2",
+                ]
+            }
+        }
+    };
+}
