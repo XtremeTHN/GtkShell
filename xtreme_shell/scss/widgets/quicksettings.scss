@@ -1,10 +1,10 @@
 @use "../utils.scss";
 
 .quicksettings {
-  & > box {
+  &>box {
     padding: 15px 20px;
   }
-  
+
   border-radius: 34px;
   box-shadow: 2px 3px 8px 0 utils.gtkalpha(black, .4);
   border: 1px solid utils.gtkalpha(var(--window-fg-color), .2);
@@ -23,16 +23,19 @@
 }
 
 .quick-buttons {
-    & > button {
-        border-radius: 40px;
-        padding-left: 15px;
-        padding-right: 15px;
-        padding-top: 8px;
-        padding-bottom: 8px;
-        min-height: unset;
-    }
-    
-    & > button:checked {
-        background-color: var(--accent-bg-color);
-    }
+  &>button {
+    border-radius: 40px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    min-height: unset;
+
+    transition: all 0.5s;
+  }
+
+  &>button.active {
+    color: var(--accent-fg-color);
+    background-color: var(--accent-bg-color);
+  }
 }

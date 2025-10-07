@@ -1,6 +1,6 @@
 using Gtk 4.0;
 
-template $QuickButton: ToggleButton {
+template $QuickButton: Button {
     hexpand: true;
 
     child: Box {
@@ -14,6 +14,15 @@ template $QuickButton: ToggleButton {
 
             Label text {
                 xalign: 0;
+            }
+
+            Label subtitle {
+                styles [
+                    "caption",
+                ]
+
+                xalign: 0;
+                visible: false;
             }
         }
     };

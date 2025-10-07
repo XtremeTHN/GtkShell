@@ -1,23 +1,11 @@
 from xtreme_shell.modules.utils import Blp
-from gi.repository import Gtk, Adw, GLib, GObject, Astal
 
+from xtreme_shell.widgets.icons.network import Network
+from gi.repository import Gtk, GObject, Astal
 
-@Blp("quick-button")
-class QuickButton(Gtk.ToggleButton):
-    __gtype_name__ = "QuickButton"
-
-    text: Gtk.Label = Gtk.Template.Child()
-
-    @GObject.Property(type=str)
-    def btt_label(self):
-        return self.text.get_label()
-
-    @btt_label.setter
-    def btt_label(self, text):
-        self.text.set_label(text)
-
-    def __init__(self):
-        super().__init__()
+from .button import QuickButton
+from .network import NetManager
+from .bluetooth import BluetoothManager
 
 
 @Blp("quick-menu")
@@ -60,6 +48,22 @@ class QuickMenu(Gtk.Revealer):
 class QuickSettings(Astal.Window):
     __gtype_name__ = "QuickSettings"
 
+    power_btt: Gtk.Button = Gtk.Template.Child()
+    power_menu: QuickMenu = Gtk.Template.Child()
+
+    audio_scale: Gtk.Scale = Gtk.Template.Child()
+    brightness_scale: Gtk.Scale = Gtk.Template.Child()
+
+    network_btt: QuickButton = Gtk.Template.Child()
+    bluetooth_btt: QuickButton = Gtk.Template.Child()
+
+    connections_menu: QuickMenu = Gtk.Template.Child()
+
+    power_mode_btt: QuickButton = Gtk.Template.Child()
+    night_light_btt: QuickButton = Gtk.Template.Child()
+
+    profile_menu: QuickMenu = Gtk.Template.Child()
+
     def __init__(self):
         super().__init__(
             name="quick-settings",
@@ -67,6 +71,9 @@ class QuickSettings(Astal.Window):
             layer=Astal.Layer.OVERLAY,
             resizable=False,
         )
+
+        BluetoothManager(self.bluetooth_btt)
+        NetManager(self.network_btt)
 
         self.add_css_class("quicksettings")
         self.present()
