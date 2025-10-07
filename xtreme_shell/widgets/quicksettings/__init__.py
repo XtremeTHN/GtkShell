@@ -6,6 +6,7 @@ from gi.repository import Gtk, GObject, Astal
 from .button import QuickButton
 from .network import NetManager
 from .bluetooth import BluetoothManager
+from .power import PowerMan
 
 
 @Blp("quick-menu")
@@ -74,6 +75,7 @@ class QuickSettings(Astal.Window):
 
         BluetoothManager(self.bluetooth_btt)
         NetManager(self.network_btt)
+        PowerMan(self.power_mode_btt)
 
         self.add_css_class("quicksettings")
         self.present()

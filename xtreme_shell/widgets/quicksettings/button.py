@@ -34,12 +34,13 @@ class ButtonService(GObject.Object):
     widget: QuickButton
     locked = GObject.Property(type=bool, default=False)
 
-    def __init__(self, button):
+    def __init__(self, button, connectClicked=True):
         super().__init__()
         self.__active = False
         self.widget = button
 
-        button.connect("clicked", self.on_clicked)
+        if connectClicked:
+            button.connect("clicked", self.on_clicked)
 
     def on_clicked(self, _):
         self.active = not self.active

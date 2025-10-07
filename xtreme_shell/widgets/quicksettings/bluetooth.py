@@ -60,6 +60,7 @@ class BluetoothManager(GObject.GObject):
 
     def on_adapter_change(self, *_):
         adapter = self.blue.get_adapter()
+        self.logger.info(f"New adapter: {adapter.get_name()}")
 
         if not adapter:
             self.widget.icon.set_from_icon_name("bluetooth-disabled-symbolic")
