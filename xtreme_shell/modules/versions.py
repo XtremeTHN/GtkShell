@@ -21,5 +21,7 @@ def init_libraries():
             "AstalCava": "0.1",
             "AstalNotifd": "0.1",
             "AstalApps": "0.1",
+            "AstalBluetooth": "0.1",
+            "AstalPowerProfiles": "0.1",
         }
     )
