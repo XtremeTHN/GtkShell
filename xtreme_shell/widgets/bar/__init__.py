@@ -25,9 +25,12 @@ class Workspaces(Gtk.Box):
 
     def wk(self, id):
         def on_focus_change(_, __, lbl):
-            lbl.set_opacity(
-                1 if self.hypr.get_focused_workspace().get_id() == lbl.id else 0.5
-            )
+            w = self.hypr.get_focused_workspace()
+
+            if not w:
+                return
+
+            lbl.set_opacity(1 if w.get_id() == lbl.id else 0.5)
 
         wkspc = Gtk.Label(label=str(id))
         wkspc.id = id
