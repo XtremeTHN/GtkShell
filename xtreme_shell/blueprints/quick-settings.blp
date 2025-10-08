@@ -3,10 +3,6 @@ using Astal 4.0;
 
 template $QuickSettings: Astal.Window {
   Box {
-    styles [
-      "card",
-    ]
-
     orientation: vertical;
     spacing: 10;
 
@@ -33,6 +29,7 @@ template $QuickSettings: Astal.Window {
           ]
 
           icon-name: "screenshooter-symbolic";
+          clicked => $screenshot();
         }
 
         Button {
@@ -41,6 +38,7 @@ template $QuickSettings: Astal.Window {
           ]
 
           icon-name: "settings-symbolic";
+          clicked => $settings();
         }
 
         Button {
@@ -49,6 +47,7 @@ template $QuickSettings: Astal.Window {
           ]
 
           icon-name: "system-lock-screen-symbolic";
+          clicked => $lock();
         }
 
         Button power_btt {
@@ -66,36 +65,66 @@ template $QuickSettings: Astal.Window {
       title: "Power";
 
       content: Box {
-        Button {
+        styles [
+          "quick-menu-box",
+        ]
+
+        orientation: vertical;
+
+        Button suspend_btt {
           styles [
             "flat",
+            "body",
           ]
 
-          label: "Suspend";
+          clicked => $suspend();
+
+          child: Label {
+            xalign: 0;
+            label: "Suspend";
+          };
         }
 
-        Button {
+        Button power_off_btt {
           styles [
             "flat",
+            "body",
           ]
 
-          label: "Power Off";
+          clicked => $poweroff();
+
+          child: Label {
+            xalign: 0;
+            label: "Power Off";
+          };
         }
 
-        Button {
+        Button restart_btt {
           styles [
             "flat",
+            "body",
           ]
 
-          label: "Suspend";
+          clicked => $restart();
+
+          child: Label {
+            xalign: 0;
+            label: "Restart";
+          };
         }
 
-        Button {
+        Button log_out_btt {
           styles [
             "flat",
+            "body",
           ]
 
-          label: "Log Out";
+          clicked => $logout();
+
+          child: Label {
+            xalign: 0;
+            label: "Log Out";
+          };
         }
       };
     }

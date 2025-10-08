@@ -1,5 +1,12 @@
-from gi.repository import Gdk, Gtk, GObject, GLib
+from gi.repository import Gdk, Gtk, Gio, GObject, GLib
 import logging
+
+
+def notify(self, heading, body):
+    app = self.get_root().get_application()
+    notification = Gio.Notification.new(heading)
+    notification.set_body(body)
+    app.send_notification("script", notification)
 
 
 def get_signal_args(flags="run-first", args=()):

@@ -14,7 +14,9 @@ configure_file(
     configuration: conf,
     install: true,
     install_dir: moduledir,
-    install_mode: 'r--r--r--'
+    install_mode: 'r--r--r--',
 )
 
 install_data(modules_sources, install_dir: moduledir)
+
+subdir('services')

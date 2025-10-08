@@ -34,7 +34,9 @@ class Network(GObject.Object):
                 state_str = "Disconnected"
             case _:
                 self.active = False
-                state_str = AstalNetwork.DeviceState.value.name.title()
+                state_str = "Unknown"
+                self.logger.info("Unknown state: %s", state.value_name.title())
+                # state_str = AstalNetwork.DeviceState.value.name.title()
 
         self.notify("active")
         return state_str

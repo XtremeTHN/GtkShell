@@ -1,48 +1,15 @@
-from xtreme_shell.modules.utils import Blp
+from xtreme_shell.modules.utils import Blp, notify
+from xtreme_shell.modules.services.loginone import LoginOne
 
-from xtreme_shell.widgets.icons.network import Network
-from gi.repository import Gtk, GObject, Astal
+from gi.repository import Gtk, Gio, Astal, GLib
 
+from .menu import QuickMenu
 from .button import QuickButton
 from .network import NetManager
 from .bluetooth import BluetoothManager
 from .power import PowerMan
 
-
-@Blp("quick-menu")
-class QuickMenu(Gtk.Revealer):
-    __gtype_name__ = "QuickMenu"
-
-    icon: Gtk.Image = Gtk.Template.Child()
-    root_box: Gtk.Image = Gtk.Template.Child()
-    title_label: Gtk.Label = Gtk.Template.Child()
-
-    @GObject.Property(type=str, nick="icon-name")
-    def icon_name(self):
-        return self.icon.get_icon_name()
-
-    @icon_name.setter
-    def icon_name(self, icon):
-        self.icon.set_from_icon_name(icon)
-
-    @GObject.Property(type=str)
-    def title(self):
-        return self.title_label.get_label()
-
-    @title.setter
-    def title(self, title):
-        self.title_label.set_label(title)
-
-    @GObject.Property(type=Gtk.Widget)
-    def content(self):
-        return
-
-    @content.setter
-    def content(self, content):
-        self.root_box.append(content)
-
-    def __init__(self):
-        super().__init__()
+import logging
 
 
 @Blp("quick-settings")
@@ -73,10 +40,50 @@ class QuickSettings(Astal.Window):
             resizable=False,
         )
 
+        self.login = LoginOne.get_default()
+        self.logger = logging.getLogger("QuickSettings")
+
         BluetoothManager(self.bluetooth_btt)
         NetManager(self.network_btt)
         PowerMan(self.power_mode_btt)
 
+        self.power_btt.connect("clicked", self.power_menu.toggle)
+
         self.add_css_class("quicksettings")
         self.present()
         # self.set_visible(False)
+
+    @Gtk.Template.Callback()
+    def screenshot(self, _):
+        def finish(obj: Gio.Subprocess, res):
+            try:
+                obj.wait_check_finish(res)
+            except GLib.Error:
+                notify(
+                    self,
+                    "Screenshot",
+                    f"Couldn't take screenshot: {obj.get_exit_status()}",
+                )
+
+        # TODO: Make a screenshoter
+        proc = Gio.Subprocess.new(
+            ["hyprshot", "-m", "region"], Gio.SubprocessFlags.NONE
+        )
+        proc.wait_check_async(None, finish)
+
+    @Gtk.Template.Callback()
+    def settings(self, _):
+        self.logger.info("Not implemented")
+
+    @Gtk.Template.Callback()
+    def lock(self, _):
+        self.logger.info("Not implemented")
+
+    @Gtk.Template.Callback()
+    def suspend(self, _):
+        if self.login.can_suspend():
+            self.login.suspend()
+            return
+
+        notify(self, "QuickSettings", "Can't suspend now")
+        return

@@ -19,8 +19,5 @@
         <file preprocess="xml-stripblanks">icons/scalable/actions/folder-symbolic.svg</file>
         <file preprocess="xml-stripblanks">icons/scalable/actions/screenshooter-symbolic.svg</file>
         <file preprocess="xml-stripblanks">icons/scalable/actions/settings-symbolic.svg</file>
-        <file preprocess="xml-stripblanks">icons/scalable/actions/system-lock-screen-symbolic.svg</file>
-        <file preprocess="xml-stripblanks">icons/scalable/actions/system-shutdown-symbolic.svg</file>
-
     </gresource>
 </gresources>

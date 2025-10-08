@@ -8,5 +8,6 @@
     },
     "[blueprint-gtk]": {
         "editor.formatOnSave": true
-    }
+    },
+    "mesonbuild.configureOnOpen": false
 }
