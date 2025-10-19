@@ -50,6 +50,7 @@
 
       packages =  [
         pkgs.pkg-config
+        python.pkgs.pygobject-stubs
       ];
     };
     packages.${system}.default = pkgs.stdenv.mkDerivation {

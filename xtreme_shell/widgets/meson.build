@@ -2,6 +2,7 @@ moduledir = pkgdatadir / meson.project_name() / 'widgets'
 
 modules_sources = [
     '__init__.py',
+    'circular_progress.py',
     'cava.py'
 ]
 

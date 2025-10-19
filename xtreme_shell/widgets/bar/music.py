@@ -1,4 +1,6 @@
 from gi.repository import Adw, Gtk, AstalMpris, GObject, Gio, AstalWp
+
+from ..circular_progress import CircularProgress
 from ..cava import Cava
 
 import logging
@@ -13,9 +15,22 @@ class ActiveMusic(Adw.Bin):
     def __init__(self):
         super().__init__()
 
-        self.rev = Gtk.Revealer(
-            transition_type=Gtk.RevealerTransitionType.SWING_RIGHT)
+        self.rev = Gtk.Revealer(transition_type=Gtk.RevealerTransitionType.SWING_RIGHT)
+
+        box = Gtk.Box(spacing=10)
+
+        img = Gtk.Image.new()
+        self.prog = CircularProgress()
+        self.prog.widget = img
+        img.set_from_paintable(self.prog)
+        img.set_margin_start(4)
+        img.set_margin_top(2)
+        img.set_margin_bottom(2)
+
         self.label = Gtk.Label(label="No music")
+
+        box.append(img)
+        box.append(self.label)
 
         self.player = AstalMpris.Player.new("spotify")
 
@@ -23,12 +38,19 @@ class ActiveMusic(Adw.Bin):
             "title", self.label, "label", GObject.BindingFlags.SYNC_CREATE
         )
         self.player.bind_property(
-            "available",
-            self.rev,
-            "reveal-child",
-            GObject.BindingFlags.SYNC_CREATE
+            "available", self.rev, "reveal-child", GObject.BindingFlags.SYNC_CREATE
         )
-        self.rev.set_child(self.label)
+        self.player.bind_property(
+            "position",
+            self.prog,
+            "progress",
+            GObject.BindingFlags.SYNC_CREATE,
+            lambda _, v: v / self.player.props.length
+            if self.player.props.length > 0
+            else 0,
+        )
+
+        self.rev.set_child(box)
         self.set_child(self.rev)
 
 
