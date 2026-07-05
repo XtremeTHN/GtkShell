@@ -6,7 +6,6 @@ from .utils import Destroyer, get_signal_args
 
 import threading
 import logging
-import socket
 import json
 import os
 
