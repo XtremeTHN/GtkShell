@@ -6,6 +6,7 @@ modules_sources = [
     'style.py',
     'logger.py',
     'versions.py',
+    'niri.py',
 ]
 
 configure_file(

@@ -50,3 +50,19 @@ def get_paintable_from_path(path) -> Gdk.Paintable | None:
             f"Can't get paintable. Path: {path}"
         )
         return None
+
+
+class Destroyer:
+    _instance = None
+    objects = {}
+
+    @classmethod
+    def add_object(cls, object, destroyer):
+        cls.objects[object] = destroyer
+
+    @classmethod
+    def destroy_all(cls):
+        logger = logging.getLogger("Destroyer")
+        for obj, destroyer in cls.objects.items():
+            logger.info(f"[{obj}] Running destroyer...")
+            destroyer()

@@ -21,7 +21,8 @@
 
 .adwaita-window-no-shadow {
     border: 1px solid utils.gtkalpha(var(--window-fg-color), .2);
-    border-radius: 16px;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
 }
 
 .adwaita-window {

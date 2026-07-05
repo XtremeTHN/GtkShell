@@ -11,6 +11,7 @@ import argparse
 import logging
 
 from .widgets.applications import AppRunner
+from .modules.utils import Destroyer
 
 
 class App(Adw.Application):
@@ -135,8 +136,9 @@ def run(argv):
 
     try:
         App.instance.run(argv)
-    except KeyboardInterrupt:
+    except:
         pass
     finally:
         if c := AstalCava.get_default():
             c.set_active(False)
+        Destroyer.destroy_all()

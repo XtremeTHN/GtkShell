@@ -2,7 +2,8 @@
 
 .bar-window {
     border: 1px solid utils.gtkalpha(var(--window-fg-color), .1);
-    border-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
     // background-color: gtkalpha(var(--window-bg-color), .7);
 }
 

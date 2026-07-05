@@ -12,8 +12,6 @@ def init_libraries():
             "Astal": "4.0",
             "Gtk": "4.0",
             "Adw": "1",
-            "AstalIO": "0.1",
-            "AstalHyprland": "0.1",
             "AstalNetwork": "0.1",
             "AstalTray": "0.1",
             "AstalMpris": "0.1",
